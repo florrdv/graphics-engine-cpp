@@ -60,12 +60,23 @@ img::EasyImage introLines(const ini::Configuration& configuration, int w, int h)
     std::string figure;
     std::vector<double> backgroundColor;
     std::vector<double> lineColor;
-    std::vector<double> nrLines;
+    int nrLines;
 
     if (!configuration["LineProperties"]["figure"].as_string_if_exists(figure)) std::cout << "⛔️| Failed to fetch" << std::endl;
     if (!configuration["LineProperties"]["backgroundcolor"].as_double_tuple_if_exists(backgroundColor)) std::cout << "⛔️|Failed to fetch width" << std::endl;
     if (!configuration["LineProperties"]["lineColor"].as_double_tuple_if_exists(lineColor)) std::cout << "⛔️|Failed to fetch height" << std::endl;
     if (!configuration["LineProperties"]["nrLines"].as_int_if_exists(nrLines)) std::cout << "⛔️|Failed to fetch height" << std::endl;
+
+    img::Color bg;
+    bg.red = backgroundColor[0];
+    bg.green = backgroundColor[1];
+    bg.blue = backgroundColor[2];
+
+    img::EasyImage img(w, h, bg);
+
+    if (figure == "QuarterCircle") {
+        
+    }
 }
 
 img::EasyImage generate_image(const ini::Configuration& configuration) {
