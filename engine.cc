@@ -8,11 +8,48 @@
 
 img::EasyImage colorRectangle(int w, int h) {
     img::EasyImage img(w, h);
-    for (unsigned int i = 0; i < 256; i++) {
-        for (unsigned int j = 0; j < 256; j++) {
+    for (unsigned int i = 0; i < w; i++) {
+        for (unsigned int j = 0; j < h; j++) {
             img(i, j).red = i;
             img(i, j).green = j;
-            img(i, j).blue = (i + j) % 256;
+            img(i, j).blue = (i + j) % w;
+        }
+    }
+
+    return img;
+}
+
+img::EasyImage blocks(const ini::Configuration& configuration, int w, int h) {
+    std::vector<double> colorWhite;
+    std::vector<double> colorBlack;
+    std::vector<double> color;
+    std::vector<double> otherColor;
+    int nrXBlocks;
+    int nrYBlocks;
+    bool invertColors;
+
+    if (!configuration["BlockProperties"]["colorWhite"].as_double_tuple_if_exists(colorWhite)) std::cout << "⛔️| Failed to fetch color 'white'" << std::endl;
+    if (!configuration["BlockProperties"]["colorBlack"].as_double_tuple_if_exists(colorBlack)) std::cout << "⛔️| Failed to fetch color 'black'" << std::endl;
+    if (!configuration["BlockProperties"]["nrXBlocks"].as_int_if_exists(nrXBlocks)) std::cout << "⛔️| Failed to fetch number of blocks on axis 'x'" << std::endl;
+    if (!configuration["BlockProperties"]["nrYBlocks"].as_int_if_exists(nrYBlocks)) std::cout << "⛔️| Failed to fetch number of blocks on axis 'y''" << std::endl;
+    if (!configuration["BlockProperties"]["invertColors"].as_bool_if_exists(invertColors)) std::cout << "⛔️| Failed to fetch boolean 'invert colors'" << std::endl;
+
+    img::EasyImage img(w, h);
+    int wB = w / nrXBlocks;
+    int hB = h / nrYBlocks;
+
+    for (int i = 0; i < w; i++) {
+        for (int j = 0; j < w; j++) {
+            if ((i / wB + j / hB) % 2 == 0) {
+                img(i, j).red = colorWhite[0] * 255;
+                img(i, j).green = colorWhite[1] * 255;
+                img(i, j).blue = colorWhite[2] * 255;
+            }
+            else {
+                img(i, j).red = colorBlack[0] * 255;
+                img(i, j).green = colorBlack[1] * 255;
+                img(i, j).blue = colorBlack[2] * 255;
+            }
         }
     }
 
@@ -33,6 +70,7 @@ img::EasyImage generate_image(const ini::Configuration& configuration) {
 
     img::EasyImage result;
     if (t == "IntroColorRectangle") result = colorRectangle(w, h);
+    if (t == "IntroBlocks") result = blocks(configuration, w, h);
 
     std::cout << "✅| Image generated" << std::endl;
 
