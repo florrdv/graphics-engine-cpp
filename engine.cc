@@ -68,15 +68,69 @@ img::EasyImage introLines(const ini::Configuration& configuration, int w, int h)
     if (!configuration["LineProperties"]["nrLines"].as_int_if_exists(nrLines)) std::cout << "⛔️|Failed to fetch height" << std::endl;
 
     img::Color bg;
-    bg.red = backgroundColor[0];
-    bg.green = backgroundColor[1];
-    bg.blue = backgroundColor[2];
+    bg.red = backgroundColor[0] * 255;
+    bg.green = backgroundColor[1] * 255;
+    bg.blue = backgroundColor[2] * 255;
+
+    img::Color line;
+    line.red = lineColor[0] * 255;
+    line.green = lineColor[1] * 255;
+    line.blue = lineColor[2] * 255;
+
+    std::cout << figure << std::endl;
 
     img::EasyImage img(w, h, bg);
+    int hS = h / (nrLines - 1);
+    int wS = w / (nrLines - 1);
 
     if (figure == "QuarterCircle") {
-        
+        for (int i = 0; i < w; i += wS) {
+            img.draw_line(i, h - 1, 0, i, line);
+        }
     }
+
+    if (figure == "Eye") {
+        for (int i = 0; i < w; i += wS) {
+            img.draw_line(i, h - 1, 0, i, line);
+        }
+
+        for (int i = 0; i < w; i += wS) {
+            img.draw_line(h - i - 1, 0, h - 1, h - i - 1, line);
+        }
+    }
+
+    if (figure == "Diamond") {
+        w = w / 2;
+        h = h / 2;
+        hS = h / (nrLines - 1);
+        wS = w / (nrLines - 1);
+
+        for (int i = 0; i <= w; i += wS) {
+            img.draw_line(h - i - 1, h - 1, h - 1, i, line);
+        }
+
+        int offsetX = h;
+        int offsetY = 0;
+
+        for (int i = 0; i < w; i += wS) {
+            img.draw_line(offsetX + i, offsetY + h - 1, offsetX + 0, offsetY + i, line);
+        }
+
+        offsetX = h;
+        offsetY = h;
+
+        for (int i = 0; i < w; i += wS) {
+            img.draw_line(offsetX + i, offsetY + 0, offsetX + 0, offsetY + h - i - 1, line);
+        }
+
+        offsetX = 0;
+
+        for (int i = 0; i < w; i += wS) {
+            img.draw_line(offsetX + h - i - 1, + offsetY + 0, offsetX + h - 1, offsetY + h - i - 1, line);
+        }
+    }
+
+    return img;
 }
 
 img::EasyImage generate_image(const ini::Configuration& configuration) {
