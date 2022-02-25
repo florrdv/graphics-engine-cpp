@@ -105,7 +105,7 @@ img::EasyImage introLines(const ini::Configuration& configuration, int w, int h)
         hS = h / (nrLines - 1);
         wS = w / (nrLines - 1);
 
-        for (int i = 0; i <= w; i += wS) {
+        for (int i = 0; i < w; i += wS) {
             img.draw_line(h - i - 1, h - 1, h - 1, i, line);
         }
 
