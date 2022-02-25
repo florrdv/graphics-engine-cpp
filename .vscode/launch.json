@@ -7,7 +7,7 @@
             "request": "launch",
             // Resolved by CMake Tools:
             "program": "${command:cmake.buildDirectory}/engine",
-            "args": [],
+            "args": ["misc/intro/Intro1_ColorRectangle.ini"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [

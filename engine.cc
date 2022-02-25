@@ -7,12 +7,16 @@
 #include "ini_configuration.h"
 
 img::EasyImage generate_image(const ini::Configuration& configuration) {
-  img::EasyImage image(256, 256);
+  img::EasyImage img(256, 256);
   for (unsigned int i = 0; i < 256; i++) {
-    for (unsigned int i = 0; i < 256; i++) {
+    for (unsigned int j = 0; j < 256; j++) {
+		img(i, j).red = i;
+		img(i, j).green = j;
+		img(i, j).blue = (i+j)%256;
     }
   }
-  return img::EasyImage();
+
+  return img;
 }
 
 int main(int argc, char const* argv[]) {
