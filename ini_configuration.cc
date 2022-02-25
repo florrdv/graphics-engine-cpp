@@ -27,18 +27,16 @@
 #include <memory>
 #include <sstream>
 
-
-
 namespace ini
 {
         ParseException::ParseException() throw()
-        : std::exception()
+            : std::exception()
         {
                 // Does nothing...
         }
 
         ParseException::ParseException(const ParseException &original) throw()
-        : std::exception(original)
+            : std::exception(original)
         {
                 // Does nothing...
         }
@@ -54,18 +52,13 @@ namespace ini
                 return *this;
         }
 
-
-
         UnexpectedCharacter::UnexpectedCharacter(const std::istream::int_type character_init,
                                                  const std::istream::pos_type position_init) throw()
-        : ParseException()
-        , character(character_init)
-        , position(position_init)
-        , message("")
+            : ParseException(), character(character_init), position(position_init), message("")
         {
                 std::ostringstream stream;
 
-                if(character == std::istream::traits_type::eof())
+                if (character == std::istream::traits_type::eof())
                 {
                         stream << "end-of-file";
                 }
@@ -73,7 +66,7 @@ namespace ini
                 {
                         stream << "character \'";
 
-                        if(std::isprint(character))
+                        if (std::isprint(character))
                         {
                                 stream << static_cast<char>(character);
                         }
@@ -94,10 +87,7 @@ namespace ini
         }
 
         UnexpectedCharacter::UnexpectedCharacter(const UnexpectedCharacter &original) throw()
-        : ParseException()
-        , character(original.character)
-        , position(original.position)
-        , message(original.message)
+            : ParseException(), character(original.character), position(original.position), message(original.message)
         {
                 // Does nothing...
         }
@@ -123,22 +113,14 @@ namespace ini
                 return message.c_str();
         }
 
-
-
         DuplicateSection::DuplicateSection(const std::string &name_init) throw()
-        : ParseException()
-        , name(name_init)
-        , message("")
+            : ParseException(), name(name_init), message("")
         {
-                message = "section named \'"
-                        + name
-                        + "\' encoutered twice in configuration file";
+                message = "section named \'" + name + "\' encoutered twice in configuration file";
         }
 
         DuplicateSection::DuplicateSection(const DuplicateSection &original) throw()
-        : ParseException()
-        , name(original.name)
-        , message(original.message)
+            : ParseException(), name(original.name), message(original.message)
         {
                 // Does nothing...
         }
@@ -163,27 +145,15 @@ namespace ini
                 return message.c_str();
         }
 
-
-
         DuplicateEntry::DuplicateEntry(const std::string &section_init,
                                        const std::string &key_init) throw()
-        : ParseException()
-        , section(section_init)
-        , key(key_init)
-        , message("")
+            : ParseException(), section(section_init), key(key_init), message("")
         {
-                message = "entry named \'"
-                        + key
-                        + "\' ecountered twice in section \'"
-                        + section
-                        + "\'";
+                message = "entry named \'" + key + "\' ecountered twice in section \'" + section + "\'";
         }
 
         DuplicateEntry::DuplicateEntry(const DuplicateEntry &original) throw()
-        : ParseException()
-        , section(original.section)
-        , key(original.key)
-        , message(original.message)
+            : ParseException(), section(original.section), key(original.key), message(original.message)
         {
                 // Does nothing...
         }
@@ -209,25 +179,15 @@ namespace ini
                 return message.c_str();
         }
 
-
-
         NonexistentEntry::NonexistentEntry(const std::string &section_name_init,
                                            const std::string &entry_name_init) throw()
-        : std::exception()
-        , section_name(section_name_init)
-        , entry_name(entry_name_init)
-        , message("")
+            : std::exception(), section_name(section_name_init), entry_name(entry_name_init), message("")
         {
-                message = "entry with name \'"
-                        + entry_name
-                        + "\' does not exist in section \'"
-                        + section_name
-                        + "\'";
+                message = "entry with name \'" + entry_name + "\' does not exist in section \'" + section_name + "\'";
         }
 
         NonexistentEntry::NonexistentEntry(const NonexistentEntry &original) throw()
-        : std::exception(original)
-        , message(original.message)
+            : std::exception(original), message(original.message)
         {
                 // Does nothing...
         }
@@ -249,31 +209,16 @@ namespace ini
                 return message.c_str();
         }
 
-
-
         IncompatibleConversion::IncompatibleConversion(const std::string &section_name_init,
                                                        const std::string &entry_name_init,
                                                        const std::string &type_name_init) throw()
-        : std::exception()
-        , section_name(section_name_init)
-        , entry_name(entry_name_init)
-        , type_name(type_name_init)
-        , message("")
+            : std::exception(), section_name(section_name_init), entry_name(entry_name_init), type_name(type_name_init), message("")
         {
-                message = "cannot convert value of \'"
-                        + entry_name
-                        + "\' in section \'"
-                        + section_name
-                        + "\' to "
-                        + type_name;
+                message = "cannot convert value of \'" + entry_name + "\' in section \'" + section_name + "\' to " + type_name;
         }
 
         IncompatibleConversion::IncompatibleConversion(const IncompatibleConversion &original) throw()
-        : std::exception(original)
-        , section_name(original.section_name)
-        , entry_name(original.entry_name)
-        , type_name(original.type_name)
-        , message(original.message)
+            : std::exception(original), section_name(original.section_name), entry_name(original.entry_name), type_name(original.type_name), message(original.message)
         {
                 // Does nothing...
         }
@@ -288,9 +233,9 @@ namespace ini
                 std::exception::operator=(original);
 
                 section_name = original.section_name;
-                entry_name   = original.entry_name;
-                type_name    = original.type_name;
-                message      = original.message;
+                entry_name = original.entry_name;
+                type_name = original.type_name;
+                message = original.message;
 
                 return *this;
         }
@@ -300,40 +245,36 @@ namespace ini
                 return message.c_str();
         }
 
-
-
         class Value
         {
-                protected:
+        protected:
+                Value();
 
-                        Value();
+        public:
+                virtual ~Value();
 
-                public:
+                virtual bool exists() const = 0;
 
-                        virtual ~Value();
-
-                        virtual bool exists() const = 0;
-
-                        virtual bool as_int_if_exists(const std::string &section_name,
-                                                      const std::string &entry_name,
-                                                      int               &ret_val) const = 0;
-                        virtual bool as_double_if_exists(const std::string &section_name,
-                                                         const std::string &entry_name,
-                                                         double            &ret_val) const = 0;
-                        virtual bool as_string_if_exists(const std::string &section_name,
-                                                         const std::string &entry_name,
-                                                         std::string       &ret_val) const = 0;
-                        virtual bool as_bool_if_exists(const std::string &section_name,
+                virtual bool as_int_if_exists(const std::string &section_name,
+                                              const std::string &entry_name,
+                                              int &ret_val) const = 0;
+                virtual bool as_double_if_exists(const std::string &section_name,
+                                                 const std::string &entry_name,
+                                                 double &ret_val) const = 0;
+                virtual bool as_string_if_exists(const std::string &section_name,
+                                                 const std::string &entry_name,
+                                                 std::string &ret_val) const = 0;
+                virtual bool as_bool_if_exists(const std::string &section_name,
+                                               const std::string &entry_name,
+                                               bool &ret_val) const = 0;
+                virtual bool as_int_tuple_if_exists(const std::string &section_name,
+                                                    const std::string &entry_name,
+                                                    IntTuple &ret_val) const = 0;
+                virtual bool as_double_tuple_if_exists(const std::string &section_name,
                                                        const std::string &entry_name,
-                                                       bool              &ret_val) const = 0;
-                        virtual bool as_int_tuple_if_exists(const std::string &section_name,
-                                                            const std::string &entry_name,
-                                                            IntTuple          &ret_val) const = 0;
-                        virtual bool as_double_tuple_if_exists(const std::string &section_name,
-                                                               const std::string &entry_name,
-                                                               DoubleTuple       &ret_val) const = 0;
+                                                       DoubleTuple &ret_val) const = 0;
 
-                        virtual void print(std::ostream &output_stream) const = 0;
+                virtual void print(std::ostream &output_stream) const = 0;
         };
 
         Value::Value()
@@ -346,40 +287,36 @@ namespace ini
                 // Does nothing...
         }
 
-
-
         namespace
         {
-                class ValueBase: public Value
+                class ValueBase : public Value
                 {
-                        protected:
+                protected:
+                        ValueBase();
 
-                                ValueBase();
+                public:
+                        virtual ~ValueBase();
 
-                        public:
+                        virtual bool exists() const;
 
-                                virtual ~ValueBase();
-
-                                virtual bool exists() const;
-
-                                virtual bool as_int_if_exists(const std::string &section_name,
-                                                              const std::string &entry_name,
-                                                              int               &ret_val) const;
-                                virtual bool as_double_if_exists(const std::string &section_name,
-                                                                 const std::string &entry_name,
-                                                                 double            &ret_val) const;
-                                virtual bool as_string_if_exists(const std::string &section_name,
-                                                                 const std::string &entry_name,
-                                                                 std::string       &ret_val) const;
-                                virtual bool as_bool_if_exists(const std::string &section_name,
+                        virtual bool as_int_if_exists(const std::string &section_name,
+                                                      const std::string &entry_name,
+                                                      int &ret_val) const;
+                        virtual bool as_double_if_exists(const std::string &section_name,
+                                                         const std::string &entry_name,
+                                                         double &ret_val) const;
+                        virtual bool as_string_if_exists(const std::string &section_name,
+                                                         const std::string &entry_name,
+                                                         std::string &ret_val) const;
+                        virtual bool as_bool_if_exists(const std::string &section_name,
+                                                       const std::string &entry_name,
+                                                       bool &ret_val) const;
+                        virtual bool as_int_tuple_if_exists(const std::string &section_name,
+                                                            const std::string &entry_name,
+                                                            IntTuple &ret_val) const;
+                        virtual bool as_double_tuple_if_exists(const std::string &section_name,
                                                                const std::string &entry_name,
-                                                               bool              &ret_val) const;
-                                virtual bool as_int_tuple_if_exists(const std::string &section_name,
-                                                                    const std::string &entry_name,
-                                                                    IntTuple          &ret_val) const;
-                                virtual bool as_double_tuple_if_exists(const std::string &section_name,
-                                                                       const std::string &entry_name,
-                                                                       DoubleTuple       &ret_val) const;
+                                                               DoubleTuple &ret_val) const;
                 };
 
                 ValueBase::ValueBase()
@@ -399,72 +336,67 @@ namespace ini
 
                 bool ValueBase::as_int_if_exists(const std::string &section_name,
                                                  const std::string &entry_name,
-                                                 int               &/*ret_val*/) const
+                                                 int & /*ret_val*/) const
                 {
                         throw IncompatibleConversion(section_name, entry_name, "int");
                 }
 
                 bool ValueBase::as_double_if_exists(const std::string &section_name,
                                                     const std::string &entry_name,
-                                                    double            &/*ret_val*/) const
+                                                    double & /*ret_val*/) const
                 {
                         throw IncompatibleConversion(section_name, entry_name, "double");
                 }
 
                 bool ValueBase::as_string_if_exists(const std::string &section_name,
                                                     const std::string &entry_name,
-                                                    std::string       &/*ret_val*/) const
+                                                    std::string & /*ret_val*/) const
                 {
                         throw IncompatibleConversion(section_name, entry_name, "string");
                 }
 
                 bool ValueBase::as_bool_if_exists(const std::string &section_name,
                                                   const std::string &entry_name,
-                                                  bool              &/*ret_val*/) const
+                                                  bool & /*ret_val*/) const
                 {
                         throw IncompatibleConversion(section_name, entry_name, "bool");
                 }
 
                 bool ValueBase::as_int_tuple_if_exists(const std::string &section_name,
                                                        const std::string &entry_name,
-                                                       IntTuple          &/*ret_val*/) const
+                                                       IntTuple & /*ret_val*/) const
                 {
                         throw IncompatibleConversion(section_name, entry_name, "int tuple");
                 }
 
                 bool ValueBase::as_double_tuple_if_exists(const std::string &section_name,
                                                           const std::string &entry_name,
-                                                          DoubleTuple       &/*ret_val*/) const
+                                                          DoubleTuple & /*ret_val*/) const
                 {
                         throw IncompatibleConversion(section_name, entry_name, "double tuple");
                 }
 
-
-
-                class IntValue: public ValueBase
+                class IntValue : public ValueBase
                 {
-                        private:
+                private:
+                        const int value;
 
-                                const int value;
+                public:
+                        IntValue(const int value_init);
+                        virtual ~IntValue();
 
-                        public:
+                        virtual bool as_int_if_exists(const std::string &section_name,
+                                                      const std::string &entry_name,
+                                                      int &ret_val) const;
+                        virtual bool as_double_if_exists(const std::string &section_name,
+                                                         const std::string &entry_name,
+                                                         double &ret_val) const;
 
-                                IntValue(const int value_init);
-                                virtual ~IntValue();
-
-                                virtual bool as_int_if_exists(const std::string &section_name,
-                                                              const std::string &entry_name,
-                                                              int               &ret_val) const;
-                                virtual bool as_double_if_exists(const std::string &section_name,
-                                                                 const std::string &entry_name,
-                                                                 double            &ret_val) const;
-
-                                virtual void print(std::ostream &output_stream) const;
+                        virtual void print(std::ostream &output_stream) const;
                 };
 
                 IntValue::IntValue(const int value_init)
-                : ValueBase()
-                , value(value_init)
+                    : ValueBase(), value(value_init)
                 {
                         // Does nothing...
                 }
@@ -474,17 +406,17 @@ namespace ini
                         // Does nothing...
                 }
 
-                bool IntValue::as_int_if_exists(const std::string &/*section_name*/,
-                                                const std::string &/*entry_name*/,
-                                                int               &ret_val) const
+                bool IntValue::as_int_if_exists(const std::string & /*section_name*/,
+                                                const std::string & /*entry_name*/,
+                                                int &ret_val) const
                 {
                         ret_val = value;
                         return true;
                 }
 
-                bool IntValue::as_double_if_exists(const std::string &/*section_name*/,
-                                                   const std::string &/*entry_name*/,
-                                                   double            &ret_val) const
+                bool IntValue::as_double_if_exists(const std::string & /*section_name*/,
+                                                   const std::string & /*entry_name*/,
+                                                   double &ret_val) const
                 {
                         ret_val = static_cast<double>(value);
                         return true;
@@ -495,29 +427,24 @@ namespace ini
                         output_stream << value;
                 }
 
-
-
-                class DoubleValue: public ValueBase
+                class DoubleValue : public ValueBase
                 {
-                        private:
+                private:
+                        const double value;
 
-                                const double value;
+                public:
+                        DoubleValue(const double value_init);
+                        virtual ~DoubleValue();
 
-                        public:
+                        virtual bool as_double_if_exists(const std::string &section_name,
+                                                         const std::string &entry_name,
+                                                         double &ret_val) const;
 
-                                DoubleValue(const double value_init);
-                                virtual ~DoubleValue();
-
-                                virtual bool as_double_if_exists(const std::string &section_name,
-                                                                 const std::string &entry_name,
-                                                                 double            &ret_val) const;
-
-                                virtual void print(std::ostream &output_stream) const;
+                        virtual void print(std::ostream &output_stream) const;
                 };
 
                 DoubleValue::DoubleValue(const double value_init)
-                : ValueBase()
-                , value(value_init)
+                    : ValueBase(), value(value_init)
                 {
                         // Does nothing...
                 }
@@ -527,9 +454,9 @@ namespace ini
                         // Does nothing...
                 }
 
-                bool DoubleValue::as_double_if_exists(const std::string &/*section_name*/,
-                                                      const std::string &/*entry_name*/,
-                                                      double            &ret_val) const
+                bool DoubleValue::as_double_if_exists(const std::string & /*section_name*/,
+                                                      const std::string & /*entry_name*/,
+                                                      double &ret_val) const
                 {
                         ret_val = value;
                         return true;
@@ -540,29 +467,24 @@ namespace ini
                         output_stream << value;
                 }
 
-
-
-                class StringValue: public ValueBase
+                class StringValue : public ValueBase
                 {
-                        private:
+                private:
+                        const std::string value;
 
-                                const std::string value;
+                public:
+                        StringValue(const std::string &value_init);
+                        virtual ~StringValue();
 
-                        public:
+                        virtual bool as_string_if_exists(const std::string &section_name,
+                                                         const std::string &entry_name,
+                                                         std::string &ret_val) const;
 
-                                StringValue(const std::string &value_init);
-                                virtual ~StringValue();
-
-                                virtual bool as_string_if_exists(const std::string &section_name,
-                                                                 const std::string &entry_name,
-                                                                 std::string       &ret_val) const;
-
-                                virtual void print(std::ostream &output_stream) const;
+                        virtual void print(std::ostream &output_stream) const;
                 };
 
                 StringValue::StringValue(const std::string &value_init)
-                : ValueBase()
-                , value(value_init)
+                    : ValueBase(), value(value_init)
                 {
                         // Does nothing...
                 }
@@ -572,9 +494,9 @@ namespace ini
                         // Does nothing...
                 }
 
-                bool StringValue::as_string_if_exists(const std::string &/*section_name*/,
-                                                      const std::string &/*entry_name*/,
-                                                      std::string       &ret_val) const
+                bool StringValue::as_string_if_exists(const std::string & /*section_name*/,
+                                                      const std::string & /*entry_name*/,
+                                                      std::string &ret_val) const
                 {
                         ret_val = value;
                         return true;
@@ -586,29 +508,24 @@ namespace ini
                         output_stream << quote << value << quote;
                 }
 
-
-
-                class BoolValue: public ValueBase
+                class BoolValue : public ValueBase
                 {
-                        private:
+                private:
+                        const bool value;
 
-                                const bool value;
+                public:
+                        BoolValue(const bool value_init);
+                        virtual ~BoolValue();
 
-                        public:
+                        virtual bool as_bool_if_exists(const std::string &section_name,
+                                                       const std::string &entry_name,
+                                                       bool &ret_val) const;
 
-                                BoolValue(const bool value_init);
-                                virtual ~BoolValue();
-
-                                virtual bool as_bool_if_exists(const std::string &section_name,
-                                                               const std::string &entry_name,
-                                                               bool              &ret_val) const;
-
-                                virtual void print(std::ostream &output_stream) const;
+                        virtual void print(std::ostream &output_stream) const;
                 };
 
                 BoolValue::BoolValue(const bool value_init)
-                : ValueBase()
-                , value(value_init)
+                    : ValueBase(), value(value_init)
                 {
                         // Does nothing...
                 }
@@ -618,9 +535,9 @@ namespace ini
                         // Does nothing...
                 }
 
-                bool BoolValue::as_bool_if_exists(const std::string &/*section_name*/,
-                                                  const std::string &/*entry_name*/,
-                                                  bool              &ret_val) const
+                bool BoolValue::as_bool_if_exists(const std::string & /*section_name*/,
+                                                  const std::string & /*entry_name*/,
+                                                  bool &ret_val) const
                 {
                         ret_val = value;
                         return true;
@@ -631,38 +548,33 @@ namespace ini
                         output_stream << (value ? "true" : "false");
                 }
 
-
-
-                class TupleValue: public ValueBase
+                class TupleValue : public ValueBase
                 {
-                        private:
+                private:
+                        typedef std::vector<Value *> ElementList;
+                        typedef ElementList::iterator ElementIter;
+                        typedef ElementList::const_iterator ConstElementIter;
 
-                                typedef std::vector<Value *>        ElementList;
-                                typedef ElementList::iterator       ElementIter;
-                                typedef ElementList::const_iterator ConstElementIter;
+                        const ElementList elements;
 
-                                const ElementList elements;
+                        static void delete_element(Value *const element);
 
-                                static void delete_element(Value *const element);
+                public:
+                        TupleValue(const std::vector<Value *> &elements_init);
+                        virtual ~TupleValue();
 
-                        public:
+                        virtual bool as_int_tuple_if_exists(const std::string &section_name,
+                                                            const std::string &entry_name,
+                                                            IntTuple &ret_val) const;
+                        virtual bool as_double_tuple_if_exists(const std::string &section_name,
+                                                               const std::string &entry_name,
+                                                               DoubleTuple &ret_val) const;
 
-                                TupleValue(const std::vector<Value *> &elements_init);
-                                virtual ~TupleValue();
-
-                                virtual bool as_int_tuple_if_exists(const std::string &section_name,
-                                                                    const std::string &entry_name,
-                                                                    IntTuple          &ret_val) const;
-                                virtual bool as_double_tuple_if_exists(const std::string &section_name,
-                                                                       const std::string &entry_name,
-                                                                       DoubleTuple       &ret_val) const;
-
-                                virtual void print(std::ostream &output_stream) const;
+                        virtual void print(std::ostream &output_stream) const;
                 };
 
                 TupleValue::TupleValue(const std::vector<Value *> &elements_init)
-                : ValueBase()
-                , elements(elements_init)
+                    : ValueBase(), elements(elements_init)
                 {
                         // Does nothing...
                 }
@@ -679,15 +591,15 @@ namespace ini
 
                 bool TupleValue::as_int_tuple_if_exists(const std::string &section_name,
                                                         const std::string &entry_name,
-                                                        IntTuple          &ret_val) const
+                                                        IntTuple &ret_val) const
                 {
                         ret_val.clear();
                         ret_val.reserve(elements.size());
 
                         const ConstElementIter first_element = elements.begin();
-                        const ConstElementIter last_element  = elements.end();
+                        const ConstElementIter last_element = elements.end();
 
-                        for(ConstElementIter i = first_element; i != last_element; ++i)
+                        for (ConstElementIter i = first_element; i != last_element; ++i)
                         {
                                 int element_value;
                                 const bool exists = (*i)->as_int_if_exists(section_name, entry_name, element_value);
@@ -700,15 +612,15 @@ namespace ini
 
                 bool TupleValue::as_double_tuple_if_exists(const std::string &section_name,
                                                            const std::string &entry_name,
-                                                           DoubleTuple       &ret_val) const
+                                                           DoubleTuple &ret_val) const
                 {
                         ret_val.clear();
                         ret_val.reserve(elements.size());
 
                         const ConstElementIter first_element = elements.begin();
-                        const ConstElementIter last_element  = elements.end();
+                        const ConstElementIter last_element = elements.end();
 
-                        for(ConstElementIter i = first_element; i != last_element; ++i)
+                        for (ConstElementIter i = first_element; i != last_element; ++i)
                         {
                                 double element_value;
                                 const bool exists = (*i)->as_double_if_exists(section_name, entry_name, element_value);
@@ -724,11 +636,11 @@ namespace ini
                         output_stream << "(";
 
                         const ConstElementIter first_element = elements.begin();
-                        const ConstElementIter last_element  = elements.end();
+                        const ConstElementIter last_element = elements.end();
 
-                        for(ConstElementIter i = first_element; i != last_element; ++i)
+                        for (ConstElementIter i = first_element; i != last_element; ++i)
                         {
-                                if(i != first_element)
+                                if (i != first_element)
                                 {
                                         output_stream << ", ";
                                 }
@@ -739,37 +651,34 @@ namespace ini
                         output_stream << ")";
                 }
 
-
-
-                class EmptyValue: public Value
+                class EmptyValue : public Value
                 {
-                        public:
+                public:
+                        EmptyValue();
+                        virtual ~EmptyValue();
 
-                                EmptyValue();
-                                virtual ~EmptyValue();
+                        virtual bool exists() const;
 
-                                virtual bool exists() const;
-
-                                virtual bool as_int_if_exists(const std::string &section_name,
-                                                              const std::string &entry_name,
-                                                              int               &ret_val) const;
-                                virtual bool as_double_if_exists(const std::string &section_name,
-                                                                 const std::string &entry_name,
-                                                                 double            &ret_val) const;
-                                virtual bool as_string_if_exists(const std::string &section_name,
-                                                                 const std::string &entry_name,
-                                                                 std::string       &ret_val) const;
-                                virtual bool as_bool_if_exists(const std::string &section_name,
+                        virtual bool as_int_if_exists(const std::string &section_name,
+                                                      const std::string &entry_name,
+                                                      int &ret_val) const;
+                        virtual bool as_double_if_exists(const std::string &section_name,
+                                                         const std::string &entry_name,
+                                                         double &ret_val) const;
+                        virtual bool as_string_if_exists(const std::string &section_name,
+                                                         const std::string &entry_name,
+                                                         std::string &ret_val) const;
+                        virtual bool as_bool_if_exists(const std::string &section_name,
+                                                       const std::string &entry_name,
+                                                       bool &ret_val) const;
+                        virtual bool as_int_tuple_if_exists(const std::string &section_name,
+                                                            const std::string &entry_name,
+                                                            IntTuple &ret_val) const;
+                        virtual bool as_double_tuple_if_exists(const std::string &section_name,
                                                                const std::string &entry_name,
-                                                               bool              &ret_val) const;
-                                virtual bool as_int_tuple_if_exists(const std::string &section_name,
-                                                                    const std::string &entry_name,
-                                                                    IntTuple          &ret_val) const;
-                                virtual bool as_double_tuple_if_exists(const std::string &section_name,
-                                                                       const std::string &entry_name,
-                                                                       DoubleTuple       &ret_val) const;
+                                                               DoubleTuple &ret_val) const;
 
-                                virtual void print(std::ostream &output_stream) const;
+                        virtual void print(std::ostream &output_stream) const;
                 };
 
                 EmptyValue::EmptyValue()
@@ -787,57 +696,55 @@ namespace ini
                         return false;
                 }
 
-                bool EmptyValue::as_int_if_exists(const std::string &/*section_name*/,
-                                                  const std::string &/*entry_name*/,
-                                                  int               &/*ret_val*/) const
+                bool EmptyValue::as_int_if_exists(const std::string & /*section_name*/,
+                                                  const std::string & /*entry_name*/,
+                                                  int & /*ret_val*/) const
                 {
                         return false;
                 }
 
-                bool EmptyValue::as_double_if_exists(const std::string &/*section_name*/,
-                                                     const std::string &/*entry_name*/,
-                                                     double            &/*ret_val*/) const
+                bool EmptyValue::as_double_if_exists(const std::string & /*section_name*/,
+                                                     const std::string & /*entry_name*/,
+                                                     double & /*ret_val*/) const
                 {
                         return false;
                 }
 
-                bool EmptyValue::as_string_if_exists(const std::string &/*section_name*/,
-                                                     const std::string &/*entry_name*/,
-                                                     std::string       &/*ret_val*/) const
+                bool EmptyValue::as_string_if_exists(const std::string & /*section_name*/,
+                                                     const std::string & /*entry_name*/,
+                                                     std::string & /*ret_val*/) const
                 {
                         return false;
                 }
 
-                bool EmptyValue::as_bool_if_exists(const std::string &/*section_name*/,
-                                                   const std::string &/*entry_name*/,
-                                                   bool              &/*ret_val*/) const
+                bool EmptyValue::as_bool_if_exists(const std::string & /*section_name*/,
+                                                   const std::string & /*entry_name*/,
+                                                   bool & /*ret_val*/) const
                 {
                         return false;
                 }
 
-                bool EmptyValue::as_int_tuple_if_exists(const std::string &/*section_name*/,
-                                                        const std::string &/*entry_name*/,
-                                                        IntTuple          &/*ret_val*/) const
+                bool EmptyValue::as_int_tuple_if_exists(const std::string & /*section_name*/,
+                                                        const std::string & /*entry_name*/,
+                                                        IntTuple & /*ret_val*/) const
                 {
                         return false;
                 }
 
-                bool EmptyValue::as_double_tuple_if_exists(const std::string &/*section_name*/,
-                                                           const std::string &/*entry_name*/,
-                                                           DoubleTuple       &/*ret_val*/) const
+                bool EmptyValue::as_double_tuple_if_exists(const std::string & /*section_name*/,
+                                                           const std::string & /*entry_name*/,
+                                                           DoubleTuple & /*ret_val*/) const
                 {
                         return false;
                 }
 
-                void EmptyValue::print(std::ostream &/*output_stream*/) const
+                void EmptyValue::print(std::ostream & /*output_stream*/) const
                 {
                         assert(false);
                 }
 
                 // The value that is returned when a value that does not exist is requested.
                 const EmptyValue nonexistent_value;
-
-
 
                 void delete_value(Value *const value)
                 {
@@ -849,19 +756,14 @@ namespace ini
                         delete entry.second;
                 }
 
-
-
                 bool is_eof_or_newline(std::istream::int_type chr)
                 {
-                        return chr == std::istream::traits_type::eof()
-                            || chr == '\n'
-                            || chr == '\r';
+                        return chr == std::istream::traits_type::eof() || chr == '\n' || chr == '\r';
                 }
 
                 bool is_eol(std::istream::int_type chr)
                 {
-                        return is_eof_or_newline(chr)
-                            || chr == ';';
+                        return is_eof_or_newline(chr) || chr == ';';
                 }
 
                 bool is_hspace(std::istream::int_type chr)
@@ -876,19 +778,19 @@ namespace ini
 
                 void skip_wspace(std::istream &input_stream)
                 {
-                        for(;;)
+                        for (;;)
                         {
-                                while(std::isspace(input_stream.peek()))
+                                while (std::isspace(input_stream.peek()))
                                 {
                                         input_stream.get();
                                 }
 
-                                if(input_stream.peek() != ';')
+                                if (input_stream.peek() != ';')
                                 {
                                         break;
                                 }
 
-                                while(!is_eof_or_newline(input_stream.peek()))
+                                while (!is_eof_or_newline(input_stream.peek()))
                                 {
                                         input_stream.get();
                                 }
@@ -897,18 +799,18 @@ namespace ini
 
                 void skip_hspace(std::istream &input_stream)
                 {
-                        while(is_hspace(input_stream.peek()))
+                        while (is_hspace(input_stream.peek()))
                         {
                                 input_stream.get();
                         }
                 }
 
-                void assert_chars(std::istream     &input_stream,
+                void assert_chars(std::istream &input_stream,
                                   const char *const chars)
                 {
-                        for(const char *i = chars; *i != '\0'; ++i)
+                        for (const char *i = chars; *i != '\0'; ++i)
                         {
-                                if(input_stream.peek() != *i)
+                                if (input_stream.peek() != *i)
                                 {
                                         throw UnexpectedCharacter(input_stream.peek(), input_stream.tellg());
                                 }
@@ -924,7 +826,7 @@ namespace ini
                         std::istream::int_type chr = input_stream.get();
 
                         // The first character of a key has to be a letter.
-                        if(!std::isalnum(chr))
+                        if (!std::isalnum(chr))
                         {
                                 throw UnexpectedCharacter(chr, pos);
                         }
@@ -932,10 +834,10 @@ namespace ini
                         std::string key = "";
 
                         // Read all letters and digits the key consists of.
-                        while(std::isalnum(chr))
+                        while (std::isalnum(chr))
                         {
                                 key += static_cast<char>(chr);
-                                chr  = input_stream.get();
+                                chr = input_stream.get();
                         }
 
                         input_stream.putback(chr);
@@ -947,7 +849,7 @@ namespace ini
                         std::istream::int_type chr = input_stream.get();
                         int sign = +1;
 
-                        if (chr == '+' || chr == '-') 
+                        if (chr == '+' || chr == '-')
                         {
                                 sign = chr == '+' ? +1 : -1;
                                 chr = input_stream.get();
@@ -957,7 +859,7 @@ namespace ini
                         double double_val = 0;
 
                         // Read the value of the number as both an int and a double.
-                        while(std::isdigit(chr))
+                        while (std::isdigit(chr))
                         {
                                 int_val = int_val * 10 + chr - '0';
                                 double_val = double_val * 10 + chr - '0';
@@ -965,7 +867,7 @@ namespace ini
                         }
 
                         // If there is no radix point the number is considered to be an int.
-                        if(chr != '.')
+                        if (chr != '.')
                         {
                                 input_stream.putback(chr);
                                 return new IntValue(sign * int_val);
@@ -975,7 +877,7 @@ namespace ini
                         double denom = 1;
 
                         // Read the fractional part.
-                        while(std::isdigit(chr))
+                        while (std::isdigit(chr))
                         {
                                 double_val = double_val * 10 + chr - '0';
                                 denom *= 10;
@@ -994,10 +896,10 @@ namespace ini
                         std::istream::int_type chr = input_stream.get();
                         std::string value = "";
 
-                        while(chr != quote)
+                        while (chr != quote)
                         {
                                 // EOFs and newlines cannot occur in a string.
-                                if(is_eof_or_newline(chr))
+                                if (is_eof_or_newline(chr))
                                 {
                                         throw UnexpectedCharacter(chr, pos);
                                 }
@@ -1017,7 +919,7 @@ namespace ini
                         skip_wspace(input_stream);
 
                         // Check whether the tuple is the empty tuple.
-                        if(input_stream.peek() == ')')
+                        if (input_stream.peek() == ')')
                         {
                                 return new TupleValue(std::vector<Value *>());
                         }
@@ -1026,19 +928,19 @@ namespace ini
 
                         try
                         {
-                                for(;;)
+                                for (;;)
                                 {
                                         elements.push_back(read_number(input_stream));
                                         skip_wspace(input_stream);
                                         const std::istream::pos_type pos = input_stream.tellg();
                                         const std::istream::int_type chr = input_stream.get();
 
-                                        if(chr == ')')
+                                        if (chr == ')')
                                         {
                                                 break;
                                         }
 
-                                        if(chr != ',')
+                                        if (chr != ',')
                                         {
                                                 throw UnexpectedCharacter(chr, pos);
                                         }
@@ -1046,7 +948,7 @@ namespace ini
                                         skip_wspace(input_stream);
                                 }
                         }
-                        catch(...)
+                        catch (...)
                         {
                                 // Free the already parsed elements.
                                 std::for_each(elements.begin(), elements.end(), delete_value);
@@ -1059,7 +961,7 @@ namespace ini
                 bool is_ci_equal(const std::string &lhs,
                                  const std::string &rhs)
                 {
-                        if(lhs.length() != rhs.length())
+                        if (lhs.length() != rhs.length())
                         {
                                 return false;
                         }
@@ -1068,9 +970,9 @@ namespace ini
                         std::string::const_iterator j = rhs.begin();
                         const std::string::const_iterator last = lhs.end();
 
-                        while(i != last)
+                        while (i != last)
                         {
-                                if(std::tolower(*i++) != std::tolower(*j++))
+                                if (std::tolower(*i++) != std::tolower(*j++))
                                 {
                                         return false;
                                 }
@@ -1085,11 +987,11 @@ namespace ini
                         std::string value = "";
                         std::string::size_type last = 0;
 
-                        while(!is_eol(chr))
+                        while (!is_eol(chr))
                         {
                                 value += static_cast<char>(chr);
 
-                                if(!std::isspace(chr))
+                                if (!std::isspace(chr))
                                 {
                                         last = value.length();
                                 }
@@ -1100,11 +1002,11 @@ namespace ini
                         input_stream.putback(chr);
                         value.erase(last);
 
-                        if(is_ci_equal(value, "true"))
+                        if (is_ci_equal(value, "true"))
                         {
                                 return new BoolValue(true);
                         }
-                        else if(is_ci_equal(value, "false"))
+                        else if (is_ci_equal(value, "false"))
                         {
                                 return new BoolValue(false);
                         }
@@ -1116,19 +1018,19 @@ namespace ini
                 {
                         const std::istream::int_type chr = input_stream.peek();
 
-                        if(std::isdigit(chr) || chr == '+' || chr == '-')
+                        if (std::isdigit(chr) || chr == '+' || chr == '-')
                         {
                                 return read_number(input_stream);
                         }
-                        else if(is_quote(chr))
+                        else if (is_quote(chr))
                         {
                                 return read_string(input_stream);
                         }
-                        else if(chr == '(')
+                        else if (chr == '(')
                         {
                                 return read_tuple(input_stream);
                         }
-                        else if(is_eol(chr))
+                        else if (is_eol(chr))
                         {
                                 return new StringValue("");
                         }
@@ -1137,14 +1039,13 @@ namespace ini
                 }
 
                 ValueMap read_entries(const std::string &name,
-                                      std::istream      &input_stream)
+                                      std::istream &input_stream)
                 {
                         ValueMap values;
 
                         try
                         {
-                                while(input_stream.peek() != std::istream::traits_type::eof()
-                                   && input_stream.peek() != '[')
+                                while (input_stream.peek() != std::istream::traits_type::eof() && input_stream.peek() != '[')
                                 {
                                         const std::string key = read_key(input_stream);
                                         skip_hspace(input_stream);
@@ -1152,7 +1053,7 @@ namespace ini
                                         skip_hspace(input_stream);
                                         std::unique_ptr<Value> value(read_value(input_stream));
 
-                                        if(!values.insert(std::make_pair(key, value.get())).second)
+                                        if (!values.insert(std::make_pair(key, value.get())).second)
                                         {
                                                 throw DuplicateEntry(name, key);
                                         }
@@ -1161,7 +1062,7 @@ namespace ini
                                         skip_wspace(input_stream);
                                 }
                         }
-                        catch(...)
+                        catch (...)
                         {
                                 std::for_each(values.begin(), values.end(), delete_entry);
                                 throw; // Re-throw the exception.
@@ -1171,22 +1072,16 @@ namespace ini
                 }
         }
 
-
-
         Entry::Entry(const std::string &section_name_init,
                      const std::string &entry_name_init,
                      const Value *const value_ptr_init)
-        : section_name(section_name_init)
-        , entry_name(entry_name_init)
-        , value_ptr(value_ptr_init)
+            : section_name(section_name_init), entry_name(entry_name_init), value_ptr(value_ptr_init)
         {
                 // Does nothing...
         }
 
         Entry::Entry(const Entry &original)
-        : section_name(original.section_name)
-        , entry_name(original.entry_name)
-        , value_ptr(original.value_ptr)
+            : section_name(original.section_name), entry_name(original.entry_name), value_ptr(original.value_ptr)
         {
                 // Does nothing...
         }
@@ -1199,8 +1094,8 @@ namespace ini
         Entry &Entry::operator=(const Entry &original)
         {
                 section_name = original.section_name;
-                entry_name   = original.entry_name;
-                value_ptr    = original.value_ptr;
+                entry_name = original.entry_name;
+                value_ptr = original.value_ptr;
 
                 return *this;
         }
@@ -1254,7 +1149,7 @@ namespace ini
         {
                 int value;
 
-                if(as_int_if_exists(value))
+                if (as_int_if_exists(value))
                 {
                         return value;
                 }
@@ -1266,7 +1161,7 @@ namespace ini
         {
                 double value;
 
-                if(as_double_if_exists(value))
+                if (as_double_if_exists(value))
                 {
                         return value;
                 }
@@ -1278,7 +1173,7 @@ namespace ini
         {
                 std::string value;
 
-                if(as_string_if_exists(value))
+                if (as_string_if_exists(value))
                 {
                         return value;
                 }
@@ -1290,7 +1185,7 @@ namespace ini
         {
                 bool value;
 
-                if(as_bool_if_exists(value))
+                if (as_bool_if_exists(value))
                 {
                         return value;
                 }
@@ -1302,7 +1197,7 @@ namespace ini
         {
                 IntTuple value;
 
-                if(as_int_tuple_if_exists(value))
+                if (as_int_tuple_if_exists(value))
                 {
                         return value;
                 }
@@ -1314,7 +1209,7 @@ namespace ini
         {
                 DoubleTuple value;
 
-                if(as_double_tuple_if_exists(value))
+                if (as_double_tuple_if_exists(value))
                 {
                         return value;
                 }
@@ -1326,7 +1221,7 @@ namespace ini
         {
                 int value;
 
-                if(as_int_if_exists(value))
+                if (as_int_if_exists(value))
                 {
                         return value;
                 }
@@ -1338,7 +1233,7 @@ namespace ini
         {
                 double value;
 
-                if(as_double_if_exists(value))
+                if (as_double_if_exists(value))
                 {
                         return value;
                 }
@@ -1350,7 +1245,7 @@ namespace ini
         {
                 std::string value;
 
-                if(as_string_if_exists(value))
+                if (as_string_if_exists(value))
                 {
                         return value;
                 }
@@ -1362,7 +1257,7 @@ namespace ini
         {
                 bool value;
 
-                if(as_bool_if_exists(value))
+                if (as_bool_if_exists(value))
                 {
                         return value;
                 }
@@ -1374,7 +1269,7 @@ namespace ini
         {
                 IntTuple value;
 
-                if(as_int_tuple_if_exists(value))
+                if (as_int_tuple_if_exists(value))
                 {
                         return value;
                 }
@@ -1386,7 +1281,7 @@ namespace ini
         {
                 DoubleTuple value;
 
-                if(as_double_tuple_if_exists(value))
+                if (as_double_tuple_if_exists(value))
                 {
                         return value;
                 }
@@ -1454,19 +1349,15 @@ namespace ini
                 return as_double_tuple_or_default(def_val);
         }
 
-
-
-        Section::Section(const std::string    &section_name_init,
+        Section::Section(const std::string &section_name_init,
                          const ValueMap *const values_init)
-        : section_name(section_name_init)
-        , values(values_init)
+            : section_name(section_name_init), values(values_init)
         {
                 // Does nothing...
         }
 
         Section::Section(const Section &original)
-        : section_name(original.section_name)
-        , values(original.values)
+            : section_name(original.section_name), values(original.values)
         {
                 // Does nothing...
         }
@@ -1480,7 +1371,7 @@ namespace ini
         {
                 const ConstValueIter value = values->find(key);
 
-                if(value == values->end())
+                if (value == values->end())
                 {
                         return Entry(section_name, key, &nonexistent_value);
                 }
@@ -1498,16 +1389,14 @@ namespace ini
                 const ValueMap empty_section;
         }
 
-
-
         Configuration::Configuration()
-        : sections()
+            : sections()
         {
                 // Does nothing...
         }
 
         Configuration::Configuration(std::istream &input_stream)
-        : sections()
+            : sections()
         {
                 parse(input_stream);
         }
@@ -1542,7 +1431,7 @@ namespace ini
 
                 // Return a section containing no values if the
                 // section does not exist.
-                if(section == sections.end())
+                if (section == sections.end())
                 {
                         return Section(name, &empty_section);
                 }
@@ -1554,7 +1443,7 @@ namespace ini
         {
                 skip_wspace(input_stream);
 
-                while(input_stream.peek() != std::istream::traits_type::eof())
+                while (input_stream.peek() != std::istream::traits_type::eof())
                 {
                         assert_chars(input_stream, "[");
                         skip_hspace(input_stream);
@@ -1564,7 +1453,7 @@ namespace ini
                         skip_wspace(input_stream);
                         const ValueMap section = read_entries(name, input_stream);
 
-                        if(!sections.insert(std::make_pair(name, section)).second)
+                        if (!sections.insert(std::make_pair(name, section)).second)
                         {
                                 throw DuplicateSection(name);
                         }
@@ -1574,12 +1463,12 @@ namespace ini
         void Configuration::print(std::ostream &output_stream) const
         {
                 const ConstSectionIter first_section = sections.begin();
-                const ConstSectionIter last_section  = sections.end();
+                const ConstSectionIter last_section = sections.end();
 
-                for(ConstSectionIter i = first_section; i != last_section; ++i)
+                for (ConstSectionIter i = first_section; i != last_section; ++i)
                 {
                         // Print a blank line between sections.
-                        if(i != first_section)
+                        if (i != first_section)
                         {
                                 output_stream << std::endl;
                         }
@@ -1588,10 +1477,10 @@ namespace ini
                         output_stream << "[" << i->first << "]" << std::endl;
 
                         const ConstValueIter first_entry = i->second.begin();
-                        const ConstValueIter last_entry  = i->second.end();
+                        const ConstValueIter last_entry = i->second.end();
 
                         // Print the entries in the section.
-                        for(ConstValueIter j = first_entry; j != last_entry; ++j)
+                        for (ConstValueIter j = first_entry; j != last_entry; ++j)
                         {
                                 output_stream << j->first << " = ";
                                 j->second->print(output_stream);
@@ -1600,14 +1489,14 @@ namespace ini
                 }
         }
 
-        std::istream &operator>>(std::istream  &input_stream,
+        std::istream &operator>>(std::istream &input_stream,
                                  Configuration &configuration)
         {
                 configuration.parse(input_stream);
                 return input_stream;
         }
 
-        std::ostream &operator<<(std::ostream        &output_stream,
+        std::ostream &operator<<(std::ostream &output_stream,
                                  const Configuration &configuration)
         {
                 configuration.print(output_stream);
