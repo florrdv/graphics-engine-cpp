@@ -7,7 +7,7 @@
             "request": "launch",
             // Resolved by CMake Tools:
             "program": "${command:cmake.buildDirectory}/engine",
-            "args": ["misc/intro/Intro2_Blocks.ini"],
+            "args": ["misc/intro/Intro3_lines_quartercircle.ini.ini"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [

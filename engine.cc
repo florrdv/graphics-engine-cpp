@@ -56,6 +56,18 @@ img::EasyImage blocks(const ini::Configuration& configuration, int w, int h) {
     return img;
 }
 
+img::EasyImage introLines(const ini::Configuration& configuration, int w, int h) {
+    std::string figure;
+    std::vector<double> backgroundColor;
+    std::vector<double> lineColor;
+    std::vector<double> nrLines;
+
+    if (!configuration["LineProperties"]["figure"].as_string_if_exists(figure)) std::cout << "⛔️| Failed to fetch" << std::endl;
+    if (!configuration["LineProperties"]["backgroundcolor"].as_double_tuple_if_exists(backgroundColor)) std::cout << "⛔️|Failed to fetch width" << std::endl;
+    if (!configuration["LineProperties"]["lineColor"].as_double_tuple_if_exists(lineColor)) std::cout << "⛔️|Failed to fetch height" << std::endl;
+    if (!configuration["LineProperties"]["nrLines"].as_int_if_exists(nrLines)) std::cout << "⛔️|Failed to fetch height" << std::endl;
+}
+
 img::EasyImage generate_image(const ini::Configuration& configuration) {
     std::string t;
     int w;
@@ -71,6 +83,7 @@ img::EasyImage generate_image(const ini::Configuration& configuration) {
     img::EasyImage result;
     if (t == "IntroColorRectangle") result = colorRectangle(w, h);
     if (t == "IntroBlocks") result = blocks(configuration, w, h);
+    if (t == "IntroLines") result = introLines(configuration, w, h);
 
     std::cout << "✅| Image generated" << std::endl;
 
