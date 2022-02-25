@@ -6,8 +6,8 @@
 #include "easy_image.h"
 #include "ini_configuration.h"
 
-img::EasyImage generate_image(const ini::Configuration& configuration) {
-    img::EasyImage img(256, 256);
+img::EasyImage colorRectangle(int w, int h) {
+    img::EasyImage img(w, h);
     for (unsigned int i = 0; i < 256; i++) {
         for (unsigned int j = 0; j < 256; j++) {
             img(i, j).red = i;
@@ -17,6 +17,26 @@ img::EasyImage generate_image(const ini::Configuration& configuration) {
     }
 
     return img;
+}
+
+img::EasyImage generate_image(const ini::Configuration& configuration) {
+    std::string t;
+    int w;
+    int h;
+
+    if (!configuration["General"]["type"].as_string_if_exists(t)) std::cout << "⛔️| Failed to fetch" << std::endl;
+    if (!configuration["ImageProperties"]["width"].as_int_if_exists(w)) std::cout << "⛔️|Failed to fetch width" << std::endl;
+    if (!configuration["ImageProperties"]["height"].as_int_if_exists(h)) std::cout << "⛔️|Failed to fetch height" << std::endl;
+
+    std::cout << "🥱| Generating image of type '" + t + "'" << std::endl;
+    std::cout << "🥱| Using dimensions " + std::to_string(w) + "x" + std::to_string(h) << std::endl;
+
+    img::EasyImage result;
+    if (t == "IntroColorRectangle") result = colorRectangle(w, h);
+
+    std::cout << "✅| Image generated" << std::endl;
+
+    return result;
 }
 
 int main(int argc, char const* argv[]) {
