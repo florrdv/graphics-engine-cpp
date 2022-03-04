@@ -244,10 +244,10 @@ void drawLSystem(const LParser::LSystem2D& l_system, Lines2D& lines, const Color
         double angle = l_system.get_starting_angle();
         double angleOffset = l_system.get_angle();
 
+        std::stack<Triplet> stack;
         double x = 0;
         double y = 0;
 
-        std::stack<Triplet> stack;
 
         for (char c : current) {
             if (c == '+') angle += angleOffset;
