@@ -79,7 +79,13 @@ img::EasyImage draw2DLines(const Lines2D &lines, const int size) {
     return img;
 }
 
-img::EasyImage colorRectangle(int w, int h) {
+img::EasyImage colorRectangle(const ini::Configuration& configuration) {
+    int w;
+    int h;
+
+    if (!configuration["ImageProperties"]["width"].as_int_if_exists(w)) std::cout << "⛔️|Failed to fetch width" << std::endl;
+    if (!configuration["ImageProperties"]["height"].as_int_if_exists(h)) std::cout << "⛔️|Failed to fetch height" << std::endl;
+
     img::EasyImage img(w, h);
     for (unsigned int i = 0; i < w; i++) {
         for (unsigned int j = 0; j < h; j++) {
@@ -92,7 +98,13 @@ img::EasyImage colorRectangle(int w, int h) {
     return img;
 }
 
-img::EasyImage blocks(const ini::Configuration& configuration, int w, int h) {
+img::EasyImage blocks(const ini::Configuration& configuration) {
+    int w;
+    int h;
+
+    if (!configuration["ImageProperties"]["width"].as_int_if_exists(w)) std::cout << "⛔️|Failed to fetch width" << std::endl;
+    if (!configuration["ImageProperties"]["height"].as_int_if_exists(h)) std::cout << "⛔️|Failed to fetch height" << std::endl;
+
     std::vector<double> colorWhite;
     std::vector<double> colorBlack;
     std::vector<double> color;
@@ -129,7 +141,13 @@ img::EasyImage blocks(const ini::Configuration& configuration, int w, int h) {
     return img;
 }
 
-img::EasyImage introLines(const ini::Configuration& configuration, int w, int h) {
+img::EasyImage introLines(const ini::Configuration& configuration) {
+    int w;
+    int h;
+
+    if (!configuration["ImageProperties"]["width"].as_int_if_exists(w)) std::cout << "⛔️|Failed to fetch width" << std::endl;
+    if (!configuration["ImageProperties"]["height"].as_int_if_exists(h)) std::cout << "⛔️|Failed to fetch height" << std::endl;
+
     std::string figure;
     std::vector<double> backgroundColor;
     std::vector<double> lineColor;
@@ -206,22 +224,29 @@ img::EasyImage introLines(const ini::Configuration& configuration, int w, int h)
     return img;
 }
 
+img::EasyImage LSystem(const ini::Configuration& configuration) {
+    std::string file;
+    std::vector<double> color;
+    
+    if (!configuration["2DLSystem"]["inputfile"].as_string_if_exists(file)) std::cout << "⛔️| Failed to fetch input file" << std::endl;
+    if (!configuration["2DLSystem"]["color"].as_double_tuple_if_exists(color)) std::cout << "⛔️|Failed to fetch color" << std::endl;
+
+    img::EasyImage img(500, 500);
+    return img;
+}
+
 img::EasyImage generate_image(const ini::Configuration& configuration) {
     std::string t;
-    int w;
-    int h;
 
     if (!configuration["General"]["type"].as_string_if_exists(t)) std::cout << "⛔️| Failed to fetch" << std::endl;
-    if (!configuration["ImageProperties"]["width"].as_int_if_exists(w)) std::cout << "⛔️|Failed to fetch width" << std::endl;
-    if (!configuration["ImageProperties"]["height"].as_int_if_exists(h)) std::cout << "⛔️|Failed to fetch height" << std::endl;
 
     std::cout << "🥱| Generating image of type '" + t + "'" << std::endl;
-    std::cout << "🥱| Using dimensions " + std::to_string(w) + "x" + std::to_string(h) << std::endl;
 
     img::EasyImage result;
-    if (t == "IntroColorRectangle") result = colorRectangle(w, h);
-    if (t == "IntroBlocks") result = blocks(configuration, w, h);
-    if (t == "IntroLines") result = introLines(configuration, w, h);
+    if (t == "IntroColorRectangle") result = colorRectangle(configuration);
+    if (t == "IntroBlocks") result = blocks(configuration);
+    if (t == "IntroLines") result = introLines(configuration);
+    if (t == "2DLSystem") result = LSystem(configuration);
 
     std::cout << "✅| Image generated" << std::endl;
 
