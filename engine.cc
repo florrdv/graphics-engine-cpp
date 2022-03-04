@@ -242,10 +242,17 @@ void drawLSystem(const LParser::LSystem2D& l_system, Lines2D& lines, const Color
         double x = 0;
         double y = 0;
 
+        std::vector<double> saved;
+
         for (char c : current) {
             if (c == '+') angle += angleOffset;
             else if (c == '-') angle -= angleOffset;
-            else if (alphabet.find(c) != alphabet.end()) {
+            else if (c == '(') saved = {x, y, angle};
+            else if (c == ')') {
+                x = saved[0];
+                y = saved[1];
+                angle = saved[2];
+            } else if (alphabet.find(c) != alphabet.end()) {
                 if (l_system.draw(c)) {
                     Point2D p1 = Point2D(x, y);
 
@@ -257,8 +264,7 @@ void drawLSystem(const LParser::LSystem2D& l_system, Lines2D& lines, const Color
                     Line2D line = Line2D(p1, p2, color);
                     lines.push_back(line);
                 }
-                else std::cout << ("⛔️| Invalid character " + std::to_string(c) + " in l-system description") << std::endl;
-            }
+            } else std::cout << ("⛔️| Invalid character " + std::to_string(c) + " in l-system description") << std::endl;
         }
 
         return;
