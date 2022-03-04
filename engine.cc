@@ -228,6 +228,10 @@ img::EasyImage introLines(const ini::Configuration& configuration) {
     return img;
 }
 
+struct Triplet {
+  double  first, second, third;
+};
+
 
 void drawLSystem(const LParser::LSystem2D& l_system, Lines2D& lines, const Color color, std::string current = "", int it = 0) {
     int iterations = l_system.get_nr_iterations();
@@ -243,19 +247,19 @@ void drawLSystem(const LParser::LSystem2D& l_system, Lines2D& lines, const Color
         double x = 0;
         double y = 0;
 
-        std::stack<std::vector<double>> stack;
+        std::stack<Triplet> stack;
 
         for (char c : current) {
             if (c == '+') angle += angleOffset;
             else if (c == '-') angle -= angleOffset;
-            else if (c == '(') stack.push({x, y, angle});
+            else if (c == '(') stack.push(Triplet{x, y, angle});
             else if (c == ')') {
-                std::vector<double> saved = stack.top();
+                Triplet saved = stack.top();
                 stack.pop();
                 
-                x = saved[0];
-                y = saved[1];
-                angle = saved[2];
+                x = saved.first;
+                y = saved.second;
+                angle = saved.third;
             } else if (alphabet.find(c) != alphabet.end()) {
                 if (l_system.draw(c)) {
                     Point2D p1 = Point2D(x, y);
