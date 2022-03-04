@@ -51,7 +51,7 @@ img::EasyImage draw2DLines(const Lines2D &lines, const int size) {
     double dY = imageY / 2 - dcY;
 
     // Create image
-    img::EasyImage img(std::round(imageX), std::round(imageY));
+    img::EasyImage img(std::lround(imageX), std::lround(imageY));
 
     // Re-position points
     for (Line2D line: lines) {
@@ -61,8 +61,8 @@ img::EasyImage draw2DLines(const Lines2D &lines, const int size) {
         line.p1.x += dX;
         line.p1.y += dY;
 
-        line.p1.x = std::round(line.p1.x);
-        line.p1.y = std::round(line.p1.y);
+        line.p1.x = std::lround(line.p1.x);
+        line.p1.y = std::lround(line.p1.y);
 
         line.p2.x *= d;
         line.p2.y *= d;
@@ -70,8 +70,8 @@ img::EasyImage draw2DLines(const Lines2D &lines, const int size) {
         line.p2.x += dX;
         line.p2.y += dY;
 
-        line.p2.x = std::round(line.p2.x);
-        line.p2.y = std::round(line.p2.y);
+        line.p2.x = std::lround(line.p2.x);
+        line.p2.y = std::lround(line.p2.y);
 
         img.draw_line(line.p1.x, line.p1.y, line.p2.x, line.p2.y, line.color.toNative());
     }
