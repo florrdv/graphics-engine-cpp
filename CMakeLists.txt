@@ -18,6 +18,8 @@ set(engine_sources
 	easy_image.cc
 	engine.cc
 	ini_configuration.cc
+    lib/l_parser/l_parser.cc
+    lib/l_parser/l_parser.h
 )
 
 ############################################################
