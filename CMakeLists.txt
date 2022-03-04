@@ -16,6 +16,7 @@ set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${OWN_GXX_FLAGS}")
 ############################################################
 set(engine_sources
 	easy_image.cc
+    easy_image.h
 	engine.cc
 	ini_configuration.cc
     lib/l_parser/l_parser.cc
