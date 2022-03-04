@@ -4,6 +4,7 @@
 #include <string>
 #include <list>
 #include <cmath>
+#include <stack>
 #include <math.h>
 
 #include "easy_image.h"
@@ -242,13 +243,16 @@ void drawLSystem(const LParser::LSystem2D& l_system, Lines2D& lines, const Color
         double x = 0;
         double y = 0;
 
-        std::vector<double> saved;
+        std::stack<std::vector<double>> stack;
 
         for (char c : current) {
             if (c == '+') angle += angleOffset;
             else if (c == '-') angle -= angleOffset;
-            else if (c == '(') saved = {x, y, angle};
+            else if (c == '(') stack.push({x, y, angle});
             else if (c == ')') {
+                std::vector<double> saved = stack.top();
+                stack.pop();
+                
                 x = saved[0];
                 y = saved[1];
                 angle = saved[2];
