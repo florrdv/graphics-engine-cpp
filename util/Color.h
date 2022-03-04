@@ -1,7 +1,7 @@
 #ifndef __PROJECTS_GRAPHICS_ENGINE_CPP_MISC_UTIL_COLOR_CC_
 #define __PROJECTS_GRAPHICS_ENGINE_CPP_MISC_UTIL_COLOR_CC_
 
-#include "../easy_image.h";
+#include "../easy_image.h"
 
 class Color {
 public:

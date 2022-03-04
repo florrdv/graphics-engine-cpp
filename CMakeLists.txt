@@ -19,8 +19,16 @@ set(engine_sources
     easy_image.h
 	engine.cc
 	ini_configuration.cc
+
     lib/l_parser/l_parser.cc
     lib/l_parser/l_parser.h
+
+    util/Color.cc
+    util/Color.h
+    util/Line2D.cc
+    util/Line2D.h
+    util/Point2D.cc
+    util/Point2D.h
 )
 
 ############################################################
