@@ -14,6 +14,30 @@
 using Lines2D = std::list<Line2D>;
 
 img::EasyImage draw2DLines(const Lines2D &lines, const int size) {
+    double xMin = 0.0;
+    double xMax = 0.0;
+
+    double yMin = 0.0;
+    double yMax = 0.0;
+
+    for (const Line2D& line : lines) {
+        if (line.p1.x < xMin) xMin = line.p1.x;
+        if (line.p2.x < xMin) xMin = line.p2.x;
+        if (line.p1.x > xMax) xMax = line.p1.x;
+        if (line.p2.x > xMax) xMax = line.p2.x;
+
+        if (line.p1.y < yMin) yMin = line.p1.y;
+        if (line.p2.y < yMin) yMin = line.p2.y;
+        if (line.p1.y > yMax) yMax = line.p1.y;
+        if (line.p2.y > yMax) yMax = line.p2.y;
+    }
+
+    double xRange = xMax - xMin;
+    double yRange = yMax - yMin;
+
+    double imageX = size * xRange / std::max(xRange, yRange); 
+    double imageY = size * yRange / std::max(xRange, yRange);
+
     
 }
 
