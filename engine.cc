@@ -230,35 +230,38 @@ img::EasyImage introLines(const ini::Configuration& configuration) {
 
 void drawLSystem(const LParser::LSystem2D& l_system, Lines2D& lines, const Color color, std::string current = "", int it = 0) {
     int iterations = l_system.get_nr_iterations();
-    if (it >= iterations) return;
-
-    std::set<char> alphabet = l_system.get_alphabet();
-    double angle = l_system.get_starting_angle();
-    double angleOffset = l_system.get_angle();
     std::string initiator = l_system.get_initiator();
+    std::set<char> alphabet = l_system.get_alphabet();
 
     if (current == "") current = initiator;
 
-    double x = 0;
-    double y = 0;
+    if (it == iterations) {
+        double angle = l_system.get_starting_angle();
+        double angleOffset = l_system.get_angle();
 
-    for (char c : current) {
-        if (c == '+') angle += angleOffset;
-        else if (c == '-') angle -= angleOffset;
-        else if (alphabet.find(c) != alphabet.end()) {
-            if (l_system.draw(c)) {
-                Point2D p1 = Point2D(x, y);
+        double x = 0;
+        double y = 0;
 
-                x += std::cos(angle * M_PI / 180);
-                y += std::sin(angle * M_PI / 180);
+        for (char c : current) {
+            if (c == '+') angle += angleOffset;
+            else if (c == '-') angle -= angleOffset;
+            else if (alphabet.find(c) != alphabet.end()) {
+                if (l_system.draw(c)) {
+                    Point2D p1 = Point2D(x, y);
 
-                Point2D p2 = Point2D(x, y);
+                    x += std::cos(angle * M_PI / 180);
+                    y += std::sin(angle * M_PI / 180);
 
-                Line2D line = Line2D(p1, p2, color);
-                lines.push_back(line);
+                    Point2D p2 = Point2D(x, y);
+
+                    Line2D line = Line2D(p1, p2, color);
+                    lines.push_back(line);
+                }
+                else std::cout << ("⛔️| Invalid character " + std::to_string(c) + " in l-system description") << std::endl;
             }
-            else std::cout << ("⛔️| Invalid character " + std::to_string(c) + " in l-system description") << std::endl;
         }
+
+        return;
     }
 
     std::string replaced = "";
