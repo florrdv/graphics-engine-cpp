@@ -14,11 +14,14 @@
 using Lines2D = std::list<Line2D>;
 
 img::EasyImage draw2DLines(const Lines2D &lines, const int size) {
-    double xMin = 0.0;
-    double xMax = 0.0;
+    // TODO: handle edge case
+    Line2D first = lines.front();
 
-    double yMin = 0.0;
-    double yMax = 0.0;
+    double xMin = first.p1.x;
+    double xMax = first.p1.x;
+
+    double yMin = first.p1.y;
+    double yMax = first.p1.y;
 
     for (const Line2D& line : lines) {
         if (line.p1.x < xMin) xMin = line.p1.x;
@@ -38,7 +41,29 @@ img::EasyImage draw2DLines(const Lines2D &lines, const int size) {
     double imageX = size * xRange / std::max(xRange, yRange); 
     double imageY = size * yRange / std::max(xRange, yRange);
 
-    
+    double d = 0.95 * imageX / xRange;
+    double dcX = d * (xMin + xMax) / 2;
+    double dcY = d * (yMin + yMax) / 2;
+    double dX = imageX / 2 - dcX;
+    double dY = imageY / 2 - dcY;
+
+    for (Line2D line: lines) {
+        line.p1.x *= d;
+        line.p1.y *= d;
+
+        line.p1.x += dX;
+        line.p1.y += dY;
+
+        line.p2.x *= d;
+        line.p2.y *= d;
+
+        line.p2.x += dX;
+        line.p2.y += dY;
+    }
+
+    img::EasyImage img(20, 20);
+
+    return img;
 }
 
 img::EasyImage colorRectangle(int w, int h) {
