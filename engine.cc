@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <string>
 #include <list>
+#include <cmath>
 
 #include "easy_image.h"
 #include "ini_configuration.h"
@@ -23,6 +24,7 @@ img::EasyImage draw2DLines(const Lines2D &lines, const int size) {
     double yMin = first.p1.y;
     double yMax = first.p1.y;
 
+    // Determine min and max
     for (const Line2D& line : lines) {
         if (line.p1.x < xMin) xMin = line.p1.x;
         if (line.p2.x < xMin) xMin = line.p2.x;
@@ -35,8 +37,9 @@ img::EasyImage draw2DLines(const Lines2D &lines, const int size) {
         if (line.p2.y > yMax) yMax = line.p2.y;
     }
 
-    double xRange = xMax - xMin;
-    double yRange = yMax - yMin;
+    // Compute variables needed for next step
+    double xRange = std::abs(xMax - xMin);
+    double yRange = std::abs(yMax - yMin);
 
     double imageX = size * xRange / std::max(xRange, yRange); 
     double imageY = size * yRange / std::max(xRange, yRange);
@@ -47,6 +50,10 @@ img::EasyImage draw2DLines(const Lines2D &lines, const int size) {
     double dX = imageX / 2 - dcX;
     double dY = imageY / 2 - dcY;
 
+    // Create image
+    img::EasyImage img(std::round(imageX), std::round(imageY));
+
+    // Re-position points
     for (Line2D line: lines) {
         line.p1.x *= d;
         line.p1.y *= d;
@@ -54,14 +61,20 @@ img::EasyImage draw2DLines(const Lines2D &lines, const int size) {
         line.p1.x += dX;
         line.p1.y += dY;
 
+        line.p1.x = std::round(line.p1.x);
+        line.p1.y = std::round(line.p1.y);
+
         line.p2.x *= d;
         line.p2.y *= d;
 
         line.p2.x += dX;
         line.p2.y += dY;
-    }
 
-    img::EasyImage img(20, 20);
+        line.p2.x = std::round(line.p2.x);
+        line.p2.y = std::round(line.p2.y);
+
+        img.draw_line(line.p1.x, line.p1.y, line.p2.x, line.p2.y, line.color.toNative());
+    }
 
     return img;
 }
