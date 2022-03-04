@@ -2,9 +2,20 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <list>
 
 #include "easy_image.h"
 #include "ini_configuration.h"
+
+#include "util/Line2D.h"
+#include "util/Point2D.h"
+#include "util/Color.h"
+
+using Lines2D = std::list<Line2D>;
+
+img::EasyImage draw2DLines(const Lines2D &lines, const int size) {
+    
+}
 
 img::EasyImage colorRectangle(int w, int h) {
     img::EasyImage img(w, h);
