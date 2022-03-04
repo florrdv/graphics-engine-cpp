@@ -4,6 +4,7 @@
 #include <string>
 #include <list>
 #include <cmath>
+#include <math.h>
 
 #include "easy_image.h"
 #include "ini_configuration.h"
@@ -11,10 +12,12 @@
 #include "util/Line2D.h"
 #include "util/Point2D.h"
 #include "util/Color.h"
+#include "lib/l_parser/l_parser.h"
+
 
 using Lines2D = std::list<Line2D>;
 
-img::EasyImage draw2DLines(const Lines2D &lines, const int size) {
+img::EasyImage draw2DLines(const Lines2D& lines, const int size, Color background) {
     // TODO: handle edge case
     Line2D first = lines.front();
 
@@ -41,7 +44,7 @@ img::EasyImage draw2DLines(const Lines2D &lines, const int size) {
     double xRange = std::abs(xMax - xMin);
     double yRange = std::abs(yMax - yMin);
 
-    double imageX = size * xRange / std::max(xRange, yRange); 
+    double imageX = size * xRange / std::max(xRange, yRange);
     double imageY = size * yRange / std::max(xRange, yRange);
 
     double d = 0.95 * imageX / xRange;
@@ -51,10 +54,10 @@ img::EasyImage draw2DLines(const Lines2D &lines, const int size) {
     double dY = imageY / 2 - dcY;
 
     // Create image
-    img::EasyImage img(std::lround(imageX), std::lround(imageY));
+    img::EasyImage img(std::lround(imageX), std::lround(imageY), background.toNative());
 
     // Re-position points
-    for (Line2D line: lines) {
+    for (Line2D line : lines) {
         line.p1.x *= d;
         line.p1.y *= d;
 
@@ -217,21 +220,84 @@ img::EasyImage introLines(const ini::Configuration& configuration) {
         offsetX = 0;
 
         for (int i = 0; i < w; i += wS) {
-            img.draw_line(offsetX + h - i - 1, + offsetY + 0, offsetX + h - 1, offsetY + h - i - 1, line);
+            img.draw_line(offsetX + h - i - 1, +offsetY + 0, offsetX + h - 1, offsetY + h - i - 1, line);
         }
     }
 
     return img;
 }
 
-img::EasyImage LSystem(const ini::Configuration& configuration) {
-    std::string file;
-    std::vector<double> color;
-    
-    if (!configuration["2DLSystem"]["inputfile"].as_string_if_exists(file)) std::cout << "⛔️| Failed to fetch input file" << std::endl;
-    if (!configuration["2DLSystem"]["color"].as_double_tuple_if_exists(color)) std::cout << "⛔️|Failed to fetch color" << std::endl;
 
-    img::EasyImage img(500, 500);
+void drawLSystem(const LParser::LSystem2D& l_system, Lines2D& lines, const Color color, std::string current = "", int it = 0) {
+    int iterations = l_system.get_nr_iterations();
+    if (it >= iterations) return;
+
+    std::set<char> alphabet = l_system.get_alphabet();
+    double angle = l_system.get_starting_angle();
+    double angleOffset = l_system.get_angle();
+    std::string initiator = l_system.get_initiator();
+
+    if (current == "") current = initiator;
+
+    double x = 0;
+    double y = 0;
+
+    for (char c : current) {
+        if (c == '+') angle += angleOffset;
+        else if (c == '-') angle -= angleOffset;
+        else if (alphabet.find(c) != alphabet.end()) {
+            if (l_system.draw(c)) {
+                Point2D p1 = Point2D(x, y);
+
+                x += std::cos(angle * M_PI / 180);
+                y += std::sin(angle * M_PI / 180);
+
+                Point2D p2 = Point2D(x, y);
+
+                Line2D line = Line2D(p1, p2, color);
+                lines.push_back(line);
+            }
+            else std::cout << ("⛔️| Invalid character " + std::to_string(c) + " in l-system description") << std::endl;
+        }
+    }
+
+    std::string replaced = "";
+    for (char c : current) {
+        if (alphabet.find(c) == alphabet.end()) replaced += c;
+        else {
+            replaced += l_system.get_replacement(c);
+        }
+    }
+
+    drawLSystem(l_system, lines, color, replaced, it + 1);
+}
+
+img::EasyImage LSystem(const ini::Configuration& configuration) {
+    int size;
+    std::vector<double> backgroundColorRaw;
+    if (!configuration["General"]["size"].as_int_if_exists(size)) std::cout << "⛔️| Failed to fetch size" << std::endl;
+    if (!configuration["General"]["backgroundcolor"].as_double_tuple_if_exists(backgroundColorRaw)) std::cout << "⛔️| Failed to fetch background color" << std::endl;
+
+    Color backgroundColor = Color(backgroundColorRaw[0], backgroundColorRaw[1], backgroundColorRaw[2]);
+
+    std::string file;
+    std::vector<double> colorRaw;
+
+    if (!configuration["2DLSystem"]["inputfile"].as_string_if_exists(file)) std::cout << "⛔️| Failed to fetch input file" << std::endl;
+    if (!configuration["2DLSystem"]["color"].as_double_tuple_if_exists(colorRaw)) std::cout << "⛔️|Failed to fetch color" << std::endl;
+
+    Color color = Color(colorRaw[0], colorRaw[1], colorRaw[2]);
+    LParser::LSystem2D l_system;
+
+    std::ifstream input_stream(file);
+    input_stream >> l_system;
+    input_stream.close();
+
+    Lines2D lines;
+    drawLSystem(l_system, lines, color);
+    img::EasyImage img = draw2DLines(lines, size, backgroundColor);
+
+
     return img;
 }
 
