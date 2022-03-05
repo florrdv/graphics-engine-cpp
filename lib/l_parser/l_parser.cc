@@ -131,15 +131,17 @@ namespace
 
 			int readInt()
 			{
-				std::istream::int_type c = getChar();
+				std::istream::int_type c = peekChar();
 				//int sign = +1;
 				if (c == '-')
 				{
 					//sign = -1;
-					c = getChar();
+                    getChar();
+					c = peekChar();
 				}
 				if (!std::isdigit(c))
 					throw LParser::ParserException("Did not find expected digit when expected", line, col);
+                getChar();
 				int value = 0;
 				while (std::isdigit(c) && (!in.eof()))
 				{
