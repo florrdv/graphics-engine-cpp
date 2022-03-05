@@ -31,6 +31,11 @@
  */
 namespace LParser
 {
+     struct Rule {
+        std::string rule;
+        int weight;
+    };
+
 	/**
 	* \brief The exception thrown when an invalid file is read
 	*/
@@ -135,7 +140,7 @@ namespace LParser
 			 *
 			 * \return	replacement string
 			 */
-			std::string const& get_replacement(char c) const;
+			std::string get_replacement(char c) const;
 
 			/**
 			 * \brief Returns the angle of the L-System.
@@ -182,7 +187,7 @@ namespace LParser
 		        /**
 		         * \brief the replacement rules of the l-system
 		         */
-			std::map<char, std::string> replacementrules;
+			std::map<char, std::vector<Rule>> replacementrules;
 
 		        /**
 		         * \brief the number of replacements of the l-system

@@ -21,6 +21,7 @@
 #include <assert.h>
 #include <iostream>
 #include <iomanip>
+#include <vector>
 #include <cctype>
 #include <sstream>
 
@@ -118,8 +119,10 @@ namespace
 			}
 			std::string readQuotedString()
 			{
-				if (((char) getChar()) != '"')
+				if (((char) peekChar()) != '"')
 					throw LParser::ParserException("Did not find expected string char:'\"'", line, col);
+                getChar();
+
 				std::string value("");
 				for (std::istream::int_type c = getChar(); c != '"'; c = getChar())
 					value += c;
@@ -342,7 +345,7 @@ namespace
 		}
 		return num_parenthesis == 0;
 	}
-	void parse_rules(std::set<char> const& alphabet, std::map<char, std::string>& rules, stream_parser& parser, bool parse2D)
+	void parse_rules(std::set<char> const& alphabet, std::map<char, std::vector<LParser::Rule>>& rules, stream_parser& parser, bool parse2D)
 	{
 		parser.skip_comments_and_whitespace();
 		parser.assertChars("Rules");
@@ -364,13 +367,28 @@ namespace
 			char alphabet_char = c;
 			parser.skip_comments_and_whitespace();
 			parser.assertChars("->");
-			parser.skip_comments_and_whitespace();
-			std::string rule = parser.readQuotedString();
-			if (!isValidRule(alphabet, rule, parse2D))
+
+            std::vector<LParser::Rule> collectedRules = {};
+
+            while (true) {
+                try {
+                    parser.skip_comments_and_whitespace();
+                    std::string rule = parser.readQuotedString();
+                    collectedRules.push_back(LParser::Rule{ rule, 1 });
+                } catch (std::exception&) {
+                    break;
+                }
+            }
+
+            for (LParser::Rule rule : collectedRules) {
+                if (!isValidRule(alphabet, rule.rule, parse2D))
 				throw LParser::ParserException(std::string("Invalid rule specification for entry '") + alphabet_char + "' in rule specification", parser.getLine(), parser.getCol());
-			rules[alphabet_char] = rule;
+            }
+
+			rules[alphabet_char] = collectedRules;
 			parser.skip_comments_and_whitespace();
 			c = parser.getChar();
+
 			if (c == '}')
 				break;
 			else if (c != ',')
@@ -483,10 +501,21 @@ bool LParser::LSystem::draw(char c) const
 	assert(get_alphabet().find(c) != get_alphabet().end());
 	return drawfunction.find(c)->second;
 }
-std::string const& LParser::LSystem::get_replacement(char c) const
+std::string LParser::LSystem::get_replacement(char c) const
 {
 	assert(get_alphabet().find(c) != get_alphabet().end());
-	return replacementrules.find(c)->second;
+
+    std::vector<LParser::Rule> rule = replacementrules.find(c)->second;
+
+    // Let's get the correct replacement
+    if (rule.size() == 1) {
+        // One rule was found
+        std::string ruleString = rule[0].rule;
+        return ruleString;
+    } else {
+        std::string ruleString = rule[0].rule;
+        return ruleString;
+    }
 }
 double LParser::LSystem::get_angle() const
 {
