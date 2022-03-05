@@ -469,6 +469,7 @@ const char* LParser::ParserException::what() const throw ()
 LParser::LSystem::LSystem() :
 	alphabet(), drawfunction(), initiator(""), angle(0.0), replacementrules(), nrIterations(0)
 {
+    srand (time(NULL));
 }
 
 LParser::LSystem::LSystem(LSystem const&system) :
@@ -513,7 +514,27 @@ std::string LParser::LSystem::get_replacement(char c) const
         std::string ruleString = rule[0].rule;
         return ruleString;
     } else {
-        std::string ruleString = rule[0].rule;
+        // Initialize random generator
+
+        // Add weights together
+        int sum;
+        for (LParser::Rule r : rule) sum += r.weight;
+
+        // Get random rule using a weighted strategy
+        // Inspired by: https://stackoverflow.com/questions/1761626/weighted-random-numbers
+        int random = rand() % sum;
+        std::string ruleString;
+
+        for (LParser::Rule r : rule) {
+            if (random < r.weight) {
+                ruleString = r.rule;
+                break;
+            };
+            random -= r.weight;
+        };
+
+        std::cout << ruleString << std::endl;
+
         return ruleString;
     }
 }

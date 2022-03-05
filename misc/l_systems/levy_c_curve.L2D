@@ -5,7 +5,7 @@ Draw = {
 }
 
 Rules = {
-        F -> "+F--F+" "+F--F+" "+F--F++"
+        F -> "+F--F+" "+F--F+-" "+F--F++"
 }
 
 Initiator     = "F"
