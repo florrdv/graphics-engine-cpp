@@ -371,13 +371,26 @@ namespace
             std::vector<LParser::Rule> collectedRules = {};
 
             while (true) {
+                bool error;
                 try {
+                    // Get rule
                     parser.skip_comments_and_whitespace();
                     std::string rule = parser.readQuotedString();
-                    collectedRules.push_back(LParser::Rule{ rule, 1 });
+
+                    // Attempt to get weight
+                    try {
+                        parser.skip_comments_and_whitespace();
+                        int weight = parser.readInt();
+                        collectedRules.push_back(LParser::Rule{ rule, weight });
+                    } catch (std::exception&) {
+                        if (collectedRules.size() >= 1) error = true;
+                        collectedRules.push_back(LParser::Rule{ rule, 1 });
+                    }
                 } catch (std::exception&) {
                     break;
                 }
+
+                if (error)  throw LParser::ParserException("Stochastic L-system detected, but not all weights were set.", parser.getLine(), parser.getCol());
             }
 
             for (LParser::Rule rule : collectedRules) {
@@ -522,7 +535,7 @@ std::string LParser::LSystem::get_replacement(char c) const
 
         // Get random rule using a weighted strategy
         // Inspired by: https://stackoverflow.com/questions/1761626/weighted-random-numbers
-        int random = rand() % sum;
+        int random = rand() % sum - 1;
         std::string ruleString;
 
         for (LParser::Rule r : rule) {
@@ -532,8 +545,6 @@ std::string LParser::LSystem::get_replacement(char c) const
             };
             random -= r.weight;
         };
-
-        std::cout << ruleString << std::endl;
 
         return ruleString;
     }
