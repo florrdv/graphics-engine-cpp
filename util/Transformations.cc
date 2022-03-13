@@ -44,3 +44,13 @@ Matrix rotateZ(const double angle) {
 
     return m;
 }
+
+Matrix translate(const Vector3D &vector) { 
+    Matrix m;
+
+    m(3, 0) = vector.x;
+    m(3, 1) = vector.y;
+    m(3, 2) = vector.z;
+
+    return m;
+}
