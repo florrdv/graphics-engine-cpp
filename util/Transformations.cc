@@ -56,6 +56,33 @@ Matrix translate(const Vector3D &vector) {
     return m;
 }
 
-Matrix eyePointTrans(const Vector3D &eyepoint) {
+void toPolar(const Vector3D &point, double &theta, double &phi, double &r) {
+    r = std::sqrt(point.x * point.x + point.y * point.y + point.z * point.z);
+    theta = std::atan2(point.y, point.x);
+    phi = std::acos(point.z / r);
+}
 
+
+Matrix eyePointTrans(const Vector3D &eyepoint) {
+    double theta;
+    double phi;
+    double r;
+
+    toPolar(eyepoint, theta, phi, r);
+
+    Matrix v;
+    v(0, 0) = -std::sin(theta);
+    v(0, 1) = -std::cos(theta) * std::cos(phi);
+    v(0, 2) = std::cos(theta) * std::sin(phi);
+
+    v(1, 0) = std::cos(theta);
+    v(1, 1) = -std::sin(theta) * std::cos(phi);
+    v(1, 2) = std::sin(theta) * std::sin(phi);
+
+    v(2, 1) = std::sin(phi);
+    v(2, 2) = std::cos(phi);
+
+    v(3, 2) = -r;
+
+    return v;
 }

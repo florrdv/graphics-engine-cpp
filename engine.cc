@@ -93,6 +93,17 @@ img::EasyImage draw2DLines(const Lines2D& lines, const int size, Color backgroun
     return img;
 }
 
+Point2D doProjection(const Vector3D &point, const double d) {
+    double x = d * point.x / -point.z;
+    double y = d * point.y / -point.z;
+
+    return Point2D(x, y);
+}
+
+Lines2D doProjectionAll(const Figures3D &) {
+    
+}
+
 img::EasyImage colorRectangle(const ini::Configuration& configuration) {
     int w;
     int h;
