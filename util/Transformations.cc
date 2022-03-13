@@ -22,3 +22,14 @@ Matrix rotateX(const double angle) {
 
     return m;
 }
+
+Matrix rotateY(const double angle) { 
+    Matrix m;
+
+    m(0, 0) = std::cos(angle);
+    m(0, 2) = -std::sin(angle);
+    m(2, 0) = std::sin(angle);
+    m(2, 2) = std::cos(angle);
+
+    return m;
+}
