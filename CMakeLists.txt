@@ -21,7 +21,10 @@ set(engine_sources
 	ini_configuration.cc
 
     lib/l_parser/l_parser.cc
-    lib/l_parser/l_parser.h
+    lib/l_parser/l_parser.cc
+
+    lib/vector3d/vector3d.cc
+    lib/vector3d/vector3d.h
 
     util/Color.cc
     util/Color.h
