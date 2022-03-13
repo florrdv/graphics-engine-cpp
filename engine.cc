@@ -13,10 +13,20 @@
 #include "util/Line2D.h"
 #include "util/Point2D.h"
 #include "util/Color.h"
+#include "util/Figure.h"
 #include "lib/l_parser/l_parser.h"
 
 
 using Lines2D = std::list<Line2D>;
+using Figures3D = std::list<Figure>;
+
+void applyTransformation(Figure &fig, const Matrix &m) {
+    for (auto &p : fig.points) p *= m;
+}
+
+void applyTransformationAll(Figures3D &figs, const Matrix &m) {
+        for (auto &f : figs) applyTransformation(f, m);
+}
 
 img::EasyImage draw2DLines(const Lines2D& lines, const int size, Color background) {
     // TODO: handle edge case

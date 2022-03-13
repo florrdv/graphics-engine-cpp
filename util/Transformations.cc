@@ -56,8 +56,6 @@ Matrix translate(const Vector3D &vector) {
     return m;
 }
 
-void applyTranformation(Figure &fig, const Matrix &m) {
-    for (auto &p : fig.points) { 
-        p *= m;
-    }
+Matrix eyePointTrans(const Vector3D &eyepoint) {
+
 }
