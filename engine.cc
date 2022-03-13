@@ -15,6 +15,8 @@
 #include "util/Color.h"
 #include "util/Figure.h"
 #include "util/Face.h"
+#include "util/Transformations.cc"
+
 #include "lib/l_parser/l_parser.h"
 
 
@@ -94,15 +96,25 @@ img::EasyImage draw2DLines(const Lines2D& lines, const int size, Color backgroun
     return img;
 }
 
-Point2D doProjection(const Vector3D &point, const double d) {
+Point2D projectPoint(const Vector3D &point, const double d) {
     double x = d * point.x / -point.z;
     double y = d * point.y / -point.z;
 
     return Point2D(x, y);
 }
 
-Lines2D doProjectionAll(const Figures3D &) {
+Lines2D projectFig(const Figure &fig) {
+    Lines2D lines;
 
+        for (auto face: fig.faces) {
+            Vector3D p1 = fig.points[face.pointIndexes[0]];
+            Vector3D p2 = fig.points[face.pointIndexes[1]];
+            Line2D line = Line2D(projectPoint(p1, 1.0), projectPoint(p2, 1.0), fig.color);
+
+            lines.push_back(line);
+        }
+
+    return lines;
 }
 
 img::EasyImage colorRectangle(const ini::Configuration& configuration) {
@@ -343,6 +355,10 @@ img::EasyImage LSystem(const ini::Configuration& configuration) {
 img::EasyImage wireFrame(const ini::Configuration& c) {
     auto base = c["Figure0"];
 
+    std::vector<int> eyeRaw;
+    if (!c["General"]["eye"].as_int_tuple_if_exists(eyeRaw)) std::cout << "⛔️| Failed to read eye" << std::endl;
+    Vector3D eye = Vector3D::point(eyeRaw[0], eyeRaw[1], eyeRaw[2]);
+
     std::vector<double> colorRaw;
     if (!base["color"].as_double_tuple_if_exists(colorRaw)) std::cout << "⛔️| Failed to fetch color" << std::endl;
     Color color = Color(colorRaw[0], colorRaw[1], colorRaw[2]);
@@ -376,7 +392,13 @@ img::EasyImage wireFrame(const ini::Configuration& c) {
 
     Figure figure = Figure(vectors, faces, color);
 
-    return img::EasyImage();
+
+    Matrix eyePointTransMatrix = eyePointTrans(eye);
+    applyTransformation(figure, eyePointTransMatrix);
+
+    Lines2D lines = projectFig(figure);
+
+    return draw2DLines(lines, 500, Color(0, 0, 0));
     
 }
 

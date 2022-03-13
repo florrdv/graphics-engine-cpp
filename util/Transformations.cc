@@ -6,9 +6,9 @@
 Matrix scaleFigure(const double scale) { 
     Matrix m;
 
-    m(0, 0) = scale;
     m(1, 1) = scale;
     m(2, 2) = scale;
+    m(3, 3) = scale;
 
     return m;
 }
@@ -16,10 +16,10 @@ Matrix scaleFigure(const double scale) {
 Matrix rotateX(const double angle) { 
     Matrix m;
 
-    m(1, 1) = std::cos(angle);
     m(2, 2) = std::cos(angle);
-    m(1, 2) = std::sin(angle);
-    m(2, 1) = -std::sin(angle);
+    m(3, 3) = std::cos(angle);
+    m(2, 3) = std::sin(angle);
+    m(3, 2) = -std::sin(angle);
 
     return m;
 }
@@ -27,10 +27,10 @@ Matrix rotateX(const double angle) {
 Matrix rotateY(const double angle) { 
     Matrix m;
 
-    m(0, 0) = std::cos(angle);
-    m(0, 2) = -std::sin(angle);
-    m(2, 0) = std::sin(angle);
-    m(2, 2) = std::cos(angle);
+    m(1, 1) = std::cos(angle);
+    m(1, 3) = -std::sin(angle);
+    m(3, 1) = std::sin(angle);
+    m(3, 3) = std::cos(angle);
 
     return m;
 }
@@ -38,10 +38,10 @@ Matrix rotateY(const double angle) {
 Matrix rotateZ(const double angle) { 
     Matrix m;
 
-    m(0, 0) = std::cos(angle);
-    m(0, 1) = std::sin(angle);
-    m(1, 0) = -std::sin(angle);
     m(1, 1) = std::cos(angle);
+    m(1, 2) = std::sin(angle);
+    m(2, 1) = -std::sin(angle);
+    m(2, 2) = std::cos(angle);
 
     return m;
 }
@@ -49,9 +49,9 @@ Matrix rotateZ(const double angle) {
 Matrix translate(const Vector3D &vector) { 
     Matrix m;
 
-    m(3, 0) = vector.x;
-    m(3, 1) = vector.y;
-    m(3, 2) = vector.z;
+    m(4, 1) = vector.x;
+    m(4, 2) = vector.y;
+    m(4, 3) = vector.z;
 
     return m;
 }
@@ -71,18 +71,18 @@ Matrix eyePointTrans(const Vector3D &eyepoint) {
     toPolar(eyepoint, theta, phi, r);
 
     Matrix v;
-    v(0, 0) = -std::sin(theta);
-    v(0, 1) = -std::cos(theta) * std::cos(phi);
-    v(0, 2) = std::cos(theta) * std::sin(phi);
+    v(1, 1) = -std::sin(theta);
+    v(1, 2) = -std::cos(theta) * std::cos(phi);
+    v(1, 3) = std::cos(theta) * std::sin(phi);
 
-    v(1, 0) = std::cos(theta);
-    v(1, 1) = -std::sin(theta) * std::cos(phi);
-    v(1, 2) = std::sin(theta) * std::sin(phi);
+    v(2, 1) = std::cos(theta);
+    v(2, 2) = -std::sin(theta) * std::cos(phi);
+    v(2, 3) = std::sin(theta) * std::sin(phi);
 
-    v(2, 1) = std::sin(phi);
-    v(2, 2) = std::cos(phi);
+    v(3, 2) = std::sin(phi);
+    v(3, 3) = std::cos(phi);
 
-    v(3, 2) = -r;
+    v(4, 3) = -r;
 
     return v;
 }
