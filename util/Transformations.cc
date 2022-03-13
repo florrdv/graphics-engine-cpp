@@ -1,6 +1,7 @@
 #include <cmath>
 
 #include "../lib/vector3d/vector3d.h"
+#include "Figure.h"
 
 Matrix scaleFigure(const double scale) { 
     Matrix m;
@@ -53,4 +54,10 @@ Matrix translate(const Vector3D &vector) {
     m(3, 2) = vector.z;
 
     return m;
+}
+
+void applyTranformation(Figure &fig, const Matrix &m) {
+    for (auto &p : fig.points) { 
+        p *= m;
+    }
 }
