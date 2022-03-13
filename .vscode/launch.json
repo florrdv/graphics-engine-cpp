@@ -7,7 +7,7 @@
             "request": "launch",
             // Resolved by CMake Tools:
             "program": "${command:cmake.buildDirectory}/engine",
-            "args": ["misc/l_systems/l_systems006.ini"],
+            "args": ["misc/line_drawings/line_drawings001.ini"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [

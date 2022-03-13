@@ -101,7 +101,7 @@ Point2D doProjection(const Vector3D &point, const double d) {
 }
 
 Lines2D doProjectionAll(const Figures3D &) {
-    
+
 }
 
 img::EasyImage colorRectangle(const ini::Configuration& configuration) {
@@ -339,10 +339,45 @@ img::EasyImage LSystem(const ini::Configuration& configuration) {
     return img;
 }
 
+img::EasyImage wireFrame(const ini::Configuration& c) {
+    auto base = c["Figure0"];
+    int i = 0;
+
+    std::vector<std::vector<double>> points;
+    std::vector<std::vector<double>> lines;
+
+    // Read points
+    while (true) {
+        std::vector<double> p;
+        auto f = "point" + std::to_string(i);
+        if (!base[f].as_double_tuple_if_exists(p)) break;
+        
+        points.push_back(p);
+        i++;
+    }
+
+    i = 0;
+
+    // Read lines
+    while (true) {
+        std::vector<double> l;
+        auto f = "line" + std::to_string(i);
+        if (!base[f].as_double_tuple_if_exists(l)) break;
+        
+        lines.push_back(l);
+        i++;
+    }
+
+    std::string t;
+
+    return img::EasyImage();
+    
+}
+
 img::EasyImage generate_image(const ini::Configuration& configuration) {
     std::string t;
 
-    if (!configuration["General"]["type"].as_string_if_exists(t)) std::cout << "⛔️| Failed to fetch" << std::endl;
+    if (!configuration["General"]["type"].as_string_if_exists(t)) std::cout << "⛔️| Failed to fetch type" << std::endl;
 
     std::cout << "🥱| Generating image of type '" + t + "'" << std::endl;
 
@@ -351,6 +386,7 @@ img::EasyImage generate_image(const ini::Configuration& configuration) {
     if (t == "IntroBlocks") result = blocks(configuration);
     if (t == "IntroLines") result = introLines(configuration);
     if (t == "2DLSystem") result = LSystem(configuration);
+    if (t == "Wireframe") result = wireFrame(configuration);
 
     std::cout << "✅| Image generated" << std::endl;
 
