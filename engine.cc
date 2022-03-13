@@ -14,6 +14,7 @@
 #include "util/Point2D.h"
 #include "util/Color.h"
 #include "util/Figure.h"
+#include "util/Face.h"
 #include "lib/l_parser/l_parser.h"
 
 
@@ -341,34 +342,39 @@ img::EasyImage LSystem(const ini::Configuration& configuration) {
 
 img::EasyImage wireFrame(const ini::Configuration& c) {
     auto base = c["Figure0"];
-    int i = 0;
 
-    std::vector<std::vector<double>> points;
-    std::vector<std::vector<double>> lines;
+    std::vector<double> colorRaw;
+    if (!base["color"].as_double_tuple_if_exists(colorRaw)) std::cout << "⛔️| Failed to fetch color" << std::endl;
+    Color color = Color(colorRaw[0], colorRaw[1], colorRaw[2]);
 
+    int nrPoints;
+    int nrLines;
+    if (!base["nrPoints"].as_int_if_exists(nrPoints)) std::cout << "⛔️| Failed to fetch # points" << std::endl;
+    if (!base["nrLines"].as_int_if_exists(nrLines)) std::cout << "⛔️| Failed to fetch # lines" << std::endl;
+    
     // Read points
-    while (true) {
+    std::vector<Vector3D> vectors;
+    for (int i = 0; i < nrPoints; i++) {
         std::vector<double> p;
         auto f = "point" + std::to_string(i);
         if (!base[f].as_double_tuple_if_exists(p)) break;
         
-        points.push_back(p);
-        i++;
+        Vector3D vector = Vector3D::point(p[0], p[1], p[2]);
+        vectors.push_back(vector);
     }
 
-    i = 0;
-
-    // Read lines
-    while (true) {
-        std::vector<double> l;
+    // Read faces
+    std::vector<Face> faces;
+    for (int i = 0; i < nrLines; i++) {
+        std::vector<int> l;
         auto f = "line" + std::to_string(i);
-        if (!base[f].as_double_tuple_if_exists(l)) break;
+        if (!base[f].as_int_tuple_if_exists(l)) break;
         
-        lines.push_back(l);
-        i++;
+        Face face = Face(l);
+        faces.push_back(face);
     }
 
-    std::string t;
+    Figure figure = Figure(vectors, faces, color);
 
     return img::EasyImage();
     

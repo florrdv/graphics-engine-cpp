@@ -6,6 +6,8 @@
 class Face { 
 public: 
     std::vector<int> pointIndexes;
+
+    Face(std::vector<int> p) : pointIndexes(p) {};
 };
 
 #endif // __PROJECTS_GRAPHICS_ENGINE_CPP_UTIL_FACE_H_
