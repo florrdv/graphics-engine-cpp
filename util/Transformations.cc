@@ -33,3 +33,14 @@ Matrix rotateY(const double angle) {
 
     return m;
 }
+
+Matrix rotateZ(const double angle) { 
+    Matrix m;
+
+    m(0, 0) = std::cos(angle);
+    m(0, 1) = std::sin(angle);
+    m(1, 0) = -std::sin(angle);
+    m(1, 1) = std::cos(angle);
+
+    return m;
+}
