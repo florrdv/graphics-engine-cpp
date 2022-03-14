@@ -23,12 +23,12 @@
 using Lines2D = std::list<Line2D>;
 using Figures3D = std::list<Figure>;
 
-void applyTransformation(Figure &fig, const Matrix &m) {
-    for (auto &p : fig.points) p *= m;
+void applyTransformation(Figure& fig, const Matrix& m) {
+    for (auto& p : fig.points) p *= m;
 }
 
-void applyTransformationAll(Figures3D &figs, const Matrix &m) {
-        for (auto &f : figs) applyTransformation(f, m);
+void applyTransformationAll(Figures3D& figs, const Matrix& m) {
+    for (auto& f : figs) applyTransformation(f, m);
 }
 
 img::EasyImage draw2DLines(const Lines2D& lines, const int size, Color background) {
@@ -96,23 +96,34 @@ img::EasyImage draw2DLines(const Lines2D& lines, const int size, Color backgroun
     return img;
 }
 
-Point2D projectPoint(const Vector3D &point, const double d) {
+Point2D projectPoint(const Vector3D& point, const double d) {
     double x = d * point.x / -point.z;
     double y = d * point.y / -point.z;
 
     return Point2D(x, y);
 }
 
-Lines2D projectFig(const Figure &fig) {
+Lines2D projectFig(const Figure& fig) {
     Lines2D lines;
 
-        for (auto face: fig.faces) {
-            Vector3D p1 = fig.points[face.pointIndexes[0]];
-            Vector3D p2 = fig.points[face.pointIndexes[1]];
-            Line2D line = Line2D(projectPoint(p1, 1.0), projectPoint(p2, 1.0), fig.color);
+    for (auto face : fig.faces) {
+        Vector3D p1 = fig.points[face.pointIndexes[0]];
+        Vector3D p2 = fig.points[face.pointIndexes[1]];
+        Line2D line = Line2D(projectPoint(p1, 1.0), projectPoint(p2, 1.0), fig.color);
 
-            lines.push_back(line);
-        }
+        lines.push_back(line);
+    }
+
+    return lines;
+}
+
+Lines2D ProjectAll(const Figures3D &figs) { 
+    Lines2D lines;
+
+    for (auto fig : figs) { 
+        Lines2D figLines = projectFig(fig);
+        lines.insert(lines.end(), figLines.begin(), figLines.end());
+    }
 
     return lines;
 }
@@ -263,7 +274,7 @@ img::EasyImage introLines(const ini::Configuration& configuration) {
 }
 
 struct Triplet {
-  double  first, second, third;
+    double  first, second, third;
 };
 
 
@@ -286,15 +297,16 @@ void drawLSystem(const LParser::LSystem2D& l_system, Lines2D& lines, const Color
         for (char c : current) {
             if (c == '+') angle += angleOffset;
             else if (c == '-') angle -= angleOffset;
-            else if (c == '(') stack.push(Triplet{x, y, angle});
+            else if (c == '(') stack.push(Triplet{ x, y, angle });
             else if (c == ')') {
                 Triplet saved = stack.top();
                 stack.pop();
-                
+
                 x = saved.first;
                 y = saved.second;
                 angle = saved.third;
-            } else if (alphabet.find(c) != alphabet.end()) {
+            }
+            else if (alphabet.find(c) != alphabet.end()) {
                 if (l_system.draw(c)) {
                     Point2D p1 = Point2D(x, y);
 
@@ -306,7 +318,8 @@ void drawLSystem(const LParser::LSystem2D& l_system, Lines2D& lines, const Color
                     Line2D line = Line2D(p1, p2, color);
                     lines.push_back(line);
                 }
-            } else std::cout << ("⛔️| Invalid character " + std::to_string(c) + " in l-system description") << std::endl;
+            }
+            else std::cout << ("⛔️| Invalid character " + std::to_string(c) + " in l-system description") << std::endl;
         }
 
         return;
@@ -353,71 +366,81 @@ img::EasyImage LSystem(const ini::Configuration& configuration) {
 }
 
 img::EasyImage wireFrame(const ini::Configuration& c) {
-    auto base = c["Figure0"];
+    Figures3D figures;
+
+    int size;
+    if (!c["General"]["size"].as_int_if_exists(size)) std::cout << "⛔️| Failed to fetch size" << std::endl;
 
     std::vector<int> eyeRaw;
     if (!c["General"]["eye"].as_int_tuple_if_exists(eyeRaw)) std::cout << "⛔️| Failed to read eye" << std::endl;
     Vector3D eye = Vector3D::point(eyeRaw[0], eyeRaw[1], eyeRaw[2]);
 
-    std::vector<double> colorRaw;
-    if (!base["color"].as_double_tuple_if_exists(colorRaw)) std::cout << "⛔️| Failed to fetch color" << std::endl;
-    Color color = Color(colorRaw[0], colorRaw[1], colorRaw[2]);
-
     std::vector<double> backgroundColorRaw;
-    if (!c["Config"]["backgroundcolor"].as_double_tuple_if_exists(backgroundColorRaw)) std::cout << "⛔️| Failed to fetch background color" << std::endl;
+    if (!c["General"]["backgroundcolor"].as_double_tuple_if_exists(backgroundColorRaw)) std::cout << "⛔️| Failed to fetch background color" << std::endl;
     Color backgroundColor = Color(backgroundColorRaw[0], backgroundColorRaw[1], backgroundColorRaw[2]);
 
-    int nrPoints;
-    int nrLines;
-    double scale;
-    int rotateX;
-    int rotateY;
-    int rotateZ;
-    int size;
-    if (!base["nrPoints"].as_int_if_exists(nrPoints)) std::cout << "⛔️| Failed to fetch # points" << std::endl;
-    if (!base["nrLines"].as_int_if_exists(nrLines)) std::cout << "⛔️| Failed to fetch # lines" << std::endl;
-    if (!base["scale"].as_double_if_exists(scale)) std::cout << "⛔️| Failed to fetch scale" << std::endl;
-    if (!base["rotateX"].as_int_if_exists(rotateX)) std::cout << "⛔️| Failed to fetch rotateX" << std::endl;
-    if (!base["rotateY"].as_int_if_exists(rotateY)) std::cout << "⛔️| Failed to fetch rotateY" << std::endl;
-    if (!base["rotateZ"].as_int_if_exists(rotateZ)) std::cout << "⛔️| Failed to fetch rotateZ" << std::endl;
-    if (!base["size"].as_int_if_exists(size)) std::cout << "⛔️| Failed to fetch size" << std::endl;
-    
+    int nrFigures;
+    if (!c["General"]["nrFigures"].as_int_if_exists(nrFigures)) std::cout << "⛔️| Failed to fetch # figures" << std::endl;
+
+    for (int f = 0; f < nrFigures; f++) {
+        auto base = c["Figure" + std::to_string(f)];
+
+
+        std::vector<double> colorRaw;
+        if (!base["color"].as_double_tuple_if_exists(colorRaw)) std::cout << "⛔️| Failed to fetch color" << std::endl;
+        Color color = Color(colorRaw[0], colorRaw[1], colorRaw[2]);
+
+        int nrPoints;
+        int nrLines;
+        double scale;
+        int rotateX;
+        int rotateY;
+        int rotateZ;
+        if (!base["nrPoints"].as_int_if_exists(nrPoints)) std::cout << "⛔️| Failed to fetch # points" << std::endl;
+        if (!base["nrLines"].as_int_if_exists(nrLines)) std::cout << "⛔️| Failed to fetch # lines" << std::endl;
+        if (!base["scale"].as_double_if_exists(scale)) std::cout << "⛔️| Failed to fetch scale" << std::endl;
+        if (!base["rotateX"].as_int_if_exists(rotateX)) std::cout << "⛔️| Failed to fetch rotateX" << std::endl;
+        if (!base["rotateY"].as_int_if_exists(rotateY)) std::cout << "⛔️| Failed to fetch rotateY" << std::endl;
+        if (!base["rotateZ"].as_int_if_exists(rotateZ)) std::cout << "⛔️| Failed to fetch rotateZ" << std::endl;
+
+        // Read points
+        std::vector<Vector3D> vectors;
+        for (int i = 0; i < nrPoints; i++) {
+            std::vector<double> p;
+            auto f = "point" + std::to_string(i);
+            if (!base[f].as_double_tuple_if_exists(p)) break;
+
+            Vector3D vector = Vector3D::point(p[0], p[1], p[2]);
+            vectors.push_back(vector);
+        }
+
+        // Read faces
+        std::vector<Face> faces;
+        for (int i = 0; i < nrLines; i++) {
+            std::vector<int> l;
+            auto f = "line" + std::to_string(i);
+            if (!base[f].as_int_tuple_if_exists(l)) break;
+
+            Face face = Face(l);
+            faces.push_back(face);
+        }
+
+        Figure figure = Figure(vectors, faces, color);
+        figures.push_back(figure);
+    }
+
+    Matrix eyePointTransMatrix = transformations::eyePointTrans(eye);
+    applyTransformationAll(figures, eyePointTransMatrix);
+
     Matrix rotateMatrixX = transformations::rotateX(rotateX * M_PI / 180);
     Matrix rotateMatrixY = transformations::rotateY(rotateY * M_PI / 180);
     Matrix rotateMatrixZ = transformations::rotateZ(rotateZ * M_PI / 180);
+    applyTransformationAll(figures, rotateMatrixX);
+    applyTransformationAll(figures, rotateMatrixY);
+    applyTransformation(figures, rotateMatrixZ);
 
-    // Read points
-    std::vector<Vector3D> vectors;
-    for (int i = 0; i < nrPoints; i++) {
-        std::vector<double> p;
-        auto f = "point" + std::to_string(i);
-        if (!base[f].as_double_tuple_if_exists(p)) break;
-        
-        Vector3D vector = Vector3D::point(p[0], p[1], p[2]);
-        vectors.push_back(vector);
-    }
-
-    // Read faces
-    std::vector<Face> faces;
-    for (int i = 0; i < nrLines; i++) {
-        std::vector<int> l;
-        auto f = "line" + std::to_string(i);
-        if (!base[f].as_int_tuple_if_exists(l)) break;
-        
-        Face face = Face(l);
-        faces.push_back(face);
-    }
-
-    Figure figure = Figure(vectors, faces, color);
-
-
-    Matrix eyePointTransMatrix = eyePointTrans(eye);
-    applyTransformation(figure, eyePointTransMatrix);
-
-    Lines2D lines = projectFig(figure);
-
+    Lines2D lines = project(figure);
     return draw2DLines(lines, size, Color(0, 0, 0));
-    
 }
 
 img::EasyImage generate_image(const ini::Configuration& configuration) {
