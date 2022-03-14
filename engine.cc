@@ -363,19 +363,29 @@ img::EasyImage wireFrame(const ini::Configuration& c) {
     if (!base["color"].as_double_tuple_if_exists(colorRaw)) std::cout << "⛔️| Failed to fetch color" << std::endl;
     Color color = Color(colorRaw[0], colorRaw[1], colorRaw[2]);
 
+    std::vector<double> backgroundColorRaw;
+    if (!c["Config"]["backgroundcolor"].as_double_tuple_if_exists(backgroundColorRaw)) std::cout << "⛔️| Failed to fetch background color" << std::endl;
+    Color backgroundColor = Color(backgroundColorRaw[0], backgroundColorRaw[1], backgroundColorRaw[2]);
+
     int nrPoints;
     int nrLines;
     double scale;
     int rotateX;
     int rotateY;
     int rotateZ;
+    int size;
     if (!base["nrPoints"].as_int_if_exists(nrPoints)) std::cout << "⛔️| Failed to fetch # points" << std::endl;
     if (!base["nrLines"].as_int_if_exists(nrLines)) std::cout << "⛔️| Failed to fetch # lines" << std::endl;
     if (!base["scale"].as_double_if_exists(scale)) std::cout << "⛔️| Failed to fetch scale" << std::endl;
     if (!base["rotateX"].as_int_if_exists(rotateX)) std::cout << "⛔️| Failed to fetch rotateX" << std::endl;
     if (!base["rotateY"].as_int_if_exists(rotateY)) std::cout << "⛔️| Failed to fetch rotateY" << std::endl;
     if (!base["rotateZ"].as_int_if_exists(rotateZ)) std::cout << "⛔️| Failed to fetch rotateZ" << std::endl;
+    if (!base["size"].as_int_if_exists(size)) std::cout << "⛔️| Failed to fetch size" << std::endl;
     
+    Matrix rotateMatrixX = transformations::rotateX(rotateX * M_PI / 180);
+    Matrix rotateMatrixY = transformations::rotateY(rotateY * M_PI / 180);
+    Matrix rotateMatrixZ = transformations::rotateZ(rotateZ * M_PI / 180);
+
     // Read points
     std::vector<Vector3D> vectors;
     for (int i = 0; i < nrPoints; i++) {
@@ -406,7 +416,7 @@ img::EasyImage wireFrame(const ini::Configuration& c) {
 
     Lines2D lines = projectFig(figure);
 
-    return draw2DLines(lines, 500, Color(0, 0, 0));
+    return draw2DLines(lines, size, Color(0, 0, 0));
     
 }
 
