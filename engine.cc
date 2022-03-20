@@ -108,11 +108,18 @@ Lines2D projectFig(const Figure& fig) {
     Lines2D lines;
 
     for (auto face : fig.faces) {
-        Vector3D p1 = fig.points[face.pointIndexes[0]];
-        Vector3D p2 = fig.points[face.pointIndexes[1]];
-        Line2D line = Line2D(projectPoint(p1, 1.0), projectPoint(p2, 1.0), fig.color);
+        for (int i = 0; i < face.pointIndexes.size(); i++) {
+            Vector3D p1 = fig.points[face.pointIndexes[i]];
 
-        lines.push_back(line);
+            Vector3D p2;
+            if (i + 1 >= face.pointIndexes.size()) p2 = fig.points[face.pointIndexes[0]];
+            else p2 = fig.points[face.pointIndexes[i + 1]];
+            Line2D line = Line2D(projectPoint(p1, 1.0), projectPoint(p2, 1.0), fig.color);
+
+            lines.push_back(line);
+        }
+
+
     }
 
     return lines;
@@ -443,7 +450,8 @@ img::EasyImage wireFrame(const ini::Configuration& c) {
 
                 figures.push_back(figure);
             }
-        } else if (type == "Cube") {
+        }
+        else if (type == "Cube") {
             Figure figure = PlatonicSolids::createCube(color);
             figures.push_back(figure);
         }

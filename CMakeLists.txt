@@ -38,8 +38,8 @@ set(engine_sources
     util/Face.h
     util/Face.cc
 
-    util/generators/Transformations.cc
-    util/generators/PlatonicSolids.cc
+    # util/generators/Transformations.cc
+    # util/generators/PlatonicSolids.cc
 )
 
 ############################################################

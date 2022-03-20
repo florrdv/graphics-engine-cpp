@@ -1,3 +1,6 @@
+#ifndef __PROJECTS_GRAPHICS_ENGINE_CPP_UTIL_GENERATORS_TRANSFORMATIONS_CC_
+#define __PROJECTS_GRAPHICS_ENGINE_CPP_UTIL_GENERATORS_TRANSFORMATIONS_CC_
+
 #include <cmath>
 
 #include "../../lib/vector3d/vector3d.h"
@@ -88,3 +91,5 @@ namespace transformations {
         return v;
     }
 }
+
+#endif // __PROJECTS_GRAPHICS_ENGINE_CPP_UTIL_GENERATORS_TRANSFORMATIONS_CC_
