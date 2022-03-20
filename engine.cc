@@ -381,7 +381,10 @@ void draw3DLSystem(const LParser::LSystem3D& l_system, Lines2D& lines, const Col
     if (current == "") current = initiator;
 
     if (it == iterations) {
-        double angle = l_system.get_starting_angle();
+        Vector3D H = Vector3D::point(1, 0, 0);
+        Vector3D L = Vector3D::point(1, 0, 0);
+        Vector3D U = Vector3D::point(1, 0, 0);
+
         double angleOffset = l_system.get_angle();
 
         std::stack<Triplet> stack;
@@ -428,7 +431,7 @@ void draw3DLSystem(const LParser::LSystem3D& l_system, Lines2D& lines, const Col
         }
     }
 
-    draw2DLSystem(l_system, lines, color, replaced, it + 1);
+    draw3DLSystem(l_system, lines, color, replaced, it + 1);
 }
 
 img::EasyImage wireFrame(const ini::Configuration& c) {
