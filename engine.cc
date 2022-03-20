@@ -373,7 +373,7 @@ img::EasyImage LSystem(const ini::Configuration& configuration) {
     return img;
 }
 
-void draw3DLSystem(const LParser::LSystem2D& l_system, Lines2D& lines, const Color color, std::string current = "", int it = 0) {
+void draw3DLSystem(const LParser::LSystem3D& l_system, Lines2D& lines, const Color color, std::string current = "", int it = 0) {
     int iterations = l_system.get_nr_iterations();
     std::string initiator = l_system.get_initiator();
     std::set<char> alphabet = l_system.get_alphabet();
@@ -501,10 +501,18 @@ img::EasyImage wireFrame(const ini::Configuration& c) {
                 figure = Figure(vectors, faces, color);
 
             }
-        } else if (type == "Cube") {
+        }
+        else if (type == "Cube") {
             figure = PlatonicSolids::createCube(color);
-        } else if (type == "3DLSystem") { 
+        }
+        else if (type == "3DLSystem") {
+            std::string inputFile;
+            if (!base["inputfile"].as_string_if_exists(inputFile)) std::cout << "⛔️| Failed to fetch # points" << std::endl;
 
+            LParser::LSystem3D l_system;
+            std::ifstream input_stream(inputFile);
+            input_stream >> l_system;
+            input_stream.close();
         }
 
 
