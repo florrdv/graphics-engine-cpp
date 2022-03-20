@@ -400,23 +400,41 @@ void draw3DLSystem(const LParser::LSystem3D& l_system, Figure& figure, const Col
 
         for (char c : current) {
             if (c == '+') {
-                h = h * std::cos(angleOffset) + l * std::sin(angleOffset);
-                l = -h * std::sin(angleOffset) + l * std::cos(angleOffset);
+                Vector3D newH = h * std::cos(angleOffset) + l * std::sin(angleOffset);
+                Vector3D newL = -h * std::sin(angleOffset) + l * std::cos(angleOffset);
+
+                h = newH;
+                l = newL;
             } else if (c == '-') {
-                h = h * std::cos(-angleOffset) + l * std::sin(-angleOffset);
-                l = -h * std::sin(-angleOffset) + l * std::cos(-angleOffset);
+                Vector3D newH = h * std::cos(-angleOffset) + l * std::sin(-angleOffset);
+                Vector3D newL = -h * std::sin(-angleOffset) + l * std::cos(-angleOffset);
+
+                h = newH;
+                l = newL;
             } else if (c == '^') {
-                h = h * std::cos(angleOffset) + u * std::sin(angleOffset);
-                u = -h * std::sin(angleOffset) + u * std::cos(angleOffset);
+                Vector3D newH = h * std::cos(angleOffset) + u * std::sin(angleOffset);
+                Vector3D newU = -h * std::sin(angleOffset) + u * std::cos(angleOffset);
+
+                h = newH;
+                u = newU;
             } else if (c == '&') {
-                h = h * std::cos(-angleOffset) + u * std::sin(-angleOffset);
-                u = -h * std::sin(-angleOffset) + u * std::cos(-angleOffset);
+                Vector3D newH = h * std::cos(-angleOffset) + u * std::sin(-angleOffset);
+                Vector3D newU = -h * std::sin(-angleOffset) + u * std::cos(-angleOffset);
+
+                h = newH;
+                u = newU;
             } else if (c == '\\') {
-                l = l * std::cos(angleOffset) - u * std::sin(angleOffset);
-                u = l * std::sin(angleOffset) + u * std::cos(angleOffset);
+                Vector3D newL = l * std::cos(angleOffset) - u * std::sin(angleOffset);
+                Vector3D newU = l * std::sin(angleOffset) + u * std::cos(angleOffset);
+
+                l = newL;
+                u = newU;
             } else if (c == '/') {
-                l = l * std::cos(-angleOffset) - u * std::sin(-angleOffset);
-                u = l * std::sin(-angleOffset) + u * std::cos(-angleOffset);
+                Vector3D newL = l * std::cos(-angleOffset) - u * std::sin(-angleOffset);
+                Vector3D newU = l * std::sin(-angleOffset) + u * std::cos(-angleOffset);
+
+                l = newL;
+                u = newU;
             } else if (c == '|') {
                 h = -h;
                 l = -l;
