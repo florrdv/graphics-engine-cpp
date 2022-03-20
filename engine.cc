@@ -453,6 +453,14 @@ img::EasyImage wireFrame(const ini::Configuration& c) {
         }
         else if (type == "Cube") {
             Figure figure = PlatonicSolids::createCube(color);
+
+            Matrix rotateMatrixX = transformations::rotateX(rotateX * M_PI / 180);
+            Matrix rotateMatrixY = transformations::rotateY(rotateY * M_PI / 180);
+            Matrix rotateMatrixZ = transformations::rotateZ(rotateZ * M_PI / 180);
+            applyTransformation(figure, rotateMatrixX);
+            applyTransformation(figure, rotateMatrixY);
+            applyTransformation(figure, rotateMatrixZ);
+
             figures.push_back(figure);
         }
 

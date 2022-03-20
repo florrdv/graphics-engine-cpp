@@ -7,7 +7,7 @@
             "request": "launch",
             // Resolved by CMake Tools:
             "program": "${command:cmake.buildDirectory}/engine",
-            "args": ["misc/wireframes/wireframes001.ini"],
+            "args": ["misc/wireframes/wireframes002.ini"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [
