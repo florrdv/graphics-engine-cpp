@@ -326,6 +326,9 @@ void draw2DLSystem(const LParser::LSystem2D& l_system, Lines2D& lines, const Col
                     Line2D line = Line2D(p1, p2, color);
                     lines.push_back(line);
                 }
+
+                x += std::cos(angle * M_PI / 180);
+                y += std::sin(angle * M_PI / 180);
             }
             else std::cout << ("⛔️| Invalid character " + std::to_string(c) + " in l-system description") << std::endl;
         }
@@ -381,9 +384,9 @@ void draw3DLSystem(const LParser::LSystem3D& l_system, Lines2D& lines, const Col
     if (current == "") current = initiator;
 
     if (it == iterations) {
-        Vector3D H = Vector3D::point(1, 0, 0);
-        Vector3D L = Vector3D::point(1, 0, 0);
-        Vector3D U = Vector3D::point(1, 0, 0);
+        Vector3D h = Vector3D::point(1, 0, 0);
+        Vector3D l = Vector3D::point(0, 1, 0);
+        Vector3D u = Vector3D::point(0, 0, 1);
 
         double angleOffset = l_system.get_angle();
 
@@ -393,17 +396,29 @@ void draw3DLSystem(const LParser::LSystem3D& l_system, Lines2D& lines, const Col
 
 
         for (char c : current) {
-            if (c == '+') angle += angleOffset;
-            else if (c == '-') angle -= angleOffset;
-            else if (c == '(') stack.push(Triplet{ x, y, angle });
-            else if (c == ')') {
-                Triplet saved = stack.top();
-                stack.pop();
-
-                x = saved.first;
-                y = saved.second;
-                angle = saved.third;
+            if (c == '+') {
+                h = h * std::cos(angleOffset) + l * std::sin(angleOffset);
+                l = -h * std::sin(angleOffset) + l * std::cos(angleOffset);
+            } else if (c == '-') {
+                h = h * std::cos(-angleOffset) + l * std::sin(-angleOffset);
+                l = -h * std::sin(-angleOffset) + l * std::cos(-angleOffset);
+            } else if (c == '^') {
+                h = h * std::cos(angleOffset) + u * std::sin(angleOffset);
+                u = -h * std::sin(angleOffset) + u * std::cos(angleOffset);
+            } else if (c == '&') {
+                h = h * std::cos(-angleOffset) + u * std::sin(-angleOffset);
+                u = -h * std::sin(-angleOffset) + u * std::cos(-angleOffset);
+            } else if (c == '\\') {
+                l = l * std::cos(angleOffset) - u * std::sin(angleOffset);
+                u = l * std::sin(angleOffset) + u * std::cos(angleOffset);
+            } else if (c == '/') {
+                l = l * std::cos(-angleOffset) - u * std::sin(-angleOffset);
+                u = l * std::sin(-angleOffset) + u * std::cos(-angleOffset);
+            } else if (c == '|') {
+                h = -h;
+                l = -l;
             }
+
             else if (alphabet.find(c) != alphabet.end()) {
                 if (l_system.draw(c)) {
                     Point2D p1 = Point2D(x, y);
