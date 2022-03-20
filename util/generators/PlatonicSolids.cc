@@ -145,7 +145,7 @@ namespace PlatonicSolids {
         // Points
         std::vector<Vector3D> points;
         for (int i = 0; i < n; i++) {
-            Vector3D p = Vector3D::point(std::cos(2*i*M_PI/n), std::cos(2*i*M_PI/n), 0);
+            Vector3D p = Vector3D::point(std::cos(2*i*M_PI/n), std::sin(2*i*M_PI/n), 0);
             points.push_back(p);
         }
 

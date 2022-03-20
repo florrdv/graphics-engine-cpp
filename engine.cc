@@ -325,7 +325,8 @@ void draw2DLSystem(const LParser::LSystem2D& l_system, Lines2D& lines, const Col
 
                     Line2D line = Line2D(p1, p2, color);
                     lines.push_back(line);
-                } else {
+                }
+                else {
                     x += std::cos(angle * M_PI / 180);
                     y += std::sin(angle * M_PI / 180);
                 }
@@ -395,7 +396,7 @@ void draw3DLSystem(const LParser::LSystem3D& l_system, Figure& figure, const Col
         Vector3D u = Vector3D::point(0, 0, 1);
 
         double angleOffset = l_system.get_angle() * M_PI / 180;
-        
+
         std::stack<Vector3DQuadruplet> stack;
 
         for (char c : current) {
@@ -405,40 +406,47 @@ void draw3DLSystem(const LParser::LSystem3D& l_system, Figure& figure, const Col
 
                 h = newH;
                 l = newL;
-            } else if (c == '-') {
+            }
+            else if (c == '-') {
                 Vector3D newH = h * std::cos(-angleOffset) + l * std::sin(-angleOffset);
                 Vector3D newL = -h * std::sin(-angleOffset) + l * std::cos(-angleOffset);
 
                 h = newH;
                 l = newL;
-            } else if (c == '^') {
+            }
+            else if (c == '^') {
                 Vector3D newH = h * std::cos(angleOffset) + u * std::sin(angleOffset);
                 Vector3D newU = -h * std::sin(angleOffset) + u * std::cos(angleOffset);
 
                 h = newH;
                 u = newU;
-            } else if (c == '&') {
+            }
+            else if (c == '&') {
                 Vector3D newH = h * std::cos(-angleOffset) + u * std::sin(-angleOffset);
                 Vector3D newU = -h * std::sin(-angleOffset) + u * std::cos(-angleOffset);
 
                 h = newH;
                 u = newU;
-            } else if (c == '\\') {
+            }
+            else if (c == '\\') {
                 Vector3D newL = l * std::cos(angleOffset) - u * std::sin(angleOffset);
                 Vector3D newU = l * std::sin(angleOffset) + u * std::cos(angleOffset);
 
                 l = newL;
                 u = newU;
-            } else if (c == '/') {
+            }
+            else if (c == '/') {
                 Vector3D newL = l * std::cos(-angleOffset) - u * std::sin(-angleOffset);
                 Vector3D newU = l * std::sin(-angleOffset) + u * std::cos(-angleOffset);
 
                 l = newL;
                 u = newU;
-            } else if (c == '|') {
+            }
+            else if (c == '|') {
                 h = -h;
                 l = -l;
-            } else if (c == '(') stack.push(Vector3DQuadruplet{ cur, h, l, u });
+            }
+            else if (c == '(') stack.push(Vector3DQuadruplet{ cur, h, l, u });
             else if (c == ')') {
                 Vector3DQuadruplet saved = stack.top();
                 stack.pop();
@@ -447,7 +455,8 @@ void draw3DLSystem(const LParser::LSystem3D& l_system, Figure& figure, const Col
                 h = saved.second;
                 l = saved.third;
                 u = saved.fourth;
-            } else if (alphabet.find(c) != alphabet.end()) {
+            }
+            else if (alphabet.find(c) != alphabet.end()) {
                 if (l_system.draw(c)) {
                     Vector3D p1 = cur;
                     cur += h;
@@ -455,10 +464,11 @@ void draw3DLSystem(const LParser::LSystem3D& l_system, Figure& figure, const Col
 
                     figure.points.push_back(p1);
                     int i = figure.points.size() - 1;
-                    figure.points.push_back(p2);    
+                    figure.points.push_back(p2);
 
-                    figure.faces.push_back(Face({i, i + 1}));
-                } else cur += h;
+                    figure.faces.push_back(Face({ i, i + 1 }));
+                }
+                else cur += h;
             }
             else std::cout << ("⛔️| Invalid character " + std::to_string(c) + " in l-system description") << std::endl;
         }
@@ -553,7 +563,15 @@ img::EasyImage wireFrame(const ini::Configuration& c) {
         else if (type == "Octahedron") figure = PlatonicSolids::createOctahedron(color);
         else if (type == "Icosahedron") figure = PlatonicSolids::createIcosahedron(color);
         else if (type == "Dodecahedron") figure = PlatonicSolids::createDodecahedron(color);
-        else if (type == "3DLSystem") {
+        else if (type == "Cone") {
+            int n;
+            int h;
+
+            if (!base["n"].as_int_if_exists(n)) std::cout << "⛔️| Failed to fetch n" << std::endl;
+            if (!base["height"].as_int_if_exists(h)) std::cout << "⛔️| Failed to fetch h" << std::endl;
+
+            figure = PlatonicSolids::createCone(color, n, h);
+        } else if (type == "3DLSystem") {
             std::string inputFile;
             if (!base["inputfile"].as_string_if_exists(inputFile)) std::cout << "⛔️| Failed to fetch # points" << std::endl;
 
