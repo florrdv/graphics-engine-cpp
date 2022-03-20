@@ -8,4 +8,6 @@
   - Chessboard
   - Eye
 - L-systems
+  - Basic L-systems
   - L-systems with brackets
+  - Stochastic L-systems [stochastic-example.L2D](stochastic-example.L2D)
