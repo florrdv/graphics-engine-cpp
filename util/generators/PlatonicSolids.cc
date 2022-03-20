@@ -109,6 +109,18 @@ namespace PlatonicSolids {
         return Figure({ p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11 }, { f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19}, c);
     }
 
+    // UNFINISHED
+    Figure createDodecahedron(Color c) {
+        Figure ico = createIcosahedron(c);
+        // for (auto face : ico.faces) { 
+            // Vector3D p0 = ico.points[face.pointIndexes[0]];
+            // Vector3D p1 = ico.points[face.pointIndexes[1]];
+            // Vector3D p2 = ico.points[face.pointIndexes[2]];            
+        // }
+
+        return ico;
+    }
+
     Figure createSphere(Color c, const double radius, const int n) {
         Figure intermediate = createIcosahedron(c);
 

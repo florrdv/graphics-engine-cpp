@@ -552,6 +552,7 @@ img::EasyImage wireFrame(const ini::Configuration& c) {
         else if (type == "Tetrahedron") figure = PlatonicSolids::createTetrahedron(color);
         else if (type == "Octahedron") figure = PlatonicSolids::createOctahedron(color);
         else if (type == "Icosahedron") figure = PlatonicSolids::createIcosahedron(color);
+        else if (type == "Dodecahedron") figure = PlatonicSolids::createDodecahedron(color);
         else if (type == "3DLSystem") {
             std::string inputFile;
             if (!base["inputfile"].as_string_if_exists(inputFile)) std::cout << "⛔️| Failed to fetch # points" << std::endl;
