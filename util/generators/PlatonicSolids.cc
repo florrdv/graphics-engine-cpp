@@ -209,6 +209,42 @@ namespace PlatonicSolids {
 
         return intermediate;
     }
+
+
+    Figure createCylinder(Color c, const int n, const double h) {
+        // Points
+        std::vector<Vector3D> points;
+        for (int i = 0; i < n; i++) {
+            Vector3D p = Vector3D::point(std::cos(2*i*M_PI/n), std::sin(2*i*M_PI/n), 0);
+            points.push_back(p);
+        }
+
+        for (int i = 0; i < n; i++) {
+            Vector3D p = Vector3D::point(std::cos(2*i*M_PI/n), std::sin(2*i*M_PI/n), h);
+            points.push_back(p);
+        }
+
+
+        // Faces
+        std::vector<Face> faces;
+        for (int i = 0; i < n; i++) {
+            Face f = Face({ i, (i + 1) % n, n + (i + 1) % n, n + i});
+            faces.push_back(f);
+        }
+
+        std::vector<int> topPoints;
+        std::vector<int> bottomPoints;
+
+        for (int i = 0; i < n; i++) {
+            topPoints.push_back(i);
+            bottomPoints.push_back(n + i);
+        }
+
+        faces.push_back(Face(topPoints));
+        faces.push_back(Face(bottomPoints));
+
+        return Figure(points, faces, c);
+    }
 }
 
 #endif // __PROJECTS_GRAPHICS_ENGINE_CPP_UTIL_GENERATORS_PLATONICSOLIDS_CC_

@@ -563,15 +563,25 @@ img::EasyImage wireFrame(const ini::Configuration& c) {
         else if (type == "Octahedron") figure = PlatonicSolids::createOctahedron(color);
         else if (type == "Icosahedron") figure = PlatonicSolids::createIcosahedron(color);
         else if (type == "Dodecahedron") figure = PlatonicSolids::createDodecahedron(color);
-        else if (type == "Cone") {
+        else if (type == "Cylinder") {
             int n;
-            int h;
+            double h;
 
             if (!base["n"].as_int_if_exists(n)) std::cout << "⛔️| Failed to fetch n" << std::endl;
-            if (!base["height"].as_int_if_exists(h)) std::cout << "⛔️| Failed to fetch h" << std::endl;
+            if (!base["height"].as_double_if_exists(h)) std::cout << "⛔️| Failed to fetch h" << std::endl;
+
+            figure = PlatonicSolids::createCylinder(color, n, h);
+        }
+        else if (type == "Cone") {
+            int n;
+            double h;
+
+            if (!base["n"].as_int_if_exists(n)) std::cout << "⛔️| Failed to fetch n" << std::endl;
+            if (!base["height"].as_double_if_exists(h)) std::cout << "⛔️| Failed to fetch h" << std::endl;
 
             figure = PlatonicSolids::createCone(color, n, h);
-        } else if (type == "3DLSystem") {
+        }
+        else if (type == "3DLSystem") {
             std::string inputFile;
             if (!base["inputfile"].as_string_if_exists(inputFile)) std::cout << "⛔️| Failed to fetch # points" << std::endl;
 
