@@ -124,15 +124,15 @@ namespace PlatonicSolids {
             p.push_back(constructed);
         }
 
-        Face f0 = Face({ 0, 5, 6, 7, 1 });
-        Face f1= Face({ 0, 1, 2, 3, 4 });
+        Face f0 = Face({ 0, 1, 2, 3, 4 });
+        Face f1 = Face({ 0, 5, 6, 7, 1 });
         Face f2 = Face({ 1, 7, 8, 9, 2 });
         Face f3 = Face({ 2, 9, 10, 11, 3 });
 
         Face f4 = Face({ 3, 11, 12, 13, 4 });
         Face f5 = Face({ 4, 13, 14, 5, 0 });
         Face f6 = Face({ 19, 18, 17, 16, 15 });
-        Face f7 = Face({ 19, 14, 13, 24, 18 });
+        Face f7 = Face({ 19, 14, 13, 14, 18 });
 
         Face f8 = Face({ 18, 12, 11, 10, 17 });
         Face f9 = Face({ 17, 10, 9, 8, 16 });
