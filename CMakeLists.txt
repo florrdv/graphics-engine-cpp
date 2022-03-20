@@ -32,6 +32,14 @@ set(engine_sources
     util/Line2D.h
     util/Point2D.cc
     util/Point2D.h
+
+    util/Figure.h
+    util/Figure.cc
+    util/Face.h
+    util/Face.cc
+
+    util/generators/Transformations.cc
+    util/generators/PlatonicSolids.cc
 )
 
 ############################################################

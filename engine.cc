@@ -16,6 +16,7 @@
 #include "util/Figure.h"
 #include "util/Face.h"
 #include "util/generators/Transformations.cc"
+#include "util/generators/PlatonicSolids.cc"
 
 #include "lib/l_parser/l_parser.h"
 
@@ -117,10 +118,10 @@ Lines2D projectFig(const Figure& fig) {
     return lines;
 }
 
-Lines2D ProjectAll(const Figures3D &figs) { 
+Lines2D ProjectAll(const Figures3D& figs) {
     Lines2D lines;
 
-    for (auto fig : figs) { 
+    for (auto fig : figs) {
         Lines2D figLines = projectFig(fig);
         lines.insert(lines.end(), figLines.begin(), figLines.end());
     }
@@ -390,51 +391,66 @@ img::EasyImage wireFrame(const ini::Configuration& c) {
         if (!base["color"].as_double_tuple_if_exists(colorRaw)) std::cout << "⛔️| Failed to fetch color" << std::endl;
         Color color = Color(colorRaw[0], colorRaw[1], colorRaw[2]);
 
-        int nrPoints;
-        int nrLines;
+        std::string type;
+        if (!base["type"].as_string_if_exists(type)) std::cout << "⛔️| Failed to fetch type" << std::endl;
+
         double scale;
+        std::vector<double> center;
         int rotateX;
         int rotateY;
         int rotateZ;
-        if (!base["nrPoints"].as_int_if_exists(nrPoints)) std::cout << "⛔️| Failed to fetch # points" << std::endl;
-        if (!base["nrLines"].as_int_if_exists(nrLines)) std::cout << "⛔️| Failed to fetch # lines" << std::endl;
         if (!base["scale"].as_double_if_exists(scale)) std::cout << "⛔️| Failed to fetch scale" << std::endl;
+        if (!base["center"].as_double_tuple_if_exists(center)) std::cout << "⛔️| Failed to fetch center" << std::endl;
         if (!base["rotateX"].as_int_if_exists(rotateX)) std::cout << "⛔️| Failed to fetch rotateX" << std::endl;
         if (!base["rotateY"].as_int_if_exists(rotateY)) std::cout << "⛔️| Failed to fetch rotateY" << std::endl;
         if (!base["rotateZ"].as_int_if_exists(rotateZ)) std::cout << "⛔️| Failed to fetch rotateZ" << std::endl;
 
-        // Read points
-        std::vector<Vector3D> vectors;
-        for (int i = 0; i < nrPoints; i++) {
-            std::vector<double> p;
-            auto f = "point" + std::to_string(i);
-            if (!base[f].as_double_tuple_if_exists(p)) break;
+        if (type == "LineDrawing") {
+            int nrPoints;
+            int nrLines;
+            if (!base["nrPoints"].as_int_if_exists(nrPoints)) std::cout << "⛔️| Failed to fetch # points" << std::endl;
+            if (!base["nrLines"].as_int_if_exists(nrLines)) std::cout << "⛔️| Failed to fetch # lines" << std::endl;
 
-            Vector3D vector = Vector3D::point(p[0], p[1], p[2]);
-            vectors.push_back(vector);
+            // Read points
+            std::vector<Vector3D> vectors;
+            for (int i = 0; i < nrPoints; i++) {
+                std::vector<double> p;
+                auto f = "point" + std::to_string(i);
+                if (!base[f].as_double_tuple_if_exists(p)) break;
+
+                Vector3D vector = Vector3D::point(p[0], p[1], p[2]);
+                vectors.push_back(vector);
+            }
+
+            // Read faces
+            std::vector<Face> faces;
+            for (int i = 0; i < nrLines; i++) {
+                std::vector<int> l;
+                auto f = "line" + std::to_string(i);
+                if (!base[f].as_int_tuple_if_exists(l)) break;
+
+                Face face = Face(l);
+                faces.push_back(face);
+
+                Figure figure = Figure(vectors, faces, color);
+
+                Matrix rotateMatrixX = transformations::rotateX(rotateX * M_PI / 180);
+                Matrix rotateMatrixY = transformations::rotateY(rotateY * M_PI / 180);
+                Matrix rotateMatrixZ = transformations::rotateZ(rotateZ * M_PI / 180);
+                applyTransformation(figure, rotateMatrixX);
+                applyTransformation(figure, rotateMatrixY);
+                applyTransformation(figure, rotateMatrixZ);
+
+                figures.push_back(figure);
+            }
+        } else if (type == "Cube") {
+            Figure figure = PlatonicSolids::createCube(color);
+            figures.push_back(figure);
         }
 
-        // Read faces
-        std::vector<Face> faces;
-        for (int i = 0; i < nrLines; i++) {
-            std::vector<int> l;
-            auto f = "line" + std::to_string(i);
-            if (!base[f].as_int_tuple_if_exists(l)) break;
 
-            Face face = Face(l);
-            faces.push_back(face);
-        }
 
-        Figure figure = Figure(vectors, faces, color);
 
-        Matrix rotateMatrixX = transformations::rotateX(rotateX * M_PI / 180);
-        Matrix rotateMatrixY = transformations::rotateY(rotateY * M_PI / 180);
-        Matrix rotateMatrixZ = transformations::rotateZ(rotateZ * M_PI / 180);
-        applyTransformation(figure, rotateMatrixX);
-        applyTransformation(figure, rotateMatrixY);
-        applyTransformation(figure, rotateMatrixZ);
-
-        figures.push_back(figure);
     }
 
     Matrix eyePointTransMatrix = transformations::eyePointTrans(eye);
