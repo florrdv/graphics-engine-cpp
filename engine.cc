@@ -548,9 +548,8 @@ img::EasyImage wireFrame(const ini::Configuration& c) {
 
             }
         }
-        else if (type == "Cube") {
-            figure = PlatonicSolids::createCube(color);
-        }
+        else if (type == "Cube") figure = PlatonicSolids::createCube(color);
+        else if (type == "Tetrahedron") figure = PlatonicSolids::createTetrahedron(color);
         else if (type == "3DLSystem") {
             std::string inputFile;
             if (!base["inputfile"].as_string_if_exists(inputFile)) std::cout << "⛔️| Failed to fetch # points" << std::endl;
