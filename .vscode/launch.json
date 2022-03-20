@@ -1,13 +1,14 @@
 {
     "version": "0.2.0",
     "configurations": [
+        
         {
             "name": "(gdb) Launch",
             "type": "lldb",
             "request": "launch",
             // Resolved by CMake Tools:
             "program": "${command:cmake.buildDirectory}/engine",
-            "args": ["misc/wireframes/wireframes016.ini"],
+            "args": ["misc/wireframes/wireframes018.ini"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [
