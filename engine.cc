@@ -456,6 +456,12 @@ img::EasyImage wireFrame(const ini::Configuration& c) {
         applyTransformation(figure, rotateMatrixY);
         applyTransformation(figure, rotateMatrixZ);
 
+        Matrix scaleMatrix = transformations::scaleFigure(scale);
+        applyTransformation(figure, scaleMatrix);
+
+        Matrix translateMatrix = transformations::translate(Vector3D::point(center[0], center[1], center[2]));
+        applyTransformation(figure, translateMatrix);
+
         figures.push_back(figure);
 
     }
