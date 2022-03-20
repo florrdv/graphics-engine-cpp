@@ -42,6 +42,28 @@ namespace PlatonicSolids {
         return Figure({ p0, p1, p2, p3, p4, p5, p6, p7 }, { f0, f1, f2, f3 }, c);
     }
 
+    Figure createOctahedron(Color c) {
+        Vector3D p0 = Vector3D::point(1, 0, 0);
+        Vector3D p1 = Vector3D::point(0, 1, 0);
+        Vector3D p2 = Vector3D::point(-1, 0, 0);
+        Vector3D p3 = Vector3D::point(0, -1, 0);
+
+        Vector3D p4 = Vector3D::point(0, 0, -1);
+        Vector3D p5 = Vector3D::point(0, 0, 1);
+
+        Face f0 = Face({ 0, 1, 5 });
+        Face f1 = Face({ 1, 2, 5 });
+        Face f2 = Face({ 2, 3, 5 });
+        Face f3 = Face({ 3, 0, 5 });
+
+        Face f4 = Face({ 1, 0, 4 });
+        Face f5 = Face({ 2, 1, 4 });
+        Face f6 = Face({ 3, 2, 4 });
+        Face f7 = Face({ 0, 3, 4 });
+
+        return Figure({ p0, p1, p2, p3, p4, p5 }, { f0, f1, f2, f3, f4, f5, f6, f7 }, c);
+    }
+
     Figure createSphere(Color c, const double radius, const int n) {
         Figure intermediate = createTetrahedron(c);
 
@@ -75,11 +97,11 @@ namespace PlatonicSolids {
             intermediate.faces = newFaces;
         }
 
-        for (Vector3D &point : intermediate.points) { 
+        for (Vector3D& point : intermediate.points) {
             double x = point.x;
             double y = point.y;
             double z = point.z;
-            double r = std::sqrt(x * x +  y*y + z*z);
+            double r = std::sqrt(x * x + y * y + z * z);
             point.x = x / r;
             point.y = y / r;
             point.z = z / r;
