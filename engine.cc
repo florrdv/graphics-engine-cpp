@@ -412,6 +412,7 @@ img::EasyImage wireFrame(const ini::Configuration& c) {
         if (!base["rotateY"].as_int_if_exists(rotateY)) std::cout << "⛔️| Failed to fetch rotateY" << std::endl;
         if (!base["rotateZ"].as_int_if_exists(rotateZ)) std::cout << "⛔️| Failed to fetch rotateZ" << std::endl;
 
+        Figure figure;
         if (type == "LineDrawing") {
             int nrPoints;
             int nrLines;
@@ -439,33 +440,23 @@ img::EasyImage wireFrame(const ini::Configuration& c) {
                 Face face = Face(l);
                 faces.push_back(face);
 
-                Figure figure = Figure(vectors, faces, color);
+                figure = Figure(vectors, faces, color);
 
-                Matrix rotateMatrixX = transformations::rotateX(rotateX * M_PI / 180);
-                Matrix rotateMatrixY = transformations::rotateY(rotateY * M_PI / 180);
-                Matrix rotateMatrixZ = transformations::rotateZ(rotateZ * M_PI / 180);
-                applyTransformation(figure, rotateMatrixX);
-                applyTransformation(figure, rotateMatrixY);
-                applyTransformation(figure, rotateMatrixZ);
-
-                figures.push_back(figure);
             }
         }
         else if (type == "Cube") {
-            Figure figure = PlatonicSolids::createCube(color);
-
-            Matrix rotateMatrixX = transformations::rotateX(rotateX * M_PI / 180);
-            Matrix rotateMatrixY = transformations::rotateY(rotateY * M_PI / 180);
-            Matrix rotateMatrixZ = transformations::rotateZ(rotateZ * M_PI / 180);
-            applyTransformation(figure, rotateMatrixX);
-            applyTransformation(figure, rotateMatrixY);
-            applyTransformation(figure, rotateMatrixZ);
-
-            figures.push_back(figure);
+            figure = PlatonicSolids::createCube(color);
         }
 
 
+        Matrix rotateMatrixX = transformations::rotateX(rotateX * M_PI / 180);
+        Matrix rotateMatrixY = transformations::rotateY(rotateY * M_PI / 180);
+        Matrix rotateMatrixZ = transformations::rotateZ(rotateZ * M_PI / 180);
+        applyTransformation(figure, rotateMatrixX);
+        applyTransformation(figure, rotateMatrixY);
+        applyTransformation(figure, rotateMatrixZ);
 
+        figures.push_back(figure);
 
     }
 
