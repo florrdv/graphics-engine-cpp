@@ -281,7 +281,7 @@ img::EasyImage introLines(const ini::Configuration& configuration) {
     return img;
 }
 
-struct Triplet {
+struct DoubleTriplet {
     double  first, second, third;
 };
 
@@ -297,7 +297,7 @@ void draw2DLSystem(const LParser::LSystem2D& l_system, Lines2D& lines, const Col
         double angle = l_system.get_starting_angle();
         double angleOffset = l_system.get_angle();
 
-        std::stack<Triplet> stack;
+        std::stack<DoubleTriplet> stack;
         double x = 0;
         double y = 0;
 
@@ -305,9 +305,9 @@ void draw2DLSystem(const LParser::LSystem2D& l_system, Lines2D& lines, const Col
         for (char c : current) {
             if (c == '+') angle += angleOffset;
             else if (c == '-') angle -= angleOffset;
-            else if (c == '(') stack.push(Triplet{ x, y, angle });
+            else if (c == '(') stack.push(DoubleTriplet{ x, y, angle });
             else if (c == ')') {
-                Triplet saved = stack.top();
+                DoubleTriplet saved = stack.top();
                 stack.pop();
 
                 x = saved.first;
@@ -376,6 +376,10 @@ img::EasyImage LSystem(const ini::Configuration& configuration) {
     return img;
 }
 
+struct Vector3DQuadruplet {
+    Vector3D first, second, third, fourth;
+};
+
 void draw3DLSystem(const LParser::LSystem3D& l_system, Figure& figure, const Color color, std::string current = "", int it = 0) {
     int iterations = l_system.get_nr_iterations();
     std::string initiator = l_system.get_initiator();
@@ -391,6 +395,8 @@ void draw3DLSystem(const LParser::LSystem3D& l_system, Figure& figure, const Col
         Vector3D u = Vector3D::point(0, 0, 1);
 
         double angleOffset = l_system.get_angle();
+        
+        std::stack<Vector3DQuadruplet> stack;
 
         for (char c : current) {
             if (c == '+') {
@@ -414,9 +420,16 @@ void draw3DLSystem(const LParser::LSystem3D& l_system, Figure& figure, const Col
             } else if (c == '|') {
                 h = -h;
                 l = -l;
-            }
+            } else if (c == '(') stack.push(Vector3DQuadruplet{ cur, h, l, u });
+            else if (c == ')') {
+                Vector3DQuadruplet saved = stack.top();
+                stack.pop();
 
-            else if (alphabet.find(c) != alphabet.end()) {
+                cur = saved.first;
+                h = saved.second;
+                l = saved.third;
+                u = saved.fourth;
+            } else if (alphabet.find(c) != alphabet.end()) {
                 if (l_system.draw(c)) {
                     Vector3D p1 = cur;
                     cur += h;
@@ -530,6 +543,8 @@ img::EasyImage wireFrame(const ini::Configuration& c) {
             std::ifstream input_stream(inputFile);
             input_stream >> l_system;
             input_stream.close();
+
+            draw3DLSystem(l_system, figure, color);
         }
 
 
