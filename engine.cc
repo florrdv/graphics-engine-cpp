@@ -376,7 +376,7 @@ img::EasyImage LSystem(const ini::Configuration& configuration) {
     return img;
 }
 
-void draw3DLSystem(const LParser::LSystem3D& l_system, Lines2D& lines, const Color color, std::string current = "", int it = 0) {
+void draw3DLSystem(const LParser::LSystem3D& l_system, Figure& figure, const Color color, std::string current = "", int it = 0) {
     int iterations = l_system.get_nr_iterations();
     std::string initiator = l_system.get_initiator();
     std::set<char> alphabet = l_system.get_alphabet();
@@ -384,16 +384,13 @@ void draw3DLSystem(const LParser::LSystem3D& l_system, Lines2D& lines, const Col
     if (current == "") current = initiator;
 
     if (it == iterations) {
+        Vector3D cur = Vector3D::point(1, 0, 0);
+
         Vector3D h = Vector3D::point(1, 0, 0);
         Vector3D l = Vector3D::point(0, 1, 0);
         Vector3D u = Vector3D::point(0, 0, 1);
 
         double angleOffset = l_system.get_angle();
-
-        std::stack<Triplet> stack;
-        double x = 0;
-        double y = 0;
-
 
         for (char c : current) {
             if (c == '+') {
@@ -421,16 +418,18 @@ void draw3DLSystem(const LParser::LSystem3D& l_system, Lines2D& lines, const Col
 
             else if (alphabet.find(c) != alphabet.end()) {
                 if (l_system.draw(c)) {
-                    Point2D p1 = Point2D(x, y);
+                    Vector3D p1 = cur;
+                    cur += h;
+                    Vector3D p2 = cur;
 
-                    x += std::cos(angle * M_PI / 180);
-                    y += std::sin(angle * M_PI / 180);
+                    int i = figure.points.size() - 1;
+                    figure.points.push_back(p1);
+                    figure.points.push_back(p2);    
 
-                    Point2D p2 = Point2D(x, y);
-
-                    Line2D line = Line2D(p1, p2, color);
-                    lines.push_back(line);
+                    figure.faces.push_back(Face({i, i + 1}));
                 }
+
+                cur += h;
             }
             else std::cout << ("⛔️| Invalid character " + std::to_string(c) + " in l-system description") << std::endl;
         }
@@ -446,7 +445,7 @@ void draw3DLSystem(const LParser::LSystem3D& l_system, Lines2D& lines, const Col
         }
     }
 
-    draw3DLSystem(l_system, lines, color, replaced, it + 1);
+    draw3DLSystem(l_system, figure, color, replaced, it + 1);
 }
 
 img::EasyImage wireFrame(const ini::Configuration& c) {
