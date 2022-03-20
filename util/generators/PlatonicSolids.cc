@@ -64,8 +64,53 @@ namespace PlatonicSolids {
         return Figure({ p0, p1, p2, p3, p4, p5 }, { f0, f1, f2, f3, f4, f5, f6, f7 }, c);
     }
 
+    Figure createIcosahedron(Color c) {
+        Vector3D p0  = Vector3D::point(0, 0, sqrt(5)/2);
+
+        Vector3D p1  = Vector3D::point(std::cos((2 - 2)*2*M_PI/5), std::sin((2 - 2)*2*M_PI/5), 0.5);
+        Vector3D p2  = Vector3D::point(std::cos((3 - 2)*2*M_PI/5), std::sin((3 - 2)*2*M_PI/5), 0.5);
+        Vector3D p3  = Vector3D::point(std::cos((4 - 2)*2*M_PI/5), std::sin((4 - 2)*2*M_PI/5), 0.5);
+        Vector3D p4  = Vector3D::point(std::cos((5 - 2)*2*M_PI/5), std::sin((5 - 2)*2*M_PI/5), 0.5);
+        Vector3D p5  = Vector3D::point(std::cos((6 - 2)*2*M_PI/5), std::sin((6 - 2)*2*M_PI/5), 0.5);
+
+        Vector3D p6  = Vector3D::point(std::cos(M_PI/5+(7 -7)*2*M_PI/5), std::sin(M_PI/5+(7 -7)*2*M_PI/5), -0.5);
+        Vector3D p7  = Vector3D::point(std::cos(M_PI/5+(8 -7)*2*M_PI/5), std::sin(M_PI/5+(8 -7)*2*M_PI/5), -0.5);
+        Vector3D p8  = Vector3D::point(std::cos(M_PI/5+(9 -7)*2*M_PI/5), std::sin(M_PI/5+(9 -7)*2*M_PI/5), -0.5);
+        Vector3D p9  = Vector3D::point(std::cos(M_PI/5+(10-7)*2*M_PI/5), std::sin(M_PI/5+(10-7)*2*M_PI/5), -0.5);
+        Vector3D p10 = Vector3D::point(std::cos(M_PI/5+(11-7)*2*M_PI/5), std::sin(M_PI/5+(11-7)*2*M_PI/5), -0.5);
+
+        Vector3D p11 = Vector3D::point(0, 0, -sqrt(5)/2);
+
+        Face f0 = Face({ 0, 1,  2 });
+        Face f1 = Face({ 0, 2,  3 });
+        Face f2 = Face({ 0, 3,  4 });
+        Face f3 = Face({ 0, 4,  5 });
+
+        Face f4 = Face({ 0, 5,  1 });
+        Face f5 = Face({ 1, 6,  2 });
+        Face f6 = Face({ 2, 6,  7 });
+        Face f7 = Face({ 2, 7,  3 });
+
+        Face f8 = Face({ 3, 7,  8 });
+        Face f9 = Face({ 3, 8,  4 });
+        Face f10 = Face({ 4, 8,  9 });
+        Face f11 = Face({ 4, 9,  5 });
+
+        Face f12 = Face({ 5, 9,  10 });
+        Face f13 = Face({ 5, 10, 1 });
+        Face f14 = Face({ 1, 10, 6 });
+        Face f15 = Face({ 11, 7, 6 });
+
+        Face f16 = Face({ 11, 8, 7 });
+        Face f17 = Face({ 11, 9, 8 });
+        Face f18 = Face({ 11, 10, 9 });
+        Face f19 = Face({ 11, 6, 10 });
+
+        return Figure({ p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11 }, { f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19}, c);
+    }
+
     Figure createSphere(Color c, const double radius, const int n) {
-        Figure intermediate = createTetrahedron(c);
+        Figure intermediate = createIcosahedron(c);
 
         for (int i = 0; i < n; i++) {
             std::vector<Face> newFaces;
