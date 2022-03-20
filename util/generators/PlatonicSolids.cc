@@ -109,7 +109,6 @@ namespace PlatonicSolids {
         return Figure({ p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11 }, { f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19}, c);
     }
 
-    // UNFINISHED
     Figure createDodecahedron(Color c) {
         Figure ico = createIcosahedron(c);
 
@@ -141,6 +140,29 @@ namespace PlatonicSolids {
 
         return Figure(p, { f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11 }, c);
     }
+
+    Figure createCone(Color c, const int n, const double h) {
+        // Points
+        std::vector<Vector3D> points;
+        for (int i = 0; i < n; i++) {
+            Vector3D p = Vector3D::point(std::cos(2*i*M_PI/n), std::cos(2*i*M_PI/n), 0);
+            points.push_back(p);
+        }
+
+        points.push_back(Vector3D::point(0, 0, h));
+
+        // Faces
+        std::vector<Face> faces;
+        for (int i = 0; i < n; i++) {
+            Face f = Face({ i, (i + 1) % n, n });
+            faces.push_back(f);
+        }
+
+        faces.push_back(Face({ n - 1, n-2, 0 }));
+
+        return Figure(points, faces, c);
+    }
+
 
     Figure createSphere(Color c, const double radius, const int n) {
         Figure intermediate = createIcosahedron(c);
