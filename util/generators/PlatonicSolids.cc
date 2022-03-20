@@ -112,13 +112,34 @@ namespace PlatonicSolids {
     // UNFINISHED
     Figure createDodecahedron(Color c) {
         Figure ico = createIcosahedron(c);
-        // for (auto face : ico.faces) { 
-            // Vector3D p0 = ico.points[face.pointIndexes[0]];
-            // Vector3D p1 = ico.points[face.pointIndexes[1]];
-            // Vector3D p2 = ico.points[face.pointIndexes[2]];            
-        // }
 
-        return ico;
+        std::vector<Vector3D> p;
+        for (auto face : ico.faces) { 
+            Vector3D p0 = ico.points[face.pointIndexes[0]];
+            Vector3D p1 = ico.points[face.pointIndexes[1]];
+            Vector3D p2 = ico.points[face.pointIndexes[2]];
+
+            Vector3D sum = p0 + p1 + p2;
+            Vector3D constructed = Vector3D::point(sum.x / 3, sum.y / 3, sum.z / 3);
+            p.push_back(constructed);
+        }
+
+        Face f0 = Face({ 0, 5, 6, 7, 1 });
+        Face f1= Face({ 0, 1, 2, 3, 4 });
+        Face f2 = Face({ 1, 7, 8, 9, 2 });
+        Face f3 = Face({ 2, 9, 10, 11, 3 });
+
+        Face f4 = Face({ 3, 11, 12, 13, 4 });
+        Face f5 = Face({ 4, 13, 14, 5, 0 });
+        Face f6 = Face({ 19, 18, 17, 16, 15 });
+        Face f7 = Face({ 19, 14, 13, 24, 18 });
+
+        Face f8 = Face({ 18, 12, 11, 10, 17 });
+        Face f9 = Face({ 17, 10, 9, 8, 16 });
+        Face f10 = Face({ 16, 8, 7, 6, 15 });
+        Face f11 = Face({ 15, 6, 5, 14, 19 });
+
+        return Figure(p, { f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11 }, c);
     }
 
     Figure createSphere(Color c, const double radius, const int n) {
