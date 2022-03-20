@@ -1,7 +1,7 @@
 #include <cmath>
 
-#include "../lib/vector3d/vector3d.h"
-#include "Figure.h"
+#include "../../lib/vector3d/vector3d.h"
+#include "../Figure.h"
 
 namespace transformations {
     Matrix scaleFigure(const double scale) {

@@ -15,7 +15,7 @@
 #include "util/Color.h"
 #include "util/Figure.h"
 #include "util/Face.h"
-#include "util/Transformations.cc"
+#include "util/generators/Transformations.cc"
 
 #include "lib/l_parser/l_parser.h"
 
