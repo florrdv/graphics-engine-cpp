@@ -245,6 +245,38 @@ namespace PlatonicSolids {
 
         return Figure(points, faces, c);
     }
+
+    Figure createTorus(Color c, const double r, const double R, const int n, const int m) {
+        std::vector<Vector3D> points;
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                double u = 2 * i * M_PI / n;
+                double v = 2 * j * M_PI / m;
+
+                double x = (R + r * std::cos(v)) * std::cos(u);
+                double y = (R + r * std::cos(v)) * std::sin(u);
+                double z = r * std::sin(v);
+
+                points.push_back(Vector3D::point(x, y, z));
+            }
+        }
+
+        std::vector<Face> faces;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                Face f = Face({ i           + j             * m,
+                                (i+1) % n   + j             * m,
+                                (i+1) % n   + (j + 1) % m   * m,
+                                i           + (j + 1) % m   * m
+                            });
+
+                faces.push_back(f);
+            }
+        }
+
+        return Figure(points, faces, c);
+    }
 }
 
 #endif // __PROJECTS_GRAPHICS_ENGINE_CPP_UTIL_GENERATORS_PLATONICSOLIDS_CC_
