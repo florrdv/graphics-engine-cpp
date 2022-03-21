@@ -563,7 +563,19 @@ img::EasyImage wireFrame(const ini::Configuration& c) {
         else if (type == "Octahedron") figure = PlatonicSolids::createOctahedron(color);
         else if (type == "Icosahedron") figure = PlatonicSolids::createIcosahedron(color);
         else if (type == "Dodecahedron") figure = PlatonicSolids::createDodecahedron(color);
-        else if (type == "Sphere") {
+        else if (type == "Torus") {
+            double r;
+            double R;
+            int n;
+            int m;
+
+            if (!base["r"].as_double_if_exists(r)) std::cout << "⛔️| Failed to fetch r" << std::endl;
+            if (!base["R"].as_double_if_exists(R)) std::cout << "⛔️| Failed to fetch R" << std::endl;
+            if (!base["n"].as_int_if_exists(n)) std::cout << "⛔️| Failed to fetch n" << std::endl;
+            if (!base["m"].as_int_if_exists(m)) std::cout << "⛔️| Failed to fetch m" << std::endl;
+
+            figure = PlatonicSolids::createTorus(color, r, R, n, m);
+        } else if (type == "Sphere") {
             int n;
 
             if (!base["n"].as_int_if_exists(n)) std::cout << "⛔️| Failed to fetch n" << std::endl;
