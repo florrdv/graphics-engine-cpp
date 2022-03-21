@@ -182,8 +182,8 @@ namespace PlatonicSolids {
                 Vector3D f = (b + c) / 2.0;
 
                 int dIndex = intermediate.points.size();
-                int eIndex = intermediate.points.size();
-                int fIndex = intermediate.points.size();
+                int eIndex = intermediate.points.size() + 1;
+                int fIndex = intermediate.points.size() + 2;
                 intermediate.points.push_back(d);
                 intermediate.points.push_back(e);
                 intermediate.points.push_back(f);

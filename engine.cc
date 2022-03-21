@@ -563,7 +563,12 @@ img::EasyImage wireFrame(const ini::Configuration& c) {
         else if (type == "Octahedron") figure = PlatonicSolids::createOctahedron(color);
         else if (type == "Icosahedron") figure = PlatonicSolids::createIcosahedron(color);
         else if (type == "Dodecahedron") figure = PlatonicSolids::createDodecahedron(color);
-        else if (type == "Cylinder") {
+        else if (type == "Sphere") {
+            int n;
+
+            if (!base["n"].as_int_if_exists(n)) std::cout << "⛔️| Failed to fetch n" << std::endl;
+            figure = PlatonicSolids::createSphere(color, 1, n);
+        } else if (type == "Cylinder") {
             int n;
             double h;
 
