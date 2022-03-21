@@ -517,14 +517,14 @@ img::EasyImage wireFrame(const ini::Configuration& c) {
 
         double scale;
         std::vector<double> center;
-        int rotateX;
-        int rotateY;
-        int rotateZ;
+        double rotateX;
+        double rotateY;
+        double rotateZ;
         if (!base["scale"].as_double_if_exists(scale)) std::cout << "⛔️| Failed to fetch scale" << std::endl;
         if (!base["center"].as_double_tuple_if_exists(center)) std::cout << "⛔️| Failed to fetch center" << std::endl;
-        if (!base["rotateX"].as_int_if_exists(rotateX)) std::cout << "⛔️| Failed to fetch rotateX" << std::endl;
-        if (!base["rotateY"].as_int_if_exists(rotateY)) std::cout << "⛔️| Failed to fetch rotateY" << std::endl;
-        if (!base["rotateZ"].as_int_if_exists(rotateZ)) std::cout << "⛔️| Failed to fetch rotateZ" << std::endl;
+        if (!base["rotateX"].as_double_if_exists(rotateX)) std::cout << "⛔️| Failed to fetch rotateX" << std::endl;
+        if (!base["rotateY"].as_double_if_exists(rotateY)) std::cout << "⛔️| Failed to fetch rotateY" << std::endl;
+        if (!base["rotateZ"].as_double_if_exists(rotateZ)) std::cout << "⛔️| Failed to fetch rotateZ" << std::endl;
 
         Figure figure;
         if (type == "LineDrawing") {
