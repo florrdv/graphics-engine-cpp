@@ -1,10 +1,6 @@
-#ifndef __PROJECTS_GRAPHICS_ENGINE_CPP_UTIL_GENERATORS_PLATONICSOLIDS_CC_
-#define __PROJECTS_GRAPHICS_ENGINE_CPP_UTIL_GENERATORS_PLATONICSOLIDS_CC_
+#include "PlatonicSolids.h"
 
 #include <cmath>
-
-#include "../Figure.h"
-#include "../Face.h"
 
 namespace PlatonicSolids {
     Figure createTetrahedron(Color c) {
@@ -278,5 +274,3 @@ namespace PlatonicSolids {
         return Figure(points, faces, c);
     }
 }
-
-#endif // __PROJECTS_GRAPHICS_ENGINE_CPP_UTIL_GENERATORS_PLATONICSOLIDS_CC_

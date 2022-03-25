@@ -1,11 +1,12 @@
+#include "WireFrame.h"
+
 #include <fstream>
 
 #include "Universal.h"
-#include "3DLsystem.cc"
+#include "3DLsystem.h"
 #include "../ini_configuration.h"
-#include "../util/generators/PlatonicSolids.cc"
-#include "../lib/l_parser/l_parser.h"
-#include "../util/generators/Transformations.cc"
+#include "../util/generators/PlatonicSolids.h"
+#include "../util/generators/Transformations.h"
 
 img::EasyImage wireFrame(const ini::Configuration& c) {
     Figures3D figures;

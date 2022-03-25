@@ -39,14 +39,21 @@ set(engine_sources
     util/Face.h
     util/Face.cc
 
+    util/generators/Transformations.h
     util/generators/Transformations.cc
+    util/generators/PlatonicSolids.h
     util/generators/PlatonicSolids.cc
 
     handlers/2DLsystem.cc
+    handlers/2DLsystem.h
     handlers/3DLsystem.cc
+    handlers/3DLsystem.h
     handlers/Intro.cc
+    handlers/Intro.h
     handlers/Universal.cc
+    handlers/Universal.h
     handlers/WireFrame.cc
+    handlers/WireFrame.h
 )
 
 ############################################################

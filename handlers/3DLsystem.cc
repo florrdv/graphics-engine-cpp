@@ -9,7 +9,7 @@ struct Vector3DQuadruplet {
     Vector3D first, second, third, fourth;
 };
 
-void draw3DLSystem(const LParser::LSystem3D& l_system, Figure& figure, const Color color, std::string current = "", int it = 0) {
+void draw3DLSystem(const LParser::LSystem3D& l_system, Figure& figure, const Color color, std::string current, int it) {
     int iterations = l_system.get_nr_iterations();
     std::string initiator = l_system.get_initiator();
     std::set<char> alphabet = l_system.get_alphabet();
