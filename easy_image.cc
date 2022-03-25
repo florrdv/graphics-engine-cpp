@@ -203,7 +203,10 @@ void img::EasyImage::draw_line(unsigned int x0, unsigned int y0,
   }
 }
 
-void img::EasyImage::draw_zbuf_line(ZBuffer &, img::EasyImage &,
+// Function to draw lines with respect to its position relative
+// to the camera. The order of lines will no longer be random, but based
+// on the depth data
+void img::EasyImage::draw_zbuf_line(ZBuffer &z, img::EasyImage &i,
                                     unsigned int x0,
                                     unsigned int y0, const double z0,
                                     unsigned int x1,
