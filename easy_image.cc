@@ -207,21 +207,44 @@ void img::EasyImage::draw_line(unsigned int x0, unsigned int y0,
 // to the camera. The order of lines will no longer be random, but based
 // on the depth data
 void img::EasyImage::draw_zbuf_line(ZBuffer &z, img::EasyImage &i,
+                                    // x'
                                     unsigned int x0,
-                                    unsigned int y0, const double z0,
+                                    // y'
+                                    unsigned int y0, 
+                                    const double z0,
+                                    // x'
                                     unsigned int x1,
-                                    unsigned int y1, const double z1,
+                                    // y'
+                                    unsigned int y1, 
+                                    const double z1,
                                     const Color &color) {
    assert(x0 < this->width && y0 < this->height);
    assert(x1 < this->width && y1 < this->height);
+
+   
    if (x0 == x1) {
      // special case for x0 == x1
+     unsigned int a = std::max(y0, y1);
      for (unsigned int i = std::min(y0, y1); i <= std::max(y0, y1); i++) {
+        // Calculate 1/z value
+        // We know that:
+        // 1/z_i = p/z_a + (1-p)/zb
+        double p = i / (double) a;
+        double zIndex = p / z0 + (1 - p) / z1;
+
+
        (*this)(x0, i) = color;
      }
    } else if (y0 == y1) {
      // special case for y0 == y1
+     unsigned int a = std::max(x0, x1);
      for (unsigned int i = std::min(x0, x1); i <= std::max(x0, x1); i++) {
+        // Calculate 1/z value
+        // We know that:
+        // 1/z_i = p/z_a + (1-p)/zb
+        double p = i / (double) a;
+        double zIndex = p / z0 + (1 - p) / z1;
+
        (*this)(i, y0) = color;
      }
    } else {
@@ -230,17 +253,49 @@ void img::EasyImage::draw_zbuf_line(ZBuffer &z, img::EasyImage &i,
        std::swap(x0, x1);
        std::swap(y0, y1);
      }
+
+
      double m = ((double)y1 - (double)y0) / ((double)x1 - (double)x0);
      if (-1.0 <= m && m <= 1.0) {
+        unsigned int a = (x1 - x0);
        for (unsigned int i = 0; i <= (x1 - x0); i++) {
-         (*this)(x0 + i, (unsigned int)round(y0 + m * i)) = color;
+           unsigned int x = x0 + i;
+           unsigned int y = (unsigned int)round(y0 + m * i);
+
+            // Calculate 1/z value
+            // We know that:
+            // 1/z_i = p/z_a + (1-p)/zb
+            double p = i / (double) a;
+            double zIndex = p / z0 + (1 - p) / z1;
+
+            double previousValue = z[x][y];
+
+
+         (*this)(x, y) = color;
        }
      } else if (m > 1.0) {
+         unsigned int a = (y1 - y0);
        for (unsigned int i = 0; i <= (y1 - y0); i++) {
+            // Calculate 1/z value
+            // We know that:
+            // 1/z_i = p/z_a + (1-p)/zb
+            double p = i / (double) a;
+            double zIndex = p / z0 + (1 - p) / z1;
+
+
          (*this)((unsigned int)round(x0 + (i / m)), y0 + i) = color;
        }
      } else if (m < -1.0) {
+         unsigned int a = (y0 - y1);
        for (unsigned int i = 0; i <= (y0 - y1); i++) {
+            // Calculate 1/z value
+            // We know that:
+            // 1/z_i = p/z_a + (1-p)/zb
+            double p = i / (double) a;
+            double zIndex = p / z0 + (1 - p) / z1;
+
+
+
          (*this)((unsigned int)round(x0 - (i / m)), y0 - i) = color;
        }
      }
