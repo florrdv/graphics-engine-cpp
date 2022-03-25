@@ -21,6 +21,9 @@
 
 #include <iostream>
 #include <vector>
+
+#include "util/ZBuffer.h"
+
  /**
   * \brief The namespace of the EasyImage class
   */
@@ -224,6 +227,8 @@ namespace img {
          */
         void draw_line(unsigned int x0, unsigned int y0, unsigned int x1,
             unsigned int y1, Color color);
+
+        void draw_zbuf_line(ZBuffer &, img::EasyImage &, const unsigned int x0, const unsigned int y0, const double z0, const unsigned int x1, const unsigned int y1, const double z1, const Color &color);
 
     private:
         friend std::istream& operator>>(std::istream& in, EasyImage& image);
