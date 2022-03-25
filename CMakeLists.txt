@@ -39,6 +39,9 @@ set(engine_sources
     util/Face.h
     util/Face.cc
 
+    util/ZBuffer.h
+    util/ZBuffer.cc
+
     util/generators/Transformations.h
     util/generators/Transformations.cc
     util/generators/PlatonicSolids.h

@@ -11,6 +11,9 @@ public:
 
     Color color;
 
+    double z1;
+    double z2;
+
     Line2D(Point2D p, Point2D q, Color c): p1(p), p2(q), color(c) {};
 };
 
