@@ -373,7 +373,7 @@ namespace
             std::vector<LParser::Rule> collectedRules = {};
 
             while (true) {
-                bool error;
+                bool error = false;
                 try {
                     // Get rule
                     parser.skip_comments_and_whitespace();
@@ -392,7 +392,7 @@ namespace
                     break;
                 }
 
-                if (error)  throw LParser::ParserException("Stochastic L-system detected, but not all weights were set.", parser.getLine(), parser.getCol());
+                if (error) throw LParser::ParserException("Stochastic L-system detected, but not all weights were set.", parser.getLine(), parser.getCol());
             }
 
             for (LParser::Rule rule : collectedRules) {
@@ -532,7 +532,7 @@ std::string LParser::LSystem::get_replacement(char c) const
         // Initialize random generator
 
         // Add weights together
-        int sum;
+        int sum = 0;
         for (LParser::Rule r : rule) sum += r.weight;
 
         // Get random rule using a weighted strategy
