@@ -1,3 +1,11 @@
+#include "Universal.h"
+
+#include <cmath>
+#include <list>
+
+#include "../util/Line2D.h"
+#include "../util/Figure.h"
+
 void applyTransformation(Figure& fig, const Matrix& m) {
     for (auto& p : fig.points) p *= m;
 }
@@ -105,27 +113,6 @@ Lines2D ProjectAll(const Figures3D& figs) {
     for (auto fig : figs) {
         Lines2D figLines = projectFig(fig);
         lines.insert(lines.end(), figLines.begin(), figLines.end());
-    }
-
-    return lines;
-}
-
-Lines2D projectFig(const Figure& fig) {
-    Lines2D lines;
-
-    for (auto face : fig.faces) {
-        for (unsigned int i = 0; i < face.pointIndexes.size(); i++) {
-            Vector3D p1 = fig.points[face.pointIndexes[i]];
-
-            Vector3D p2;
-            if (i + 1 >= face.pointIndexes.size()) p2 = fig.points[face.pointIndexes[0]];
-            else p2 = fig.points[face.pointIndexes[i + 1]];
-            Line2D line = Line2D(projectPoint(p1, 1.0), projectPoint(p2, 1.0), fig.color);
-
-            lines.push_back(line);
-        }
-
-
     }
 
     return lines;

@@ -1,3 +1,10 @@
+#include "3DLsystem.h"
+
+#include <cmath>
+#include <stack>
+
+#include "Universal.h"
+
 struct Vector3DQuadruplet {
     Vector3D first, second, third, fourth;
 };

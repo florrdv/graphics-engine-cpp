@@ -39,8 +39,14 @@ set(engine_sources
     util/Face.h
     util/Face.cc
 
-    # util/generators/Transformations.cc
-    # util/generators/PlatonicSolids.cc
+    util/generators/Transformations.cc
+    util/generators/PlatonicSolids.cc
+
+    handlers/2DLsystem.cc
+    handlers/3DLsystem.cc
+    handlers/Intro.cc
+    handlers/Universal.cc
+    handlers/WireFrame.cc
 )
 
 ############################################################

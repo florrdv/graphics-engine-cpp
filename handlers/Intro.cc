@@ -1,3 +1,5 @@
+#include "Intro.h"
+
 img::EasyImage colorRectangle(const ini::Configuration& configuration) {
     int w;
     int h;

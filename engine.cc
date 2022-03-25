@@ -8,21 +8,11 @@
 #include <math.h>
 
 #include "easy_image.h"
+#include "handlers/2DLsystem.cc"
+#include "handlers/Intro.cc"
+#include "handlers/Universal.cc"
+#include "handlers/WireFrame.cc"
 #include "ini_configuration.h"
-
-#include "util/Line2D.h"
-#include "util/Point2D.h"
-#include "util/Color.h"
-#include "util/Figure.h"
-#include "util/Face.h"
-#include "util/generators/Transformations.cc"
-#include "util/generators/PlatonicSolids.cc"
-
-#include "lib/l_parser/l_parser.h"
-
-
-using Lines2D = std::list<Line2D>;
-using Figures3D = std::list<Figure>;
 
 img::EasyImage generate_image(const ini::Configuration& configuration) {
     std::string t;

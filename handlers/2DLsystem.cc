@@ -1,9 +1,20 @@
+#include "2DLsystem.h"
+
+#include <string>
+#include <stack>
+#include <fstream>
+#include <cmath>
+
+#include "../lib/l_parser/l_parser.h"
+#include "../ini_configuration.h"
+#include "Universal.h"
+
 struct DoubleTriplet {
     double  first, second, third;
 };
 
 
-void draw2DLSystem(const LParser::LSystem2D& l_system, Lines2D& lines, const Color color, std::string current = "", int it = 0) {
+void draw2DLSystem(const LParser::LSystem2D& l_system, Lines2D& lines, const Color color, std::string current, int it) {
     int iterations = l_system.get_nr_iterations();
     std::string initiator = l_system.get_initiator();
     std::set<char> alphabet = l_system.get_alphabet();
