@@ -155,7 +155,7 @@ namespace PlatonicSolids {
             faces.push_back(f);
         }
 
-        faces.push_back(Face({ n - 1, n-2, 0 }));
+        // faces.push_back(Face({ n - 1, n-2, 0 }));
 
         return Figure(points, faces, c);
     }
