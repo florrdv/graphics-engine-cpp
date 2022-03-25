@@ -4,6 +4,7 @@
 #include <stack>
 #include <fstream>
 #include <cmath>
+#include <math.h>
 
 #include "../lib/l_parser/l_parser.h"
 #include "../ini_configuration.h"

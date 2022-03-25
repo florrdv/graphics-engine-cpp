@@ -8,10 +8,10 @@
 #include <math.h>
 
 #include "easy_image.h"
-#include "handlers/2DLsystem.cc"
-#include "handlers/Intro.cc"
-#include "handlers/Universal.cc"
-#include "handlers/WireFrame.cc"
+#include "handlers/2DLsystem.h"
+#include "handlers/Intro.h"
+#include "handlers/Universal.h"
+#include "handlers/WireFrame.h"
 #include "ini_configuration.h"
 
 img::EasyImage generate_image(const ini::Configuration& configuration) {

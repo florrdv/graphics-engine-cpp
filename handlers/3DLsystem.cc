@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <stack>
+#include <math.h>
 
 #include "Universal.h"
 

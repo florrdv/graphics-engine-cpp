@@ -1,6 +1,7 @@
 #include "WireFrame.h"
 
 #include <fstream>
+#include <math.h>
 
 #include "Universal.h"
 #include "3DLsystem.h"

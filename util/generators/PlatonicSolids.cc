@@ -1,6 +1,7 @@
 #include "PlatonicSolids.h"
 
 #include <cmath>
+#include <math.h>
 
 namespace PlatonicSolids {
     Figure createTetrahedron(Color c) {

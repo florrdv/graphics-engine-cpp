@@ -5,6 +5,8 @@
 #include "../Face.h"
 
 namespace PlatonicSolids {
+    Figure createDodecahedron(Color c);
+    
     Figure createTetrahedron(Color c);
 
     Figure createCube(Color c) ;
@@ -13,11 +15,10 @@ namespace PlatonicSolids {
 
     Figure createIcosahedron(Color c);
 
+
     Figure createCone(Color c, const int n, const double h);
 
-
     Figure createSphere(Color c, const double radius, const int n);
-
 
     Figure createCylinder(Color c, const int n, const double h);
 

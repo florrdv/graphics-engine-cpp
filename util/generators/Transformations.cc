@@ -1,5 +1,4 @@
-#ifndef __PROJECTS_GRAPHICS_ENGINE_CPP_UTIL_GENERATORS_TRANSFORMATIONS_CC_
-#define __PROJECTS_GRAPHICS_ENGINE_CPP_UTIL_GENERATORS_TRANSFORMATIONS_CC_
+#include "Transformations.h"
 
 #include <cmath>
 
@@ -91,5 +90,3 @@ namespace transformations {
         return v;
     }
 }
-
-#endif // __PROJECTS_GRAPHICS_ENGINE_CPP_UTIL_GENERATORS_TRANSFORMATIONS_CC_
