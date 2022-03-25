@@ -9,7 +9,7 @@
 #include "../util/generators/PlatonicSolids.h"
 #include "../util/generators/Transformations.h"
 
-img::EasyImage wireFrame(const ini::Configuration& c) {
+img::EasyImage wireFrame(const ini::Configuration& c, bool zBuffer) {
     Figures3D figures;
 
     int size;
@@ -156,5 +156,5 @@ img::EasyImage wireFrame(const ini::Configuration& c) {
     applyTransformationAll(figures, eyePointTransMatrix);
 
     Lines2D lines = ProjectAll(figures);
-    return draw2DLines(lines, size, backgroundColor);
+    return draw2DLines(lines, size, backgroundColor, zBuffer);
 }

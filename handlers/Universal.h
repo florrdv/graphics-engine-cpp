@@ -17,7 +17,7 @@ void applyTransformation(Figure& fig, const Matrix& m);
 
 void applyTransformationAll(Figures3D& figs, const Matrix& m);
 
-img::EasyImage draw2DLines(const Lines2D& lines, const int size, Color background);
+img::EasyImage draw2DLines(const Lines2D& lines, const int size, Color background, bool zBuffer = false);
 
 Point2D projectPoint(const Vector3D& point, const double d);
 

@@ -52,7 +52,7 @@ void draw2DLSystem(const LParser::LSystem2D& l_system, Lines2D& lines, const Col
 
                     Point2D p2 = Point2D(x, y);
 
-                    Line2D line = Line2D(p1, p2, color);
+                    Line2D line = Line2D(p1, p2, 0, 0, color);
                     lines.push_back(line);
                 }
                 else {

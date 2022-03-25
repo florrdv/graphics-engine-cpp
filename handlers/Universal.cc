@@ -14,7 +14,7 @@ void applyTransformationAll(Figures3D& figs, const Matrix& m) {
     for (auto& f : figs) applyTransformation(f, m);
 }
 
-img::EasyImage draw2DLines(const Lines2D& lines, const int size, Color background) {
+img::EasyImage draw2DLines(const Lines2D& lines, const int size, Color background, bool zBuffer) {
     // TODO: handle edge case
     Line2D first = lines.front();
 
@@ -53,6 +53,8 @@ img::EasyImage draw2DLines(const Lines2D& lines, const int size, Color backgroun
     // Create image
     img::EasyImage img(std::lround(imageX), std::lround(imageY), background.toNative());
 
+    ZBuffer z = ZBuffer(std::lround(imageX), std::lround(imageY));
+
     // Re-position points
     for (Line2D line : lines) {
         line.p1.x *= d;
@@ -73,7 +75,9 @@ img::EasyImage draw2DLines(const Lines2D& lines, const int size, Color backgroun
         line.p2.x = std::lround(line.p2.x);
         line.p2.y = std::lround(line.p2.y);
 
-        img.draw_line(line.p1.x, line.p1.y, line.p2.x, line.p2.y, line.color.toNative());
+        if (zBuffer) {
+            img.draw_zbuf_line(z, line.p1.x, line.p1.y, line.z1, line.p2.x, line.p2.y, line.z2, line.color.toNative());
+        } else img.draw_line(line.p1.x, line.p1.y, line.p2.x, line.p2.y, line.color.toNative());
     }
 
     return img;
@@ -96,7 +100,7 @@ Lines2D projectFig(const Figure& fig) {
             Vector3D p2;
             if (i + 1 >= face.pointIndexes.size()) p2 = fig.points[face.pointIndexes[0]];
             else p2 = fig.points[face.pointIndexes[i + 1]];
-            Line2D line = Line2D(projectPoint(p1, 1.0), projectPoint(p2, 1.0), fig.color);
+            Line2D line = Line2D(projectPoint(p1, 1.0), projectPoint(p2, 1.0), p1.z, p2.z, fig.color);
 
             lines.push_back(line);
         }

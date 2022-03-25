@@ -27,6 +27,7 @@ img::EasyImage generate_image(const ini::Configuration& configuration) {
     if (t == "IntroLines") result = introLines(configuration);
     if (t == "2DLSystem") result = LSystem(configuration);
     if (t == "Wireframe") result = wireFrame(configuration);
+    if (t == "ZBufferedWireframe") result = wireFrame(configuration, true);
 
     std::cout << "✅| Image generated" << std::endl;
 

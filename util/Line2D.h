@@ -14,7 +14,7 @@ public:
     double z1;
     double z2;
 
-    Line2D(Point2D p, Point2D q, Color c): p1(p), p2(q), color(c) {};
+    Line2D(Point2D p, Point2D q, double zO, double zT, Color c): p1(p), p2(q), color(c), z1(zO), z2(zT) {};
 };
 
 #endif // __PROJECTS_GRAPHICS_ENGINE_CPP_UTIL_LINE2D_H_
