@@ -108,7 +108,7 @@ Lines2D projectFig(const Figure& fig) {
     Lines2D lines;
 
     for (auto face : fig.faces) {
-        for (int i = 0; i < face.pointIndexes.size(); i++) {
+        for (unsigned int i = 0; i < face.pointIndexes.size(); i++) {
             Vector3D p1 = fig.points[face.pointIndexes[i]];
 
             Vector3D p2;
@@ -144,8 +144,8 @@ img::EasyImage colorRectangle(const ini::Configuration& configuration) {
     if (!configuration["ImageProperties"]["height"].as_int_if_exists(h)) std::cout << "⛔️|Failed to fetch height" << std::endl;
 
     img::EasyImage img(w, h);
-    for (unsigned int i = 0; i < w; i++) {
-        for (unsigned int j = 0; j < h; j++) {
+    for (int i = 0; i < w; i++) {
+        for (int j = 0; j < h; j++) {
             img(i, j).red = i;
             img(i, j).green = j;
             img(i, j).blue = (i + j) % w;
@@ -228,7 +228,7 @@ img::EasyImage introLines(const ini::Configuration& configuration) {
     std::cout << figure << std::endl;
 
     img::EasyImage img(w, h, bg);
-    int hS = h / (nrLines - 1);
+    // int hS = h / (nrLines - 1);
     int wS = w / (nrLines - 1);
 
     if (figure == "QuarterCircle") {
@@ -250,7 +250,7 @@ img::EasyImage introLines(const ini::Configuration& configuration) {
     if (figure == "Diamond") {
         w = w / 2;
         h = h / 2;
-        hS = h / (nrLines - 1);
+        // hS = h / (nrLines - 1);
         wS = w / (nrLines - 1);
 
         for (int i = 0; i < w; i += wS) {
@@ -634,7 +634,7 @@ img::EasyImage wireFrame(const ini::Configuration& c) {
     applyTransformationAll(figures, eyePointTransMatrix);
 
     Lines2D lines = ProjectAll(figures);
-    return draw2DLines(lines, size, Color(0, 0, 0));
+    return draw2DLines(lines, size, backgroundColor);
 }
 
 img::EasyImage generate_image(const ini::Configuration& configuration) {
