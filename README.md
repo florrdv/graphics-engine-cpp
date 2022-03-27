@@ -11,3 +11,7 @@
   - Basic L-systems
   - L-systems with brackets
   - Stochastic L-systems [stochastic-example.L2D](stochastic-example.L2D)
+- 3D Lijntekeningen
+- 3D Lichamen
+- 3D L-Systemen
+- Z-Buffering met lijnen
