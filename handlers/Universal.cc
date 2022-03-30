@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <list>
+#include <algorithm>
 
 #include "../util/Line2D.h"
 #include "../util/Figure.h"
@@ -85,6 +86,9 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img,
     double nxC = d*xC/-zC + dx;
     double nyC = d*yC/-zC + dy;
     Point2D nC = Point2D(nxC, nyC);
+
+    double yMin = std::round(std::min({nA.y, nB.y, nC.y}) + 0.5);
+    double yMax = std::round(std::max({nA.y, nB.y, nC.y}) - 0.5);
 }
 
 img::EasyImage draw2DLines(const Lines2D& lines, const int size, Color background, bool zBuffer) {
