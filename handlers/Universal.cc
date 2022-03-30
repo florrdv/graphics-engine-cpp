@@ -14,20 +14,6 @@ void applyTransformationAll(Figures3D& figs, const Matrix& m) {
     for (auto& f : figs) applyTransformation(f, m);
 }
 
-struct ImageDetails {
-    double imageX;
-    double imageY;
-
-    double xRange;
-    double yRange;
-
-    double xMin;
-    double xMax;
-
-    double yMin;
-    double yMax;
-};
-
 ImageDetails getImageDetails(const Lines2D &lines, const double size) {
     // TODO: handle edge case
     Line2D first = lines.front();

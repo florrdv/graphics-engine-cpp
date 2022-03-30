@@ -13,6 +13,20 @@
 using Lines2D = std::list<Line2D>;
 using Figures3D = std::list<Figure>;
 
+struct ImageDetails {
+    double imageX;
+    double imageY;
+
+    double xRange;
+    double yRange;
+
+    double xMin;
+    double xMax;
+
+    double yMin;
+    double yMax;
+};
+
 void applyTransformation(Figure& fig, const Matrix& m);
 
 void applyTransformationAll(Figures3D& figs, const Matrix& m);
@@ -26,6 +40,8 @@ Lines2D projectFig(const Figure& fig);
 Lines2D ProjectAll(const Figures3D& figs);
 
 Lines2D projectFig(const Figure& fig);
+
+ImageDetails getImageDetails(const Lines2D &lines, const double size);
 
 #endif // __PROJECTS_GRAPHICS_ENGINE_CPP_HANDLERS_UNIVERSAL_CC_
 
