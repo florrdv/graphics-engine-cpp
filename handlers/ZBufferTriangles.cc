@@ -146,33 +146,7 @@ img::EasyImage zBufferTriangle(const ini::Configuration& c) {
 
 void drawFigure(Figure &f, double size) {
     Lines2D lines = projectFig(f);
-    Line2D first = lines.front();
-
-    double xMin = first.p1.x;
-    double xMax = first.p1.x;
-
-    double yMin = first.p1.y;
-    double yMax = first.p1.y;
-
-    // Determine min and max
-    for (const Line2D& line : lines) {
-        if (line.p1.x < xMin) xMin = line.p1.x;
-        if (line.p2.x < xMin) xMin = line.p2.x;
-        if (line.p1.x > xMax) xMax = line.p1.x;
-        if (line.p2.x > xMax) xMax = line.p2.x;
-
-        if (line.p1.y < yMin) yMin = line.p1.y;
-        if (line.p2.y < yMin) yMin = line.p2.y;
-        if (line.p1.y > yMax) yMax = line.p1.y;
-        if (line.p2.y > yMax) yMax = line.p2.y;
-    }
-
-    // Compute variables needed for next step
-    double xRange = std::abs(xMax - xMin);
-    double yRange = std::abs(yMax - yMin);
-
-    double imageX = size * xRange / std::max(xRange, yRange);
-    double imageY = size * yRange / std::max(xRange, yRange);
+    ImageDetails details = getImageDetails(lines, size);
 
     
 }

@@ -56,6 +56,37 @@ ImageDetails getImageDetails(const Lines2D &lines, const double size) {
     };
 }
 
+void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, 
+                    Vector3D const& A, Vector3D const& B, Vector3D const& C, 
+                    double d, double dx, double dy, 
+                    Color color) {
+    // Previous coordinates
+    double xA = A.x;
+    double yA = A.y;
+    double zA = A.z;
+
+    double xB = B.x;
+    double yB = B.y;
+    double zB = B.z;
+
+    double xC = C.x;
+    double yC = C.y;
+    double zC = C.z;
+
+    // New coordinates
+    double nxA = d*xA/-zA + dx;
+    double nyA = d*yA/-zA + dy;
+    Point2D nA = Point2D(nxA, nyA);
+
+    double nxB = d*xB/-zB + dx;
+    double nyB = d*yB/-zB + dy;
+    Point2D nB = Point2D(nxB, nyB);
+
+    double nxC = d*xC/-zC + dx;
+    double nyC = d*yC/-zC + dy;
+    Point2D nC = Point2D(nxC, nyC);
+}
+
 img::EasyImage draw2DLines(const Lines2D& lines, const int size, Color background, bool zBuffer) {
     ImageDetails details = getImageDetails(lines, (double) size);
 
