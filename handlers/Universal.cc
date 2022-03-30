@@ -14,7 +14,21 @@ void applyTransformationAll(Figures3D& figs, const Matrix& m) {
     for (auto& f : figs) applyTransformation(f, m);
 }
 
-img::EasyImage draw2DLines(const Lines2D& lines, const int size, Color background, bool zBuffer) {
+struct ImageDetails {
+    double imageX;
+    double imageY;
+
+    double xRange;
+    double yRange;
+
+    double xMin;
+    double xMax;
+
+    double yMin;
+    double yMax;
+};
+
+ImageDetails getImageDetails(const Lines2D &lines, const double size) {
     // TODO: handle edge case
     Line2D first = lines.front();
 
@@ -44,16 +58,31 @@ img::EasyImage draw2DLines(const Lines2D& lines, const int size, Color backgroun
     double imageX = size * xRange / std::max(xRange, yRange);
     double imageY = size * yRange / std::max(xRange, yRange);
 
-    double d = 0.95 * imageX / xRange;
-    double dcX = d * (xMin + xMax) / 2;
-    double dcY = d * (yMin + yMax) / 2;
-    double dX = imageX / 2 - dcX;
-    double dY = imageY / 2 - dcY;
+    return ImageDetails{ 
+        .imageX = imageX, 
+        .imageY = imageY, 
+        .xRange = xRange, 
+        .yRange = yRange, 
+        .xMin = xMin, 
+        .xMax = xMax, 
+        .yMin = yMin, 
+        .yMax = yMax,
+    };
+}
+
+img::EasyImage draw2DLines(const Lines2D& lines, const int size, Color background, bool zBuffer) {
+    ImageDetails details = getImageDetails(lines, (double) size);
+
+    double d = 0.95 * details.imageX / details.xRange;
+    double dcX = d * (details.xMin + details.xMax) / 2;
+    double dcY = d * (details.yMin + details.yMax) / 2;
+    double dX = details.imageX / 2 - dcX;
+    double dY = details.imageY / 2 - dcY;
 
     // Create image
-    img::EasyImage img(std::lround(imageX), std::lround(imageY), background.toNative());
+    img::EasyImage img(std::lround(details.imageX), std::lround(details.imageY), background.toNative());
 
-    ZBuffer z = ZBuffer(std::lround(imageX), std::lround(imageY));
+    ZBuffer z = ZBuffer(std::lround(details.imageX), std::lround(details.imageY));
 
     // Re-position points
     for (Line2D line : lines) {

@@ -1,7 +1,5 @@
-#include "ZBufferingTriangles.h"
+#include "ZBufferTriangles.h"
 
-#include "../easy_image.h"
-#include "../ini_configuration.h"
 #include "../util/generators/PlatonicSolids.h"
 #include "../util/generators/Transformations.h"
 #include "../lib/l_parser/l_parser.h"
@@ -9,7 +7,7 @@
 #include <fstream>
 #include <math.h>
 
-img::EasyImage wireFrame(const ini::Configuration& c, bool zBuffer) {
+img::EasyImage zBufferTriangle(const ini::Configuration& c) {
     Figures3D figures;
 
     int size;
@@ -143,5 +141,38 @@ img::EasyImage wireFrame(const ini::Configuration& c, bool zBuffer) {
     applyTransformationAll(figures, eyePointTransMatrix);
 
     Lines2D lines = ProjectAll(figures);
-    return draw2DLines(lines, size, backgroundColor, zBuffer);
+    return draw2DLines(lines, size, backgroundColor, true);
+}
+
+void drawFigure(Figure &f, double size) {
+    Lines2D lines = projectFig(f);
+    Line2D first = lines.front();
+
+    double xMin = first.p1.x;
+    double xMax = first.p1.x;
+
+    double yMin = first.p1.y;
+    double yMax = first.p1.y;
+
+    // Determine min and max
+    for (const Line2D& line : lines) {
+        if (line.p1.x < xMin) xMin = line.p1.x;
+        if (line.p2.x < xMin) xMin = line.p2.x;
+        if (line.p1.x > xMax) xMax = line.p1.x;
+        if (line.p2.x > xMax) xMax = line.p2.x;
+
+        if (line.p1.y < yMin) yMin = line.p1.y;
+        if (line.p2.y < yMin) yMin = line.p2.y;
+        if (line.p1.y > yMax) yMax = line.p1.y;
+        if (line.p2.y > yMax) yMax = line.p2.y;
+    }
+
+    // Compute variables needed for next step
+    double xRange = std::abs(xMax - xMin);
+    double yRange = std::abs(yMax - yMin);
+
+    double imageX = size * xRange / std::max(xRange, yRange);
+    double imageY = size * yRange / std::max(xRange, yRange);
+
+    
 }
