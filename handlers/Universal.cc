@@ -130,8 +130,10 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img,
             xMaxBC = xI; 
         }
 
-        double xL = std::round(std::min({xMinAB, xMinAC, xMinBC}) + 0.5);
-        double xR = std::round(std::max({xMaxAB, xMaxAC, xMaxBC}) - 0.5);
+        int xL = std::round(std::min({xMinAB, xMinAC, xMinBC}) + 0.5);
+        int xR = std::round(std::max({xMaxAB, xMaxAC, xMaxBC}) - 0.5);
+
+        img.draw_line(xL, yI, xR, yI, color.toNative());
     }
 }
 
