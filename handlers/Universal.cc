@@ -87,19 +87,36 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img,
     double nyC = d*yC/-zC + dy;
     Point2D nC = Point2D(nxC, nyC);
 
-    Point2D P = std::min({nA, nB, nC}, [](const Point2D &p1, const Point2D &p2) {
-        return p1.y < p2.y;
-    });
+    int yMin = std::round(std::min({nA.y, nB.y, nC.y}) + 0.5);
+    int yMax = std::round(std::max({nA.y, nB.y, nC.y}) - 0.5);
 
-    Point2D Q = std::max({nA, nB, nC}, [](const Point2D &p1, const Point2D &p2) {
-        return p1.y < p2.y;
-    });
+    for (int yI = yMin; yI <= yMax; yI++) {
+        // Determining xMin(xL) and XMax(xR)
+        double xMinAB = std::numeric_limits<double>::infinity();
+        double xMinAC = std::numeric_limits<double>::infinity();
+        double xMinBC = std::numeric_limits<double>::infinity();
 
-    int yMin = std::round(P.y + 0.5);
-    int yMax = std::round(Q.y - 0.5);
+        double xMaxAB = std::numeric_limits<double>::infinity();
+        double xMaxAC = std::numeric_limits<double>::infinity();
+        double xMaxBC = std::numeric_limits<double>::infinity();
 
-    for (int yi = yMin; yi <= yMax; yi++) {
-        
+        Point2D P;
+        Point2D Q;
+
+        // AB
+        P = nA;
+        Q = nB;
+        if ((yI - yP)(yI - yQ) <= 0 && yP != yQ) {
+
+        }
+
+        // AC
+        P = nA;
+        Q = nC;
+
+        // BC
+        P = nB;
+        Q = nC;
     }
 }
 
