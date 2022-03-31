@@ -37,11 +37,16 @@ Point2D projectPoint(const Vector3D& point, const double d);
 
 Lines2D projectFig(const Figure& fig);
 
-Lines2D ProjectAll(const Figures3D& figs);
+Lines2D projectAll(const Figures3D& figs);
 
 Lines2D projectFig(const Figure& fig);
 
 ImageDetails getImageDetails(const Lines2D &lines, const double size);
+
+void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, 
+                    Vector3D const& A, Vector3D const& B, Vector3D const& C, 
+                    double d, double dx, double dy, 
+                    Color color);
 
 #endif // __PROJECTS_GRAPHICS_ENGINE_CPP_HANDLERS_UNIVERSAL_CC_
 

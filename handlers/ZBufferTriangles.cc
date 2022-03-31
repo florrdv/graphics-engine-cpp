@@ -6,6 +6,47 @@
 #include "Universal.h"
 #include <fstream>
 #include <math.h>
+#include <cmath>
+
+void drawFigure(img::EasyImage &img, Figure &f, double size, Color &background) {
+    Lines2D lines = projectFig(f);
+    ImageDetails details = getImageDetails(lines, size);
+
+    ZBuffer z = ZBuffer(std::lround(details.imageX), std::lround(details.imageY));
+
+    f.triangulate();
+
+    double d = 0.95 * details.imageX/details.xRange;
+
+    double dcX = d * (details.xMin + details.xMax) / 2;
+    double dcY = d * (details.yMin + details.yMax) / 2;
+    double dX = details.imageX / 2 - dcX;
+    double dY = details.imageY / 2 - dcY;
+
+    for (Face face : f.faces) {
+        draw_zbuf_triag(z, img, 
+                        f.points[face.pointIndexes[0]], f.points[face.pointIndexes[1]], f.points[face.pointIndexes[2]],
+                        d,
+                        dX,
+                        dY,
+                        f.color);
+    }
+
+}
+
+img::EasyImage drawFigures(Figures3D &figures, double size, Color &background) {
+    Lines2D lines = projectAll(figures);
+    ImageDetails details = getImageDetails(lines, size);
+
+    ZBuffer z = ZBuffer(std::lround(details.imageX), std::lround(details.imageY));
+    img::EasyImage img(details.imageX, details.imageY, background.toNative());
+
+    for (Figure figure : figures) {
+        drawFigure(img, figure, size, background);
+    }
+
+    return img;
+}
 
 img::EasyImage zBufferTriangle(const ini::Configuration& c) {
     Figures3D figures;
@@ -140,13 +181,5 @@ img::EasyImage zBufferTriangle(const ini::Configuration& c) {
     Matrix eyePointTransMatrix = transformations::eyePointTrans(eye);
     applyTransformationAll(figures, eyePointTransMatrix);
 
-    Lines2D lines = ProjectAll(figures);
-    return draw2DLines(lines, size, backgroundColor, true);
-}
-
-void drawFigure(Figure &f, double size) {
-    Lines2D lines = projectFig(f);
-    ImageDetails details = getImageDetails(lines, size);
-
-    
+    return drawFigures(figures, size, backgroundColor);
 }

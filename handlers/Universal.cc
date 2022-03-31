@@ -207,7 +207,7 @@ Lines2D projectFig(const Figure& fig) {
     return lines;
 }
 
-Lines2D ProjectAll(const Figures3D& figs) {
+Lines2D projectAll(const Figures3D& figs) {
     Lines2D lines;
 
     for (auto fig : figs) {

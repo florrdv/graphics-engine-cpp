@@ -155,6 +155,6 @@ img::EasyImage wireFrame(const ini::Configuration& c, bool zBuffer) {
     Matrix eyePointTransMatrix = transformations::eyePointTrans(eye);
     applyTransformationAll(figures, eyePointTransMatrix);
 
-    Lines2D lines = ProjectAll(figures);
+    Lines2D lines = projectAll(figures);
     return draw2DLines(lines, size, backgroundColor, zBuffer);
 }
