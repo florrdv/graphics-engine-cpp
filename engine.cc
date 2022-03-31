@@ -12,6 +12,7 @@
 #include "handlers/Intro.h"
 #include "handlers/Universal.h"
 #include "handlers/WireFrame.h"
+#include "handlers/ZBufferTriangle.h"
 #include "ini_configuration.h"
 
 img::EasyImage generate_image(const ini::Configuration& configuration) {
@@ -28,7 +29,7 @@ img::EasyImage generate_image(const ini::Configuration& configuration) {
     if (t == "2DLSystem") result = LSystem(configuration);
     if (t == "Wireframe") result = wireFrame(configuration);
     if (t == "ZBufferedWireframe") result = wireFrame(configuration, true);
-    if (t == "ZBuffering") result = wireFrame(configuration, true);
+    if (t == "ZBuffering") result = zBufferTriangle(configuration);
 
     std::cout << "✅| Image generated" << std::endl;
 

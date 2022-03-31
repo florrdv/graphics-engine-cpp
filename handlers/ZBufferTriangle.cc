@@ -1,4 +1,4 @@
-#include "ZBufferTriangles.h"
+#include "ZBufferTriangle.h"
 
 #include "../util/generators/PlatonicSolids.h"
 #include "../util/generators/Transformations.h"
@@ -31,7 +31,6 @@ void drawFigure(img::EasyImage &img, Figure &f, double size, Color &background) 
                         dY,
                         f.color);
     }
-
 }
 
 img::EasyImage drawFigures(Figures3D &figures, double size, Color &background) {

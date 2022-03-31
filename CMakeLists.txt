@@ -57,6 +57,8 @@ set(engine_sources
     handlers/Universal.h
     handlers/WireFrame.cc
     handlers/WireFrame.h
+    handlers/ZBufferTriangle.cc
+    handlers/ZBufferTriangle.h
 )
 
 ############################################################
