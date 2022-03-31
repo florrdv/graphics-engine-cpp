@@ -173,7 +173,6 @@ img::EasyImage zBufferTriangle(const ini::Configuration& c) {
         Matrix translateMatrix = transformations::translate(Vector3D::point(center[0], center[1], center[2]));
         applyTransformation(figure, translateMatrix);
 
-        figure.triangulate();
         figures.push_back(figure);
     }
 

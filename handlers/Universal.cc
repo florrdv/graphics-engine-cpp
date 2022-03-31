@@ -90,6 +90,10 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img,
     int yMin = std::round(std::min({nA.y, nB.y, nC.y}) + 0.5);
     int yMax = std::round(std::max({nA.y, nB.y, nC.y}) - 0.5);
 
+    // Calculate 1/zG
+    Point2D g = Point2D((nA.x + nB.x + nC.x) / 3, (nA.y + nB.y + nC.y) / 3);
+    double zG = 1/(3*zA) + 1/(3*zB) + 1/(3*zC);
+
     for (int yI = yMin; yI <= yMax; yI++) {
         // Determining xMin(xL) and XMax(xR)
         double xMinAB = std::numeric_limits<double>::infinity();
@@ -133,11 +137,38 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img,
         int xL = std::round(std::min({xMinAB, xMinAC, xMinBC}) + 0.5);
         int xR = std::round(std::max({xMaxAB, xMaxAC, xMaxBC}) - 0.5);
 
-        img.draw_line(xL, yI, xR, yI, color.toNative());
+        // zIndex preparation
+        Vector3D u = B - A;
+        double u1 = u.x;
+        double u2 = u.y;
+        double u3 = u.z;
+
+        Vector3D v = C - B;
+        double v1 = v.x;
+        double v2 = v.y;
+        double v3 = v.z;
+
+        double w1 = u2*v3-u3*v2;
+        double w2 = u3*v1-u1*v3;
+        double w3 = u1*v2-u2*v1;
+
+        double k = w1*xA + w2*yA+w3*zA;
+        double dzdx = w1/-d*k;
+        double dzdy = w2/-d*k;
+
+        for (int xI = xL; xI <= xR; xI++) {
+            // Calculate actual zIndex
+            double zIndex = 1.0001 * zG + (xI-g.x) * dzdx + (yI-g.y) * dzdy;
+            double previousValue = z[xI][yI];
+            if (zIndex < previousValue) {
+                img(xI, yI) = color.toNative();
+                z[xI][yI] = zIndex;
+            }
+        }
     }
 }
 
-img::EasyImage draw2DLines(const Lines2D& lines, const int size, Color background, bool zBuffer) {
+img::EasyImage draw2DLines(const Lines2D &lines, const int size, Color background, bool zBuffer) {
     ImageDetails details = getImageDetails(lines, (double) size);
 
     double d = 0.95 * details.imageX / details.xRange;
