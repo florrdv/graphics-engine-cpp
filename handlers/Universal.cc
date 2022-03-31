@@ -100,23 +100,38 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img,
         double xMaxAC = std::numeric_limits<double>::infinity();
         double xMaxBC = std::numeric_limits<double>::infinity();
 
-        Point2D P;
-        Point2D Q;
+        Point2D p;
+        Point2D q;
 
         // AB
-        P = nA;
-        Q = nB;
-        if ((yI - yP)(yI - yQ) <= 0 && yP != yQ) {
-
+        p = nA;
+        q = nB;
+        if ((yI - p.y)*(yI - q.y) <= 0 && p.y != q.y) {
+            double xI = q.x + (p.x - q.x)*(yI-q.y)/(p.y-q.y);
+            xMinAB = xI; 
+            xMaxAB = xI; 
         }
 
         // AC
-        P = nA;
-        Q = nC;
+        p = nA;
+        q = nC;
+        if ((yI - p.y)*(yI - q.y) <= 0 && p.y != q.y) {
+            double xI = q.x + (p.x - q.x)*(yI-q.y)/(p.y-q.y);
+            xMinAC = xI; 
+            xMaxAC = xI; 
+        }
 
         // BC
-        P = nB;
-        Q = nC;
+        p = nB;
+        q = nC;
+        if ((yI - p.y)*(yI - q.y) <= 0 && p.y != q.y) {
+            double xI = q.x + (p.x - q.x)*(yI-q.y)/(p.y-q.y);
+            xMinBC = xI; 
+            xMaxBC = xI; 
+        }
+
+        double xL = std::round(std::min({xMinAB, xMinAC, xMinBC}) + 0.5);
+        double xR = std::round(std::max({xMaxAB, xMaxAC, xMaxBC}) - 0.5);
     }
 }
 
