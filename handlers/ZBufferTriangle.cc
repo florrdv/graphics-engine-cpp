@@ -8,20 +8,8 @@
 #include <math.h>
 #include <cmath>
 
-void drawFigure(img::EasyImage &img, Figure &f, double size, Color &background) {
-    Lines2D lines = projectFig(f);
-    ImageDetails details = getImageDetails(lines, size);
-
-    ZBuffer z = ZBuffer(std::lround(details.imageX), std::lround(details.imageY));
-
+void drawFigure(img::EasyImage &img, ZBuffer &z, Figure &f, double size, double d, double dX, double dY, Color &background) {
     f.triangulate();
-
-    double d = 0.95 * details.imageX/details.xRange;
-
-    double dcX = d * (details.xMin + details.xMax) / 2;
-    double dcY = d * (details.yMin + details.yMax) / 2;
-    double dX = details.imageX / 2 - dcX;
-    double dY = details.imageY / 2 - dcY;
 
     for (Face face : f.faces) {
         draw_zbuf_triag(z, img, 
@@ -38,10 +26,16 @@ img::EasyImage drawFigures(Figures3D &figures, double size, Color &background) {
     ImageDetails details = getImageDetails(lines, size);
 
     ZBuffer z = ZBuffer(std::lround(details.imageX), std::lround(details.imageY));
-    img::EasyImage img(details.imageX, details.imageY, background.toNative());
+    img::EasyImage img(std::lround(details.imageX), std::lround(details.imageY), background.toNative());
+
+    double d = 0.95 * details.imageX / details.xRange;
+    double dcX = d * (details.xMin + details.xMax) / 2;
+    double dcY = d * (details.yMin + details.yMax) / 2;
+    double dX = details.imageX / 2 - dcX;
+    double dY = details.imageY / 2 - dcY;
 
     for (Figure figure : figures) {
-        drawFigure(img, figure, size, background);
+        drawFigure(img, z, figure, size, d, dX, dY, background);
     }
 
     return img;

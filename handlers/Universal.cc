@@ -134,8 +134,8 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img,
             xMaxBC = xI; 
         }
 
-        int xL = std::round(std::min({xMinAB, xMinAC, xMinBC}) + 0.5);
-        int xR = std::round(std::max({xMaxAB, xMaxAC, xMaxBC}) - 0.5);
+        int xL = std::lround(std::min({xMinAB, xMinAC, xMinBC}) + 0.5);
+        int xR = std::lround(std::max({xMaxAB, xMaxAC, xMaxBC}) - 0.5);
 
         // zIndex preparation
         Vector3D u = B - A;
@@ -159,11 +159,12 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img,
         for (int xI = xL; xI <= xR; xI++) {
             // Calculate actual zIndex
             double zIndex = 1.0001 * zG + (xI-g.x) * dzdx + (yI-g.y) * dzdy;
-            double previousValue = z[xI][yI];
-            if (zIndex < previousValue) {
+        std::cout << zIndex << std::endl;
+            // double previousValue = z[xI][yI];
+            // if (zIndex < previousValue) {
                 img(xI, yI) = color.toNative();
-                z[xI][yI] = zIndex;
-            }
+                // z[xI][yI] = zIndex;
+            // }
         }
     }
 }
