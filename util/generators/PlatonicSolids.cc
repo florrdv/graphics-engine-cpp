@@ -36,7 +36,7 @@ namespace PlatonicSolids {
         Face f4 = Face({ 6, 2, 7, 3 });
         Face f5 = Face({ 0, 5, 1, 4 });
 
-        return Figure({ p0, p1, p2, p3, p4, p5, p6, p7 }, { f0, f1, f2, f3 }, c);
+        return Figure({ p0, p1, p2, p3, p4, p5, p6, p7 }, { f0, f1, f2, f4, f5 }, c);
     }
 
     Figure createOctahedron(Color c) {
