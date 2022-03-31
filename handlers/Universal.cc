@@ -96,9 +96,9 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img,
         double xMinAC = std::numeric_limits<double>::infinity();
         double xMinBC = std::numeric_limits<double>::infinity();
 
-        double xMaxAB = std::numeric_limits<double>::infinity();
-        double xMaxAC = std::numeric_limits<double>::infinity();
-        double xMaxBC = std::numeric_limits<double>::infinity();
+        double xMaxAB = -std::numeric_limits<double>::infinity();
+        double xMaxAC = -std::numeric_limits<double>::infinity();
+        double xMaxBC = -std::numeric_limits<double>::infinity();
 
         Point2D p;
         Point2D q;
