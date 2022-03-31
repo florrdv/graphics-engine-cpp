@@ -91,7 +91,9 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img,
     int yMax = std::round(std::max({nA.y, nB.y, nC.y}) - 0.5);
 
     // Calculate 1/zG
-    Point2D g = Point2D((nA.x + nB.x + nC.x) / 3, (nA.y + nB.y + nC.y) / 3);
+    double xG = (nA.x+nB.x+nC.x)/3;
+    double yG = (nA.y+nB.y+nC.y)/3;
+    
     double zG = 1/(3*zA) + 1/(3*zB) + 1/(3*zC);
 
     for (int yI = yMin; yI <= yMax; yI++) {
@@ -143,7 +145,7 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img,
         double u2 = u.y;
         double u3 = u.z;
 
-        Vector3D v = C - B;
+        Vector3D v = C - A;
         double v1 = v.x;
         double v2 = v.y;
         double v3 = v.z;
@@ -152,19 +154,18 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img,
         double w2 = u3*v1-u1*v3;
         double w3 = u1*v2-u2*v1;
 
-        double k = w1*xA + w2*yA+w3*zA;
-        double dzdx = w1/-d*k;
-        double dzdy = w2/-d*k;
+        double k = w1*xA + w2*yA + w3*zA;
+        double dzdx = w1 / (-d*k);
+        double dzdy = w2 / (-d*k);
 
         for (int xI = xL; xI <= xR; xI++) {
             // Calculate actual zIndex
-            double zIndex = 1.0001 * zG + (xI-g.x) * dzdx + (yI-g.y) * dzdy;
-        std::cout << zIndex << std::endl;
-            // double previousValue = z[xI][yI];
-            // if (zIndex < previousValue) {
+            double zIndex = 1.0001 * zG + (xI-xG) * dzdx + (yI-yG) * dzdy;
+            double previousValue = z[xI][yI];
+            if (zIndex < previousValue) {
+                z[xI][yI] = zIndex;
                 img(xI, yI) = color.toNative();
-                // z[xI][yI] = zIndex;
-            // }
+            }
         }
     }
 }
