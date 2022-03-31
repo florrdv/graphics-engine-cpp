@@ -74,7 +74,7 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img,
     double yC = C.y;
     double zC = C.z;
 
-    // New coordinates
+    // New points
     double nxA = d*xA/-zA + dx;
     double nyA = d*yA/-zA + dy;
     Point2D nA = Point2D(nxA, nyA);
@@ -87,8 +87,20 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img,
     double nyC = d*yC/-zC + dy;
     Point2D nC = Point2D(nxC, nyC);
 
-    double yMin = std::round(std::min({nA.y, nB.y, nC.y}) + 0.5);
-    double yMax = std::round(std::max({nA.y, nB.y, nC.y}) - 0.5);
+    Point2D P = std::min({nA, nB, nC}, [](const Point2D &p1, const Point2D &p2) {
+        return p1.y < p2.y;
+    });
+
+    Point2D Q = std::max({nA, nB, nC}, [](const Point2D &p1, const Point2D &p2) {
+        return p1.y < p2.y;
+    });
+
+    int yMin = std::round(P.y + 0.5);
+    int yMax = std::round(Q.y - 0.5);
+
+    for (int yi = yMin; yi <= yMax; yi++) {
+        
+    }
 }
 
 img::EasyImage draw2DLines(const Lines2D& lines, const int size, Color background, bool zBuffer) {
