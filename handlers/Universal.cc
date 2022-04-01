@@ -96,6 +96,24 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img,
     
     double zG = 1/(3*zA) + 1/(3*zB) + 1/(3*zC);
 
+    Vector3D u = B - A;
+    double u1 = u.x;
+    double u2 = u.y;
+    double u3 = u.z;
+
+    Vector3D v = C - A;
+    double v1 = v.x;
+    double v2 = v.y;
+    double v3 = v.z;
+
+    double w1 = u2*v3-u3*v2;
+    double w2 = u3*v1-u1*v3;
+    double w3 = u1*v2-u2*v1;
+
+    double k = w1*xA + w2*yA + w3*zA;
+    double dzdx = w1 / (-d*k);
+    double dzdy = w2 / (-d*k);
+
     for (int yI = yMin; yI <= yMax; yI++) {
         // Determining xMin(xL) and XMax(xR)
         double xMinAB = std::numeric_limits<double>::infinity();
@@ -140,24 +158,6 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img,
         int xR = std::lround(std::max({xMaxAB, xMaxAC, xMaxBC}) - 0.5);
 
         // zIndex preparation
-        Vector3D u = B - A;
-        double u1 = u.x;
-        double u2 = u.y;
-        double u3 = u.z;
-
-        Vector3D v = C - A;
-        double v1 = v.x;
-        double v2 = v.y;
-        double v3 = v.z;
-
-        double w1 = u2*v3-u3*v2;
-        double w2 = u3*v1-u1*v3;
-        double w3 = u1*v2-u2*v1;
-
-        double k = w1*xA + w2*yA + w3*zA;
-        double dzdx = w1 / (-d*k);
-        double dzdy = w2 / (-d*k);
-
         for (int xI = xL; xI <= xR; xI++) {
             // Calculate actual zIndex
             double zIndex = 1.0001 * zG + (xI-xG) * dzdx + (yI-yG) * dzdy;
