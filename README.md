@@ -15,3 +15,4 @@
 - 3D Lichamen
 - 3D L-Systemen
 - Z-Buffering met lijnen
+- Z-Buffering met driehoeken
