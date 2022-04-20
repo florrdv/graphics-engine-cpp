@@ -262,7 +262,7 @@ void img::EasyImage::draw_zbuf_line(ZBuffer &z,
         // We know that:
         // 1/z_i = p/z_a + (1-p)/zb
         double p = ((double) i - (double) x0) / (double) a;
-        double zIndex = p / z1 + (1 - p) / z0;
+        double zIndex = p / z0 + (1 - p) / z1;
 
         double previousValue = z[x][y];
         if (zIndex < previousValue) {
@@ -281,7 +281,7 @@ void img::EasyImage::draw_zbuf_line(ZBuffer &z,
 
      double m = ((double)y1 - (double)y0) / ((double)x1 - (double)x0);
      if (-1.0 <= m && m <= 1.0) {
-        unsigned int a = std::abs((int) x1 - (int) x0);
+        unsigned int a = x1 - x0;
         for (unsigned int i = 0; i <= (x1 - x0); i++) {
            unsigned int x = x0 + i;
            unsigned int y = (unsigned int)round(y0 + m * i);
@@ -300,7 +300,7 @@ void img::EasyImage::draw_zbuf_line(ZBuffer &z,
             }
        }
      } else if (m > 1.0) {
-         unsigned int a = std::abs((int) y1 - (int) y0);
+         unsigned int a = y1 - y0;
        for (unsigned int i = 0; i <= (y1 - y0); i++) {
             unsigned int x = (unsigned int)round(x0 + (i / m));
             unsigned int y = y0 + i;
@@ -318,7 +318,7 @@ void img::EasyImage::draw_zbuf_line(ZBuffer &z,
             }
        }
      } else if (m < -1.0) {
-         unsigned int a = std::abs((int) y0 - (int) y1);
+         unsigned int a = y0 - y1;
        for (unsigned int i = 0; i <= (y0 - y1); i++) {
             unsigned int x = (unsigned int)round(x0 - (i / m));
             unsigned int y = y0 - i;
