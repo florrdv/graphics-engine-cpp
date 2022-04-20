@@ -224,17 +224,20 @@ void img::EasyImage::draw_zbuf_line(ZBuffer &z,
    
    if (x0 == x1) {
      // special case for x0 == x1
-     unsigned int a = (int) std::max(y0, y1) - (int) std::min(y0, y1);
+    if (y0 > y1) { 
+        std::swap(z0, z1);
+        std::swap(y0, y1); 
+    }
 
-    if (y0 > y1) { std::swap(z0, z1); }
+    unsigned int a = y1 - y0;
 
-     for (unsigned int i = std::min(y0, y1); i <= std::max(y0, y1); i++) {
+     for (unsigned int i = y0; i <= y1; i++) {
         unsigned int x = x0;
         unsigned int y = i;
         // Calculate 1/z value
         // We know that:
         // 1/z_i = p/z_a + (1-p)/zb
-        double p = ((double) i - (double) std::min(y0, y1)) / (double) a;
+        double p = ((double) i - (double) y0) / (double) a;
         double zIndex = p / z1 + (1 - p) / z0;
 
         double previousValue = z[x][y];
@@ -245,17 +248,20 @@ void img::EasyImage::draw_zbuf_line(ZBuffer &z,
      }
    } else if (y0 == y1) {
      // special case for y0 == y1
-     unsigned int a = (int) std::max(x0, x1) - (int) std::min(x0, x1);
+     if (x0 > x1) { 
+         std::swap(z0, z1);
+         std::swap(x0, x1);
+     }
 
-     if (x0 > x1) { std::swap(z0, z1); }
+     unsigned int a = x1 - x0;
 
-     for (unsigned int i = std::min(x0, x1); i <= std::max(x0, x1); i++) {
+     for (unsigned int i = x0; i <= x1; i++) {
         unsigned int x = i;
         unsigned int y = y0;
         // Calculate 1/z value
         // We know that:
         // 1/z_i = p/z_a + (1-p)/zb
-        double p = ((double) i - (double) std::min(x0, x1)) / (double) a;
+        double p = ((double) i - (double) x0) / (double) a;
         double zIndex = p / z1 + (1 - p) / z0;
 
         double previousValue = z[x][y];
