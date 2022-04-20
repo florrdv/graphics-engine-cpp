@@ -235,7 +235,7 @@ void img::EasyImage::draw_zbuf_line(ZBuffer &z,
         // We know that:
         // 1/z_i = p/z_a + (1-p)/zb
         double p = ((double) i - (double) std::min(y0, y1)) / (double) a;
-        double zIndex = p / z0 + (1 - p) / z1;
+        double zIndex = p / z1 + (1 - p) / z0;
 
         double previousValue = z[x][y];
         if (zIndex < previousValue) {
@@ -320,7 +320,7 @@ void img::EasyImage::draw_zbuf_line(ZBuffer &z,
             // We know that:
             // 1/z_i = p/z_a + (1-p)/zb
             double p = (double) i / (double) a;
-            double zIndex = p / z0 + (1 - p) / z1;
+            double zIndex = p / z1 + (1 - p) / z0;
 
             double previousValue = z[x][y];
 
