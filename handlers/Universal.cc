@@ -3,6 +3,7 @@
 #include <cmath>
 #include <list>
 #include <algorithm>
+#include <limits>
 
 #include "../util/Line2D.h"
 #include "../util/Figure.h"
