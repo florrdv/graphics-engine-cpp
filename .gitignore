@@ -3,3 +3,4 @@ build
 .cache
 temp.png
 *.bmp
+.DS_Store
