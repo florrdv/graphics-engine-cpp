@@ -13,7 +13,7 @@ void generateFractal(Figure& fig, Figures3D& fractal, const int nr_iterations, c
                 std::vector<Face> newFaces;
                 for (Vector3D point : figure.points) newPoints.push_back(point * scaleMatrix);
                 for (Face face : figure.faces) newFaces.push_back(face.clone());
-                Figure scaled = Figure();
+                Figure scaled = Figure(newPoints, newFaces, figure.color);
             }
         }
     }
