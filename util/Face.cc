@@ -16,3 +16,9 @@ std::vector<Face> Face::triangulate() {
 
     return newFaces;
 }
+
+Face Face::clone() const {
+    std::vector<int> newPoints;
+    copy(pointIndexes.begin(), pointIndexes.end(), back_inserter(newPoints));
+    return Face(newPoints);
+};

@@ -8,6 +8,7 @@ public:
     std::vector<int> pointIndexes;
 
     Face(std::vector<int> p) : pointIndexes(p) {};
+    Face clone() const;
     std::vector<Face> triangulate();
 };
 
