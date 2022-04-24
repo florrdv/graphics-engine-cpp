@@ -3,7 +3,6 @@
 #include "../util/generators/PlatonicSolids.h"
 #include "../util/generators/Transformations.h"
 #include "../lib/l_parser/l_parser.h"
-#include "Universal.h"
 #include <fstream>
 #include <math.h>
 #include <cmath>

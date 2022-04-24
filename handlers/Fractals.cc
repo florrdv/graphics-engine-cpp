@@ -1,5 +1,8 @@
 #include "Fractals.h"
+#include "ZBufferTriangle.h"
 #include "../util/generators/Transformations.h"
+#include "../util/generators/PlatonicSolids.h"
+#include <cmath>
 
 void generateFractal(Figure& fig, Figures3D& fractal, const int nr_iterations, const double scale) {
     Figure base = fig;
@@ -59,31 +62,39 @@ img::EasyImage drawFractal(const ini::Configuration& c) {
         if (!base["rotateY"].as_double_if_exists(rotateY)) std::cout << "⛔️| Failed to fetch rotateY" << std::endl;
         if (!base["rotateZ"].as_double_if_exists(rotateZ)) std::cout << "⛔️| Failed to fetch rotateZ" << std::endl;
 
-        Figure figure;
-        if (type == "FractalCube") 
+        int nrIterations;
+        if (!base["nrIterations"].as_int_if_exists(nrIterations)) std::cout << "⛔️| Failed to fetch # iterations" << std::endl;
+
+        double fractalScale;
+        if (!base["fractalScale"].as_double_if_exists(fractalScale)) std::cout << "⛔️| Failed to fetch scale" << std::endl;
+        
+        Figures3D currentFigures;
+        if (type == "FractalCube") {
+            Figure baseFig = PlatonicSolids::createCube(color);;
+            generateFractal(baseFig, currentFigures, nrIterations, fractalScale);
+        }
         
 
 
         Matrix rotateMatrixX = transformations::rotateX(rotateX * M_PI / 180);
         Matrix rotateMatrixY = transformations::rotateY(rotateY * M_PI / 180);
         Matrix rotateMatrixZ = transformations::rotateZ(rotateZ * M_PI / 180);
-        applyTransformation(figure, rotateMatrixX);
-        applyTransformation(figure, rotateMatrixY);
-        applyTransformation(figure, rotateMatrixZ);
+        applyTransformationAll(currentFigures, rotateMatrixX);
+        applyTransformationAll(currentFigures, rotateMatrixY);
+        applyTransformationAll(currentFigures, rotateMatrixZ);
 
         Matrix scaleMatrix = transformations::scaleFigure(scale);
-        applyTransformation(figure, scaleMatrix);
+        applyTransformationAll(currentFigures, scaleMatrix);
 
         Matrix translateMatrix = transformations::translate(Vector3D::point(center[0], center[1], center[2]));
-        applyTransformation(figure, translateMatrix);
+        applyTransformationAll(currentFigures, translateMatrix);
 
-        figures.push_back(figure);
-
+        figures.insert(figures.end(), currentFigures.begin(), currentFigures.end());
     }
 
     Matrix eyePointTransMatrix = transformations::eyePointTrans(eye);
     applyTransformationAll(figures, eyePointTransMatrix);
 
     Lines2D lines = projectAll(figures);
-    return draw2DLines(lines, size, backgroundColor, zBuffer);
+    return drawFigures(figures, size, backgroundColor);
 }
