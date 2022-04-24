@@ -8,7 +8,7 @@
             "request": "launch",
             // Resolved by CMake Tools:
             "program": "${command:cmake.buildDirectory}/engine",
-            "args": ["misc/z_buffered_wireframes/z_buffered_wireframes072.ini"],
+            "args": ["misc/z_buffered_wireframes/AIO.ini"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [
