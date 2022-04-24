@@ -14,7 +14,12 @@ void generateFractal(Figure& fig, Figures3D& fractal, const int nr_iterations, c
                 for (Vector3D point : figure.points) newPoints.push_back(point * scaleMatrix);
                 for (Face face : figure.faces) newFaces.push_back(face.clone());
                 Figure scaled = Figure(newPoints, newFaces, figure.color);
+                fractal.push_back(scaled);
             }
         }
     }
+}
+
+img::EasyImage drawFractal() {
+    
 }
