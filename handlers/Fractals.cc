@@ -20,7 +20,7 @@ void generateFractal(Figure& fig, Figures3D& fractal, const int nr_iterations, c
     }
 }
 
-img::EasyImage drawFractal() {
+img::EasyImage drawFractal(const ini::Configuration& c) {
     Figures3D figures;
 
     int size;
@@ -60,38 +60,7 @@ img::EasyImage drawFractal() {
         if (!base["rotateZ"].as_double_if_exists(rotateZ)) std::cout << "⛔️| Failed to fetch rotateZ" << std::endl;
 
         Figure figure;
-        if (type == "LineDrawing") {
-            int nrPoints;
-            int nrLines;
-            if (!base["nrPoints"].as_int_if_exists(nrPoints)) std::cout << "⛔️| Failed to fetch # points" << std::endl;
-            if (!base["nrLines"].as_int_if_exists(nrLines)) std::cout << "⛔️| Failed to fetch # lines" << std::endl;
-
-            // Read points
-            std::vector<Vector3D> vectors;
-            for (int i = 0; i < nrPoints; i++) {
-                std::vector<double> p;
-                auto f = "point" + std::to_string(i);
-                if (!base[f].as_double_tuple_if_exists(p)) break;
-
-                Vector3D vector = Vector3D::point(p[0], p[1], p[2]);
-                vectors.push_back(vector);
-            }
-
-            // Read faces
-            std::vector<Face> faces;
-            for (int i = 0; i < nrLines; i++) {
-                std::vector<int> l;
-                auto f = "line" + std::to_string(i);
-                if (!base[f].as_int_tuple_if_exists(l)) break;
-
-                Face face = Face(l);
-                faces.push_back(face);
-
-                figure = Figure(vectors, faces, color);
-
-            }
-        }
-        else if (type == "FractalCube") figure = PlatonicSolids::createCube(color);
+        if (type == "FractalCube") 
         
 
 
