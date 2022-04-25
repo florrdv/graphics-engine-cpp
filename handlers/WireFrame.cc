@@ -48,7 +48,7 @@ img::EasyImage wireFrame(const ini::Configuration& c, bool zBuffer) {
         if (!base["rotateY"].as_double_if_exists(rotateY)) std::cout << "⛔️| Failed to fetch rotateY" << std::endl;
         if (!base["rotateZ"].as_double_if_exists(rotateZ)) std::cout << "⛔️| Failed to fetch rotateZ" << std::endl;
 
-        Figure figure;
+        Figures3D currentFigures;
         if (type == "LineDrawing") {
             int nrPoints;
             int nrLines;
@@ -76,15 +76,15 @@ img::EasyImage wireFrame(const ini::Configuration& c, bool zBuffer) {
                 Face face = Face(l);
                 faces.push_back(face);
 
-                figure = Figure(vectors, faces, color);
+                currentFigures.push_back(Figure(vectors, faces, color));
 
             }
         }
-        else if (type == "Cube") figure = PlatonicSolids::createCube(color);
-        else if (type == "Tetrahedron") figure = PlatonicSolids::createTetrahedron(color);
-        else if (type == "Octahedron") figure = PlatonicSolids::createOctahedron(color);
-        else if (type == "Icosahedron") figure = PlatonicSolids::createIcosahedron(color);
-        else if (type == "Dodecahedron") figure = PlatonicSolids::createDodecahedron(color);
+        else if (type == "Cube") currentFigures.push_back(PlatonicSolids::createCube(color));
+        else if (type == "Tetrahedron") currentFigures.push_back(PlatonicSolids::createTetrahedron(color));
+        else if (type == "Octahedron") currentFigures.push_back(PlatonicSolids::createOctahedron(color));
+        else if (type == "Icosahedron") currentFigures.push_back(PlatonicSolids::createIcosahedron(color));
+        else if (type == "Dodecahedron") currentFigures.push_back(PlatonicSolids::createDodecahedron(color));
         else if (type == "Torus") {
             double r;
             double R;
@@ -96,12 +96,12 @@ img::EasyImage wireFrame(const ini::Configuration& c, bool zBuffer) {
             if (!base["n"].as_int_if_exists(n)) std::cout << "⛔️| Failed to fetch n" << std::endl;
             if (!base["m"].as_int_if_exists(m)) std::cout << "⛔️| Failed to fetch m" << std::endl;
 
-            figure = PlatonicSolids::createTorus(color, r, R, n, m);
+            currentFigures.push_back(PlatonicSolids::createTorus(color, r, R, n, m));
         } else if (type == "Sphere") {
             int n;
 
             if (!base["n"].as_int_if_exists(n)) std::cout << "⛔️| Failed to fetch n" << std::endl;
-            figure = PlatonicSolids::createSphere(color, 1, n);
+            currentFigures.push_back(PlatonicSolids::createSphere(color, 1, n));
         } else if (type == "Cylinder") {
             int n;
             double h;
@@ -109,7 +109,7 @@ img::EasyImage wireFrame(const ini::Configuration& c, bool zBuffer) {
             if (!base["n"].as_int_if_exists(n)) std::cout << "⛔️| Failed to fetch n" << std::endl;
             if (!base["height"].as_double_if_exists(h)) std::cout << "⛔️| Failed to fetch h" << std::endl;
 
-            figure = PlatonicSolids::createCylinder(color, n, h);
+            currentFigures.push_back(PlatonicSolids::createCylinder(color, n, h));
         }
         else if (type == "Cone") {
             int n;
@@ -118,9 +118,10 @@ img::EasyImage wireFrame(const ini::Configuration& c, bool zBuffer) {
             if (!base["n"].as_int_if_exists(n)) std::cout << "⛔️| Failed to fetch n" << std::endl;
             if (!base["height"].as_double_if_exists(h)) std::cout << "⛔️| Failed to fetch h" << std::endl;
 
-            figure = PlatonicSolids::createCone(color, n, h);
+            currentFigures.push_back(PlatonicSolids::createCone(color, n, h));
         }
         else if (type == "3DLSystem") {
+            Figure figure;
             std::string inputFile;
             if (!base["inputfile"].as_string_if_exists(inputFile)) std::cout << "⛔️| Failed to fetch # points" << std::endl;
 
@@ -132,23 +133,24 @@ img::EasyImage wireFrame(const ini::Configuration& c, bool zBuffer) {
             figure.color = color;
 
             draw3DLSystem(l_system, figure, color);
+            currentFigures.push_back(figure);
         }
 
 
         Matrix rotateMatrixX = transformations::rotateX(rotateX * M_PI / 180);
         Matrix rotateMatrixY = transformations::rotateY(rotateY * M_PI / 180);
         Matrix rotateMatrixZ = transformations::rotateZ(rotateZ * M_PI / 180);
-        applyTransformation(figure, rotateMatrixX);
-        applyTransformation(figure, rotateMatrixY);
-        applyTransformation(figure, rotateMatrixZ);
+        applyTransformationAll(currentFigures, rotateMatrixX);
+        applyTransformationAll(currentFigures, rotateMatrixY);
+        applyTransformationAll(currentFigures, rotateMatrixZ);
 
         Matrix scaleMatrix = transformations::scaleFigure(scale);
-        applyTransformation(figure, scaleMatrix);
+        applyTransformationAll(currentFigures, scaleMatrix);
 
         Matrix translateMatrix = transformations::translate(Vector3D::point(center[0], center[1], center[2]));
-        applyTransformation(figure, translateMatrix);
+        applyTransformationAll(currentFigures, translateMatrix);
 
-        figures.push_back(figure);
+        figures.insert(figures.end(), currentFigures.begin(), currentFigures.end());
 
     }
 
