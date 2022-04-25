@@ -156,6 +156,56 @@ img::EasyImage wireFrame(const ini::Configuration& c, bool zBuffer) {
             Figure baseFig = PlatonicSolids::createTetrahedron(color);;
             generateFractal(baseFig, currentFigures, nrIterations, fractalScale);
         }
+        else if (type == "FractalIcosahedron") {
+            int nrIterations;
+            if (!base["nrIterations"].as_int_if_exists(nrIterations)) std::cout << "⛔️| Failed to fetch # iterations" << std::endl;
+
+            double fractalScale;
+            if (!base["fractalScale"].as_double_if_exists(fractalScale)) std::cout << "⛔️| Failed to fetch scale" << std::endl;
+
+            Figure baseFig = PlatonicSolids::createIcosahedron(color);;
+            generateFractal(baseFig, currentFigures, nrIterations, fractalScale);
+        }
+        else if (type == "FractalIcosahedron") {
+            int nrIterations;
+            if (!base["nrIterations"].as_int_if_exists(nrIterations)) std::cout << "⛔️| Failed to fetch # iterations" << std::endl;
+
+            double fractalScale;
+            if (!base["fractalScale"].as_double_if_exists(fractalScale)) std::cout << "⛔️| Failed to fetch scale" << std::endl;
+
+            Figure baseFig = PlatonicSolids::createIcosahedron(color);;
+            generateFractal(baseFig, currentFigures, nrIterations, fractalScale);
+        }
+        else if (type == "FractalOctahedron") {
+            int nrIterations;
+            if (!base["nrIterations"].as_int_if_exists(nrIterations)) std::cout << "⛔️| Failed to fetch # iterations" << std::endl;
+
+            double fractalScale;
+            if (!base["fractalScale"].as_double_if_exists(fractalScale)) std::cout << "⛔️| Failed to fetch scale" << std::endl;
+
+            Figure baseFig = PlatonicSolids::createOctahedron(color);;
+            generateFractal(baseFig, currentFigures, nrIterations, fractalScale);
+        }
+        else if (type == "FractalDodecahedron") {
+            int nrIterations;
+            if (!base["nrIterations"].as_int_if_exists(nrIterations)) std::cout << "⛔️| Failed to fetch # iterations" << std::endl;
+
+            double fractalScale;
+            if (!base["fractalScale"].as_double_if_exists(fractalScale)) std::cout << "⛔️| Failed to fetch scale" << std::endl;
+
+            Figure baseFig = PlatonicSolids::createDodecahedron(color);;
+            generateFractal(baseFig, currentFigures, nrIterations, fractalScale);
+        }
+        else if (type == "FractalBuckyBall") {
+            int nrIterations;
+            if (!base["nrIterations"].as_int_if_exists(nrIterations)) std::cout << "⛔️| Failed to fetch # iterations" << std::endl;
+
+            double fractalScale;
+            if (!base["fractalScale"].as_double_if_exists(fractalScale)) std::cout << "⛔️| Failed to fetch scale" << std::endl;
+
+            Figure baseFig = PlatonicSolids::createTruncated(color);;
+            generateFractal(baseFig, currentFigures, nrIterations, fractalScale);
+        }
 
 
         Matrix rotateMatrixX = transformations::rotateX(rotateX * M_PI / 180);

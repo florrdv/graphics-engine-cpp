@@ -138,6 +138,89 @@ namespace PlatonicSolids {
         return Figure(p, { f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11 }, c);
     }
 
+    // Inspiration taken from: https://github.com/kovacsv/JSModeler
+    Figure createTruncatedIcosahedron(Color color) {
+        double a = 0.0;
+	    double b = 1.0;
+	    double c = 2.0;
+	    double d = (1.0 + sqrt(5.0)) / 2.0;
+	    double e = 3.0 * d;
+	    double f = 1.0 + 2.0 * d;
+	    double g = 2.0 + d;
+	    double h = 2.0 * d;
+
+        std::vector<Vector3D> points = {
+            Vector3D::point(+a, +b, +e),
+            Vector3D::point(+a, +b, -e),
+            Vector3D::point(+a, -b, +e),
+            Vector3D::point(+a, -b, -e),
+
+            Vector3D::point(+b, +e, +a),
+            Vector3D::point(+b, -e, +a),
+            Vector3D::point(-b, +e, +a),
+            Vector3D::point(-b, -e, +a),
+
+            Vector3D::point(+e, +a, +b),
+            Vector3D::point(-e, +a, +b),
+            Vector3D::point(+e, +a, -b),
+            Vector3D::point(-e, +a, -b),
+
+            Vector3D::point(+c, +f, +d),
+            Vector3D::point(+c, +f, -d),
+            Vector3D::point(+c, -f, +d),
+            Vector3D::point(-c, +f, +d),
+            Vector3D::point(+c, -f, -d),
+            Vector3D::point(-c, +f, -d),
+            Vector3D::point(-c, -f, +d),
+            Vector3D::point(-c, -f, -d),
+
+            Vector3D::point(+f, +d, +c),
+            Vector3D::point(+f, -d, +c),
+            Vector3D::point(-f, +d, +c),
+            Vector3D::point(+f, +d, -c),
+            Vector3D::point(-f, -d, +c),
+            Vector3D::point(+f, -d, -c),
+            Vector3D::point(-f, +d, -c),
+            Vector3D::point(-f, -d, -c),
+
+            Vector3D::point(+d, +c, +f),
+            Vector3D::point(-d, +c, +f),
+            Vector3D::point(+d, +c, -f),
+            Vector3D::point(+d, -c, +f),
+            Vector3D::point(-d, +c, -f),
+            Vector3D::point(-d, -c, +f),
+            Vector3D::point(+d, -c, -f),
+            Vector3D::point(-d, -c, -f),
+
+            Vector3D::point(+b, +g, +h),
+            Vector3D::point(+b, +g, -h),
+            Vector3D::point(+b, -g, +h),
+            Vector3D::point(-b, +g, +h),
+            Vector3D::point(+b, -g, -h),
+            Vector3D::point(-b, +g, -h),
+            Vector3D::point(-b, -g, +h),
+            Vector3D::point(-b, -g, -h),
+
+            Vector3D::point(+g, +h, +b),
+            Vector3D::point(+g, -h, +b),
+            Vector3D::point(-g, +h, +b),
+            Vector3D::point(+g, +h, -b),
+            Vector3D::point(-g, -h, +b),
+            Vector3D::point(+g, -h, -b),
+            Vector3D::point(-g, +h, -b),
+            Vector3D::point(-g, -h, -b),
+
+            Vector3D::point(+h, +b, +g),
+            Vector3D::point(-h, +b, +g),
+            Vector3D::point(+h, +b, -g),
+            Vector3D::point(+h, -b, +g),
+            Vector3D::point(-h, +b, -g),
+            Vector3D::point(-h, -b, +g),
+            Vector3D::point(+h, -b, -g),
+            Vector3D::point(-h, -b, -g)
+        };
+    }
+
     Figure createCone(Color c, const int n, const double h) {
         // Points
         std::vector<Vector3D> points;

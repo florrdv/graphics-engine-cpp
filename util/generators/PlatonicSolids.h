@@ -15,6 +15,7 @@ namespace PlatonicSolids {
 
     Figure createIcosahedron(Color c);
 
+    Figure createTruncatedIcosahedron(Color c);
 
     Figure createCone(Color c, const int n, const double h);
 
