@@ -51,6 +51,8 @@ set(engine_sources
     handlers/2DLsystem.h
     handlers/3DLsystem.cc
     handlers/3DLsystem.h
+    handlers/Fractals.h
+    handlers/Fractals.cc
     handlers/Intro.cc
     handlers/Intro.h
     handlers/Universal.cc
