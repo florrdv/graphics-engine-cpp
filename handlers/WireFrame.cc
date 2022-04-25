@@ -203,7 +203,7 @@ img::EasyImage wireFrame(const ini::Configuration& c, bool zBuffer) {
             double fractalScale;
             if (!base["fractalScale"].as_double_if_exists(fractalScale)) std::cout << "⛔️| Failed to fetch scale" << std::endl;
 
-            Figure baseFig = PlatonicSolids::createTruncated(color);;
+            Figure baseFig = PlatonicSolids::createTruncatedIcosahedron(color);;
             generateFractal(baseFig, currentFigures, nrIterations, fractalScale);
         }
 
