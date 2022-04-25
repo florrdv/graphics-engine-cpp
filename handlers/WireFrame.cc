@@ -5,6 +5,7 @@
 
 #include "Universal.h"
 #include "3DLsystem.h"
+#include "Fractals.h"
 #include "../ini_configuration.h"
 #include "../util/generators/PlatonicSolids.h"
 #include "../util/generators/Transformations.h"
@@ -134,6 +135,16 @@ img::EasyImage wireFrame(const ini::Configuration& c, bool zBuffer) {
 
             draw3DLSystem(l_system, figure, color);
             currentFigures.push_back(figure);
+        }
+        else if (type == "FractalCube") {
+            int nrIterations;
+            if (!base["nrIterations"].as_int_if_exists(nrIterations)) std::cout << "⛔️| Failed to fetch # iterations" << std::endl;
+
+            double fractalScale;
+            if (!base["fractalScale"].as_double_if_exists(fractalScale)) std::cout << "⛔️| Failed to fetch scale" << std::endl;
+
+            Figure baseFig = PlatonicSolids::createCube(color);;
+            generateFractal(baseFig, currentFigures, nrIterations, fractalScale);
         }
 
 
