@@ -141,133 +141,126 @@ namespace PlatonicSolids {
     }
 
     // Inspiration taken from: https://github.com/kovacsv/JSModeler
-    // Figure createTruncatedIcosahedron(Color color) {
-    //     double a = 0.0;
-	//     double b = 1.0;
-	//     double c = 2.0;
-	//     double d = (1.0 + sqrt(5.0)) / 2.0;
-	//     double e = 3.0 * d;
-	//     double f = 1.0 + 2.0 * d;
-	//     double g = 2.0 + d;
-	//     double h = 2.0 * d;
+    Figure createTruncatedIcosahedron(Color color) {
+        double a = 0.0;
+	    double b = 1.0;
+	    double c = 2.0;
+	    double d = (1.0 + sqrt(5.0)) / 2.0;
+	    double e = 3.0 * d;
+	    double f = 1.0 + 2.0 * d;
+	    double g = 2.0 + d;
+	    double h = 2.0 * d;
 
-    //     std::vector<Vector3D> points = {
-    //         Vector3D::point(+a, +b, +e),
-    //         Vector3D::point(+a, +b, -e),
-    //         Vector3D::point(+a, -b, +e),
-    //         Vector3D::point(+a, -b, -e),
+        std::vector<Vector3D> points = {
+            Vector3D::point(+a, +b, +e),
+            Vector3D::point(+a, +b, -e),
+            Vector3D::point(+a, -b, +e),
+            Vector3D::point(+a, -b, -e),
 
-    //         Vector3D::point(+b, +e, +a),
-    //         Vector3D::point(+b, -e, +a),
-    //         Vector3D::point(-b, +e, +a),
-    //         Vector3D::point(-b, -e, +a),
+            Vector3D::point(+b, +e, +a),
+            Vector3D::point(+b, -e, +a),
+            Vector3D::point(-b, +e, +a),
+            Vector3D::point(-b, -e, +a),
 
-    //         Vector3D::point(+e, +a, +b),
-    //         Vector3D::point(-e, +a, +b),
-    //         Vector3D::point(+e, +a, -b),
-    //         Vector3D::point(-e, +a, -b),
+            Vector3D::point(+e, +a, +b),
+            Vector3D::point(-e, +a, +b),
+            Vector3D::point(+e, +a, -b),
+            Vector3D::point(-e, +a, -b),
 
-    //         Vector3D::point(+c, +f, +d),
-    //         Vector3D::point(+c, +f, -d),
-    //         Vector3D::point(+c, -f, +d),
-    //         Vector3D::point(-c, +f, +d),
-    //         Vector3D::point(+c, -f, -d),
-    //         Vector3D::point(-c, +f, -d),
-    //         Vector3D::point(-c, -f, +d),
-    //         Vector3D::point(-c, -f, -d),
+            Vector3D::point(+c, +f, +d),
+            Vector3D::point(+c, +f, -d),
+            Vector3D::point(+c, -f, +d),
+            Vector3D::point(-c, +f, +d),
+            Vector3D::point(+c, -f, -d),
+            Vector3D::point(-c, +f, -d),
+            Vector3D::point(-c, -f, +d),
+            Vector3D::point(-c, -f, -d),
 
-    //         Vector3D::point(+f, +d, +c),
-    //         Vector3D::point(+f, -d, +c),
-    //         Vector3D::point(-f, +d, +c),
-    //         Vector3D::point(+f, +d, -c),
-    //         Vector3D::point(-f, -d, +c),
-    //         Vector3D::point(+f, -d, -c),
-    //         Vector3D::point(-f, +d, -c),
-    //         Vector3D::point(-f, -d, -c),
+            Vector3D::point(+f, +d, +c),
+            Vector3D::point(+f, -d, +c),
+            Vector3D::point(-f, +d, +c),
+            Vector3D::point(+f, +d, -c),
+            Vector3D::point(-f, -d, +c),
+            Vector3D::point(+f, -d, -c),
+            Vector3D::point(-f, +d, -c),
+            Vector3D::point(-f, -d, -c),
 
-    //         Vector3D::point(+d, +c, +f),
-    //         Vector3D::point(-d, +c, +f),
-    //         Vector3D::point(+d, +c, -f),
-    //         Vector3D::point(+d, -c, +f),
-    //         Vector3D::point(-d, +c, -f),
-    //         Vector3D::point(-d, -c, +f),
-    //         Vector3D::point(+d, -c, -f),
-    //         Vector3D::point(-d, -c, -f),
+            Vector3D::point(+d, +c, +f),
+            Vector3D::point(-d, +c, +f),
+            Vector3D::point(+d, +c, -f),
+            Vector3D::point(+d, -c, +f),
+            Vector3D::point(-d, +c, -f),
+            Vector3D::point(-d, -c, +f),
+            Vector3D::point(+d, -c, -f),
+            Vector3D::point(-d, -c, -f),
 
-    //         Vector3D::point(+b, +g, +h),
-    //         Vector3D::point(+b, +g, -h),
-    //         Vector3D::point(+b, -g, +h),
-    //         Vector3D::point(-b, +g, +h),
-    //         Vector3D::point(+b, -g, -h),
-    //         Vector3D::point(-b, +g, -h),
-    //         Vector3D::point(-b, -g, +h),
-    //         Vector3D::point(-b, -g, -h),
+            Vector3D::point(+b, +g, +h),
+            Vector3D::point(+b, +g, -h),
+            Vector3D::point(+b, -g, +h),
+            Vector3D::point(-b, +g, +h),
+            Vector3D::point(+b, -g, -h),
+            Vector3D::point(-b, +g, -h),
+            Vector3D::point(-b, -g, +h),
+            Vector3D::point(-b, -g, -h),
 
-    //         Vector3D::point(+g, +h, +b),
-    //         Vector3D::point(+g, -h, +b),
-    //         Vector3D::point(-g, +h, +b),
-    //         Vector3D::point(+g, +h, -b),
-    //         Vector3D::point(-g, -h, +b),
-    //         Vector3D::point(+g, -h, -b),
-    //         Vector3D::point(-g, +h, -b),
-    //         Vector3D::point(-g, -h, -b),
+            Vector3D::point(+g, +h, +b),
+            Vector3D::point(+g, -h, +b),
+            Vector3D::point(-g, +h, +b),
+            Vector3D::point(+g, +h, -b),
+            Vector3D::point(-g, -h, +b),
+            Vector3D::point(+g, -h, -b),
+            Vector3D::point(-g, +h, -b),
+            Vector3D::point(-g, -h, -b),
 
-    //         Vector3D::point(+h, +b, +g),
-    //         Vector3D::point(-h, +b, +g),
-    //         Vector3D::point(+h, +b, -g),
-    //         Vector3D::point(+h, -b, +g),
-    //         Vector3D::point(-h, +b, -g),
-    //         Vector3D::point(-h, -b, +g),
-    //         Vector3D::point(+h, -b, -g),
-    //         Vector3D::point(-h, -b, -g)
-    //     };
+            Vector3D::point(+h, +b, +g),
+            Vector3D::point(-h, +b, +g),
+            Vector3D::point(+h, +b, -g),
+            Vector3D::point(+h, -b, +g),
+            Vector3D::point(-h, +b, -g),
+            Vector3D::point(-h, -b, +g),
+            Vector3D::point(+h, -b, -g),
+            Vector3D::point(-h, -b, -g)
+        };
 
-    //     std::vector<Face> faces = {
-    //         Face({0, 28, 36, 39, 29}),
-    //         Face({1, 32, 41, 37, 30}),
-    //         Face({2, 33, 42, 38, 31}),
-    //         Face({3, 34, 40, 43, 35}),
-    //         Face({4, 12, 44, 47, 13}),
-    //         Face({5, 16, 49, 45, 14}),
-    //         Face({6, 17, 50, 46, 15}),
-    //         Face({7, 18, 48, 51, 19}),
-    //         Face({8, 20, 52, 55, 21}),
-    //         Face({9, 24, 57, 53, 22}),
-    //         Face({10, 25, 58, 54, 23}),
-    //         Face({11, 26, 56, 59, 27}),
+        std::vector<Face> faces = {
+            Face({0, 28, 36, 39, 29}),
+            Face({1, 32, 41, 37, 30}),
+            Face({2, 33, 42, 38, 31}),
+            Face({3, 34, 40, 43, 35}),
+            Face({4, 12, 44, 47, 13}),
+            Face({5, 16, 49, 45, 14}),
+            Face({6, 17, 50, 46, 15}),
+            Face({7, 18, 48, 51, 19}),
+            Face({8, 20, 52, 55, 21}),
+            Face({9, 24, 57, 53, 22}),
+            Face({10, 25, 58, 54, 23}),
+            Face({11, 26, 56, 59, 27}),
 
-    //         Face({0, 2, 31, 55, 52, 28}),
-    //         Face({0, 29, 53, 57, 33, 2}),
-    //         Face({1, 3, 35, 59, 56, 32}),
-    //         Face({1, 30, 54, 58, 34, 3}),
-    //         Face({4, 6, 15, 39, 36, 12}),
-    //         Face({4, 13, 37, 41, 17, 6}),
-    //         Face({5, 7, 19, 43, 40, 16}),
-    //         Face({5, 14, 38, 42, 18, 7}),
-    //         Face({8, 10, 23, 47, 44, 20}),
-    //         Face({8, 21, 45, 49, 25, 10}),
-    //         Face({9, 11, 27, 51, 48, 24}),
-    //         Face({9, 22, 46, 50, 26, 11}),
-    //         Face({12, 36, 28, 52, 20, 44}),
-    //         Face({13, 47, 23, 54, 30, 37}),
-    //         Face({14, 45, 21, 55, 31, 38}),
-    //         Face({15, 46, 22, 53, 29, 39}),
-    //         Face({16, 40, 34, 58, 25, 49}),
-    //         Face({17, 41, 32, 56, 26, 50}),
-    //         Face({18, 42, 33, 57, 24, 48}),
-    //         Face({19, 51, 27, 59, 35, 43})
-    //     };
+            Face({0, 2, 31, 55, 52, 28}),
+            Face({0, 29, 53, 57, 33, 2}),
+            Face({1, 3, 35, 59, 56, 32}),
+            Face({1, 30, 54, 58, 34, 3}),
+            Face({4, 6, 15, 39, 36, 12}),
+            Face({4, 13, 37, 41, 17, 6}),
+            Face({5, 7, 19, 43, 40, 16}),
+            Face({5, 14, 38, 42, 18, 7}),
+            Face({8, 10, 23, 47, 44, 20}),
+            Face({8, 21, 45, 49, 25, 10}),
+            Face({9, 11, 27, 51, 48, 24}),
+            Face({9, 22, 46, 50, 26, 11}),
+            Face({12, 36, 28, 52, 20, 44}),
+            Face({13, 47, 23, 54, 30, 37}),
+            Face({14, 45, 21, 55, 31, 38}),
+            Face({15, 46, 22, 53, 29, 39}),
+            Face({16, 40, 34, 58, 25, 49}),
+            Face({17, 41, 32, 56, 26, 50}),
+            Face({18, 42, 33, 57, 24, 48}),
+            Face({19, 51, 27, 59, 35, 43})
+        };
 
-    //     Figure figure = Figure(points, faces, color);
-    //     Matrix rotationX = transformations::rotateX(M_PI / 180 * 90);
-    //     Matrix rotationY = transformations::rotateY(M_PI / 180 * 45);
-    //     Matrix rotationZ = transformations::rotateZ(M_PI / 180 * 45);
-    //     applyTransformation(figure, rotationX);
-    //     applyTransformation(figure, rotationY);
-    //     applyTransformation(figure, rotationZ);
-
-    //     return figure;
-    // }
+        Figure figure = Figure(points, faces, color);
+        return figure;
+    }
 
     Figure createCone(Color c, const int n, const double h) {
         // Points

@@ -206,7 +206,7 @@ img::EasyImage wireFrame(const ini::Configuration& c, bool zBuffer) {
             Figure baseFig = PlatonicSolids::createTruncatedIcosahedron(color);;
             generateFractal(baseFig, currentFigures, nrIterations, fractalScale);
         }
-
+        else if (type == "BuckyBall") currentFigures.push_back(PlatonicSolids::createTruncatedIcosahedron(color));
 
         Matrix rotateMatrixX = transformations::rotateX(rotateX * M_PI / 180);
         Matrix rotateMatrixY = transformations::rotateY(rotateY * M_PI / 180);
