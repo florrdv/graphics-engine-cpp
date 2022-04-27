@@ -30,8 +30,32 @@ void generateFractal(Figure& fig, Figures3D& fractal, const int nr_iterations, c
     return generateFractal(fig, fractal, nr_iterations - 1, scale);
 }
 
-std::pair<double, double> getDimensions(Figures3D &figures) {
-    
+Vector3D getDimensions(Figures3D &figures) {
+     std::vector<double> x;
+    std::vector<double> y;
+    std::vector<double> z;
+
+    for (Figure &f : figures) {
+        for (Vector3D &p : f.points) {
+            x.push_back(p.x);
+            y.push_back(p.y);
+            z.push_back(p.z);
+        }
+    }
+
+    Vector3D min = Vector3D::point(
+        *std::min_element(x.begin(), x.end()), 
+        *std::min_element(y.begin(), y.end()), 
+        *std::min_element(z.begin(), z.end())
+    );
+
+    Vector3D max = Vector3D::point(
+        *std::max_element(x.begin(), x.end()), 
+        *std::max_element(y.begin(), y.end()), 
+        *std::max_element(z.begin(), z.end())
+    );  
+
+   return max - min;
 }
 
 void generateMengerSponge(Figures3D &figures, const int iteration, const int nr_iterations) {
