@@ -208,6 +208,14 @@ namespace PlatonicSolids {
                     ico.points[pointIndexesSorted[1]],
                     ico.points[pointIndexesSorted[2]]
                 };
+
+                Vector3D centroid = centroids.at(face);
+                Vector3D a = pointsSorted[0];
+                Vector3D b = pointsSorted[1];
+                Vector3D c = pointsSorted[2];
+
+                Vector3D abCenter = (a + b) / 2;
+                Vector3D acCenter = (a + c) / 2;
             }
        }
 
