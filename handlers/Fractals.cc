@@ -28,3 +28,23 @@ void generateFractal(Figure& fig, Figures3D& fractal, const int nr_iterations, c
         fractal = intermediate;
     }
 }
+
+void generateMengerSponge(Figure& base, const int nr_iterations, const double scale) {
+    Matrix scaleMatrix = transformations::scaleFigure(1.0 / 9.0);
+
+    for (int i = 0; i < nr_iterations; i++) {
+        Matrix scaleMatrix = transformations::scaleFigure(1.0 / 9.0);
+        Figures3D figures;
+
+        for (int j = 0; j < 9; j++) {
+             std::vector<Vector3D> newPoints;
+                std::vector<Face> newFaces;
+                for (Vector3D point : base.points) newPoints.push_back(point * scaleMatrix);
+                for (Face face : base.faces) newFaces.push_back(face.clone());
+                Figure scaled = Figure(newPoints, newFaces, base.color);
+                figures.push_back(scaled);
+        }
+
+       
+    }
+}
