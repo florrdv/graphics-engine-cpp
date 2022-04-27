@@ -176,6 +176,41 @@ namespace PlatonicSolids {
             centroids.insert({face, center});
        }
 
+       for (unsigned long i = 0; i < ico.points.size(); i++) {
+            Vector3D vertex = ico.points[i];
+            std::vector<Face> faces = indexed.at(vertex);
+
+            Vector3D sum = Vector3D::point(0, 0, 0);
+            for (Face face : faces) {
+                sum += centroids.at(face);
+            }
+
+            Vector3D center = Vector3D::point(sum.x / 6, sum.y / 6, sum.z / 6);
+
+            for (Face face : faces) {
+                int currentPointPointIndex;
+                for (int pointIndex : face.pointIndexes) {
+                    Vector3D p = ico.points[pointIndex];
+                    if (vertex.x == p.x && vertex.y == p.y && vertex.z == p.z) {
+                        currentPointPointIndex = pointIndex;
+                        break;
+                    }
+                }
+
+                std::vector<int> pointIndexesSorted = { 
+                    face.pointIndexes[currentPointPointIndex], 
+                    face.pointIndexes[(currentPointPointIndex + 1) % face.pointIndexes.size()],
+                    face.pointIndexes[(currentPointPointIndex + 2) % face.pointIndexes.size()]
+                };
+
+                std::vector<Vector3D> pointsSorted = {
+                    ico.points[pointIndexesSorted[0]],
+                    ico.points[pointIndexesSorted[1]],
+                    ico.points[pointIndexesSorted[2]]
+                };
+            }
+       }
+
 
        return Figure(points, faces, color);
     }
