@@ -8,7 +8,7 @@
             "request": "launch",
             // Resolved by CMake Tools:
             "program": "${command:cmake.buildDirectory}/engine",
-            "args": ["misc/3d_fractals/3d_fractals023.ini"],
+            "args": ["misc/3d_fractals/3d_fractals026.ini"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [

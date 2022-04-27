@@ -142,85 +142,143 @@ namespace PlatonicSolids {
         return Figure(p, { f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11 }, c);
     }
 
+    Vector3D calculateTriangleCentroid(Figure &ico, Face &face) {
+        Vector3D p0 = ico.points[face.pointIndexes[0]];
+        Vector3D p1 = ico.points[face.pointIndexes[1]];
+        Vector3D p2 = ico.points[face.pointIndexes[2]];
+
+        Vector3D sum = p0 + p1 + p2;
+        Vector3D centroid = Vector3D::point(sum.x / 3, sum.y / 3, sum.z / 3);
+
+        return centroid;
+    }
+
+    // Inspired by: https://github.com/kovacsv/JSModeler
     Figure createTruncatedIcosahedron(Color color) {
-       Figure ico = createIcosahedron(color);
-       std::map<Vector3D, std::vector<Face>> indexed;
-       std::map<Face, Vector3D> centroids;
+        // Cartesian coordinates for the vertices of a truncated icosahedron centered at the origin are all even permutations of:
+        // (0, ±1, ±3φ)
+        // (±1, ±(2 + φ), ±2φ)
+        // (±φ, ±2, ±(2φ + 1))
+        // where φ = (1 + √5) / 2 is the golden mean
+        // Source: https://en.wikipedia.org/wiki/Truncated_icosahedron
 
-       for (Vector3D point : ico.points) {
-            std::vector<Face> relevant;
-            for (Face face : ico.faces) {
-                Vector3D p0 = ico.points[face.pointIndexes[0]];
-                Vector3D p1 = ico.points[face.pointIndexes[1]];
-                Vector3D p2 = ico.points[face.pointIndexes[2]];
+	    double goldenMean = (1.0 + sqrt(5.0)) / 2.0;
+	    double a = 2.0 * goldenMean;
+	    double b = 3.0 * goldenMean;
+	    double c = 1.0 + a;
+	    double d = 2.0 + goldenMean;
 
-                bool ap = false;
-                if (point.x == p0.x && point.y == p0.y && point.z == p0.z) ap = true;
-                if (point.x == p1.x && point.y == p1.y && point.z == p1.z) ap = true;
-                if (point.x == p2.x && point.y == p2.y && point.z == p2.z) ap = true;
+        std::vector<Vector3D> points = {
+            Vector3D::point(+0, +1.0, +b),
+            Vector3D::point(+0, +1.0, -b),
+            Vector3D::point(+0, -1.0, +b),
+            Vector3D::point(+0, -1.0, -b),
 
-                if (ap) relevant.push_back(face);
-            } 
+            Vector3D::point(+1.0, +b, +0),
+            Vector3D::point(+1.0, -b, +0),
+            Vector3D::point(-1.0, +b, +0),
+            Vector3D::point(-1.0, -b, +0),
 
-            indexed.insert({point, relevant});
-       }
+            Vector3D::point(+b, +0, +1.0),
+            Vector3D::point(-b, +0, +1.0),
+            Vector3D::point(+b, +0, -1.0),
+            Vector3D::point(-b, +0, -1.0),
 
-       for (Face face : ico.faces) {
-            Vector3D p0 = ico.points[face.pointIndexes[0]];
-            Vector3D p1 = ico.points[face.pointIndexes[1]];
-            Vector3D p2 = ico.points[face.pointIndexes[2]];
+            Vector3D::point(+2.0, +c, +goldenMean),
+            Vector3D::point(+2.0, +c, -goldenMean),
+            Vector3D::point(+2.0, -c, +goldenMean),
+            Vector3D::point(-2.0, +c, +goldenMean),
+            Vector3D::point(+2.0, -c, -goldenMean),
+            Vector3D::point(-2.0, +c, -goldenMean),
+            Vector3D::point(-2.0, -c, +goldenMean),
+            Vector3D::point(-2.0, -c, -goldenMean),
 
-            Vector3D sum = p0 + p1 + p2;
-            Vector3D center = Vector3D::point(sum.x / 3, sum.y / 3, sum.z / 3);
+            Vector3D::point(+c, +goldenMean, +2.0),
+            Vector3D::point(+c, -goldenMean, +2.0),
+            Vector3D::point(-c, +goldenMean, +2.0),
+            Vector3D::point(+c, +goldenMean, -2.0),
+            Vector3D::point(-c, -goldenMean, +2.0),
+            Vector3D::point(+c, -goldenMean, -2.0),
+            Vector3D::point(-c, +goldenMean, -2.0),
+            Vector3D::point(-c, -goldenMean, -2.0),
 
-            centroids.insert({face, center});
-       }
+            Vector3D::point(+goldenMean, +2.0, +c),
+            Vector3D::point(-goldenMean, +2.0, +c),
+            Vector3D::point(+goldenMean, +2.0, -c),
+            Vector3D::point(+goldenMean, -2.0, +c),
+            Vector3D::point(-goldenMean, +2.0, -c),
+            Vector3D::point(-goldenMean, -2.0, +c),
+            Vector3D::point(+goldenMean, -2.0, -c),
+            Vector3D::point(-goldenMean, -2.0, -c),
 
-       for (unsigned long i = 0; i < ico.points.size(); i++) {
-            Vector3D vertex = ico.points[i];
-            std::vector<Face> faces = indexed.at(vertex);
+            Vector3D::point(+1.0, +d, +a),
+            Vector3D::point(+1.0, +d, -a),
+            Vector3D::point(+1.0, -d, +a),
+            Vector3D::point(-1.0, +d, +a),
+            Vector3D::point(+1.0, -d, -a),
+            Vector3D::point(-1.0, +d, -a),
+            Vector3D::point(-1.0, -d, +a),
+            Vector3D::point(-1.0, -d, -a),
 
-            Vector3D sum = Vector3D::point(0, 0, 0);
-            for (Face face : faces) {
-                sum += centroids.at(face);
-            }
+            Vector3D::point(+d, +a, +1.0),
+            Vector3D::point(+d, -a, +1.0),
+            Vector3D::point(-d, +a, +1.0),
+            Vector3D::point(+d, +a, -1.0),
+            Vector3D::point(-d, -a, +1.0),
+            Vector3D::point(+d, -a, -1.0),
+            Vector3D::point(-d, +a, -1.0),
+            Vector3D::point(-d, -a, -1.0),
 
-            Vector3D center = Vector3D::point(sum.x / 6, sum.y / 6, sum.z / 6);
+            Vector3D::point(+a, +1.0, +d),
+            Vector3D::point(-a, +1.0, +d),
+            Vector3D::point(+a, +1.0, -d),
+            Vector3D::point(+a, -1.0, +d),
+            Vector3D::point(-a, +1.0, -d),
+            Vector3D::point(-a, -1.0, +d),
+            Vector3D::point(+a, -1.0, -d),
+            Vector3D::point(-a, -1.0, -d)
+        };
 
-            for (Face face : faces) {
-                int currentPointPointIndex;
-                for (int pointIndex : face.pointIndexes) {
-                    Vector3D p = ico.points[pointIndex];
-                    if (vertex.x == p.x && vertex.y == p.y && vertex.z == p.z) {
-                        currentPointPointIndex = pointIndex;
-                        break;
-                    }
-                }
+        std::vector<Face> faces = {
+            // Pentagons
+            Face({0, 28, 36, 39, 29}),
+            Face({1, 32, 41, 37, 30}),
+            Face({2, 33, 42, 38, 31}),
+            Face({3, 34, 40, 43, 35}),
+            Face({4, 12, 44, 47, 13}),
+            Face({5, 16, 49, 45, 14}),
+            Face({6, 17, 50, 46, 15}),
+            Face({7, 18, 48, 51, 19}),
+            Face({8, 20, 52, 55, 21}),
+            Face({9, 24, 57, 53, 22}),
+            Face({10, 25, 58, 54, 23}),
+            Face({11, 26, 56, 59, 27}),
 
-                std::vector<int> pointIndexesSorted = { 
-                    face.pointIndexes[currentPointPointIndex], 
-                    face.pointIndexes[(currentPointPointIndex + 1) % face.pointIndexes.size()],
-                    face.pointIndexes[(currentPointPointIndex + 2) % face.pointIndexes.size()]
-                };
+            // Hexagons
+            Face({0, 2, 31, 55, 52, 28}),
+            Face({0, 29, 53, 57, 33, 2}),
+            Face({1, 3, 35, 59, 56, 32}),
+            Face({1, 30, 54, 58, 34, 3}),
+            Face({4, 6, 15, 39, 36, 12}),
+            Face({4, 13, 37, 41, 17, 6}),
+            Face({5, 7, 19, 43, 40, 16}),
+            Face({5, 14, 38, 42, 18, 7}),
+            Face({8, 10, 23, 47, 44, 20}),
+            Face({8, 21, 45, 49, 25, 10}),
+            Face({9, 11, 27, 51, 48, 24}),
+            Face({9, 22, 46, 50, 26, 11}),
+            Face({12, 36, 28, 52, 20, 44}),
+            Face({13, 47, 23, 54, 30, 37}),
+            Face({14, 45, 21, 55, 31, 38}),
+            Face({15, 46, 22, 53, 29, 39}),
+            Face({16, 40, 34, 58, 25, 49}),
+            Face({17, 41, 32, 56, 26, 50}),
+            Face({18, 42, 33, 57, 24, 48}),
+            Face({19, 51, 27, 59, 35, 43})
+        };
 
-                std::vector<Vector3D> pointsSorted = {
-                    ico.points[pointIndexesSorted[0]],
-                    ico.points[pointIndexesSorted[1]],
-                    ico.points[pointIndexesSorted[2]]
-                };
-
-                Vector3D centroid = centroids.at(face);
-                Vector3D a = pointsSorted[0];
-                Vector3D b = pointsSorted[1];
-                Vector3D c = pointsSorted[2];
-
-                Vector3D abCenter = (a + b) / 2;
-                Vector3D acCenter = (a + c) / 2;
-            }
-       }
-
-
-       return Figure(points, faces, color);
+        Figure figure = Figure(points, faces, color);
+        return figure;
     }
 
     Figure createCone(Color c, const int n, const double h) {
