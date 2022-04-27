@@ -60,26 +60,26 @@ Vector3D getDimensions(Figures3D &figures) {
 
 void generateMengerSponge(Figures3D &figures, const int iteration, const int nr_iterations) {
     if (iteration == nr_iterations) { return; }
-    Matrix scaleMatrix = transformations::scaleFigure(1.0 / 9.0);
-    // figures.push_back(base);
+    Matrix scaleMatrix = transformations::scaleFigure(1.0 / 3);
 
-    
+    Vector3D dimensions = getDimensions(figures);
 
     Figures3D newFigures;
-    for (int x = 0; x < 3; x++) {
-        for (int y = 0; y < 3; y++) {
-            for (int z = 0; z < 3; z++) {
+    for (int x = -1; x < 2; x++) {
+        for (int y = -1; y < 2; y++) {
+            for (int z = -1; z < 2; z++) {
                 int i = 0;
-                if (x == 1) i++;
-                if (y == 1) i++;
-                if (z == 1) i++;
+                if (x == 0) i++;
+                if (y == 0) i++;
+                if (z == 0) i++;
                 if (i >= 2) continue;
-                auto scale = iteration * 4;
-                Vector3D translation = Vector3D::point(x * (2 + scale), y * (2 + scale), z * (2 + scale));
+
+                Vector3D translation = Vector3D::point(x * dimensions.x, y * dimensions.x, z * dimensions.x);
                 for (Figure &f : figures) {
                     Figure b = f;
                     for (Vector3D &point : b.points) {
                         point += translation;
+                        point *= scaleMatrix;
                     }
                     newFigures.push_back(b);
                 }

@@ -214,33 +214,6 @@ img::EasyImage wireFrame(const ini::Configuration& c, bool zBuffer) {
             Figure baseFig = PlatonicSolids::createCube(color);
             currentFigures.push_back(baseFig);
             generateMengerSponge(currentFigures, 0, nrIterations);
-
-            std::vector<double> x;
-            std::vector<double> y;
-            std::vector<double> z;
-
-            for (Figure &f : currentFigures) {
-                for (Vector3D &p : f.points) {
-                    x.push_back(p.x);
-                    y.push_back(p.y);
-                    z.push_back(p.z);
-                }
-            }
-
-            Vector3D min = Vector3D::point(
-                *std::min_element(x.begin(), x.end()), 
-                *std::min_element(y.begin(), y.end()), 
-                *std::min_element(z.begin(), z.end())
-            );
-
-            Vector3D max = Vector3D::point(
-                *std::max_element(x.begin(), x.end()), 
-                *std::max_element(y.begin(), y.end()), 
-                *std::max_element(z.begin(), z.end())
-            );
-
-            // Matrix translateMatrix2 = transformations::translate(Vector3D::point(-200, -200, -200));
-            // applyTransformationAll(currentFigures, translateMatrix2);
         }
 
         Matrix rotateMatrixX = transformations::rotateX(rotateX * M_PI / 180);
