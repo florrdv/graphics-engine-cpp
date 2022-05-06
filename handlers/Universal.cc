@@ -119,15 +119,7 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img,
 
     // Handle ambient light
     Color ambientResult = Color(0, 0, 0);
-    for (Light& light : lights) {
-        Color c = Color(
-            ambientReflection.red * light.ambientLight.red,
-            ambientReflection.green * light.ambientLight.green,
-            ambientReflection.blue * light.ambientLight.blue
-        );
-        
-        ambientResult = Color(ambientResult);
-    }
+    for (Light& light : lights) ambientResult += light.ambientLight * ambientReflection;
 
     for (int yI = yMin; yI <= yMax; yI++) {
         // Determining xMin(xL) and XMax(xR)
