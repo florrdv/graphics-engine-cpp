@@ -8,8 +8,8 @@
 
 #include "../util/Figure.h"
 #include "../util/Line2D.h"
-#include "../util/Light.h"
 #include "../easy_image.h"
+#include "../util/Light.h"
 #include "../ini_configuration.h"
 
 using Lines2D = std::list<Line2D>;

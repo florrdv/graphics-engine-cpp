@@ -64,6 +64,8 @@ set(engine_sources
     handlers/WireFrame.h
     handlers/ZBufferTriangle.cc
     handlers/ZBufferTriangle.h
+    handlers/LightedZBuffering.cc
+    handlers/LightedZBuffering.h
 )
 
 ############################################################
