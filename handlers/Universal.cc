@@ -521,3 +521,38 @@ Details parseGeneralDetails(const ini::Configuration& c) {
 
     return Details { size, eye, backgroundColor };
 }
+
+void drawFigure(img::EasyImage &img, ZBuffer &z, Figure &f, double size, double d, double dX, double dY, Color &background) {
+    f.triangulate();
+
+    Lights3D lights;
+
+    for (Face face : f.faces) {
+        draw_zbuf_triag(z, img, 
+                        f.points[face.pointIndexes[0]], f.points[face.pointIndexes[1]], f.points[face.pointIndexes[2]],
+                        d, dX, dY,
+                        f.ambientReflection, f.diffuseReflection, f.specularReflection, f.reflectionCoefficient,
+                        lights
+        );
+    }
+}
+
+img::EasyImage drawFigures(Figures3D &figures, double size, Color &background) {
+    Lines2D lines = projectAll(figures);
+    ImageDetails details = getImageDetails(lines, size);
+
+    ZBuffer z = ZBuffer(std::lround(details.imageX), std::lround(details.imageY));
+    img::EasyImage img(std::lround(details.imageX), std::lround(details.imageY), background.toNative());
+
+    double d = 0.95 * details.imageX / details.xRange;
+    double dcX = d * (details.xMin + details.xMax) / 2;
+    double dcY = d * (details.yMin + details.yMax) / 2;
+    double dX = details.imageX / 2 - dcX;
+    double dY = details.imageY / 2 - dcY;
+
+    for (Figure figure : figures) {
+        drawFigure(img, z, figure, size, d, dX, dY, background);
+    }
+
+    return img;
+}
