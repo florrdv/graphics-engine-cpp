@@ -276,8 +276,19 @@ Figures3D parseLights(const ini::Configuration& c) {
     for (int f = 0; f < nrLights; f++) {
         auto base = c["Light" + std::to_string(f)];
 
-        
+        std::vector<double> ambientLightRaw = base["ambientLight"].as_double_tuple_or_default({0, 0, 0});
+        Color ambientLight = Color(ambientLightRaw[0], ambientLightRaw[1], ambientLightRaw[2]);
+
+        std::vector<double> diffuseLightRaw = base["diffuseLight"].as_double_tuple_or_default({0, 0, 0});
+        Color diffuseLight = Color(diffuseLightRaw[0], diffuseLightRaw[1], diffuseLightRaw[2]);
+
+        std::vector<double> specularLightRaw = base["specularLight"].as_double_tuple_or_default({0, 0, 0});
+        Color specularLight = Color(specularLightRaw[0], specularLightRaw[1], specularLightRaw[2]);
+
+        lights.push_back(Light(ambientLight, diffuseLight, specularLight));
     }
+
+    return lights;
 }
 
 Figures3D parseFigures(const ini::Configuration& c) {
