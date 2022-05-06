@@ -244,8 +244,6 @@ Lines2D projectFig(const Figure& fig) {
 
             lines.push_back(line);
         }
-
-
     }
 
     return lines;

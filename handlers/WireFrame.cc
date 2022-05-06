@@ -10,19 +10,8 @@
 #include "../util/generators/PlatonicSolids.h"
 #include "../util/generators/Transformations.h"
 
-img::EasyImage wireFrame(const ini::Configuration& c, bool zBuffer) {
+Figures3D parseFigures(const ini::Configuration& c) {
     Figures3D figures;
-
-    int size;
-    if (!c["General"]["size"].as_int_if_exists(size)) std::cout << "⛔️| Failed to fetch size" << std::endl;
-
-    std::vector<int> eyeRaw;
-    if (!c["General"]["eye"].as_int_tuple_if_exists(eyeRaw)) std::cout << "⛔️| Failed to read eye" << std::endl;
-    Vector3D eye = Vector3D::point(eyeRaw[0], eyeRaw[1], eyeRaw[2]);
-
-    std::vector<double> backgroundColorRaw;
-    if (!c["General"]["backgroundcolor"].as_double_tuple_if_exists(backgroundColorRaw)) std::cout << "⛔️| Failed to fetch background color" << std::endl;
-    Color backgroundColor = Color(backgroundColorRaw[0], backgroundColorRaw[1], backgroundColorRaw[2]);
 
     int nrFigures;
     if (!c["General"]["nrFigures"].as_int_if_exists(nrFigures)) std::cout << "⛔️| Failed to fetch # figures" << std::endl;
@@ -232,6 +221,25 @@ img::EasyImage wireFrame(const ini::Configuration& c, bool zBuffer) {
         figures.insert(figures.end(), currentFigures.begin(), currentFigures.end());
 
     }
+
+    return figures;
+}
+
+img::EasyImage wireFrame(const ini::Configuration& c, bool zBuffer) {
+    Figures3D figures;
+
+    int size;
+    if (!c["General"]["size"].as_int_if_exists(size)) std::cout << "⛔️| Failed to fetch size" << std::endl;
+
+    std::vector<int> eyeRaw;
+    if (!c["General"]["eye"].as_int_tuple_if_exists(eyeRaw)) std::cout << "⛔️| Failed to read eye" << std::endl;
+    Vector3D eye = Vector3D::point(eyeRaw[0], eyeRaw[1], eyeRaw[2]);
+
+    std::vector<double> backgroundColorRaw;
+    if (!c["General"]["backgroundcolor"].as_double_tuple_if_exists(backgroundColorRaw)) std::cout << "⛔️| Failed to fetch background color" << std::endl;
+    Color backgroundColor = Color(backgroundColorRaw[0], backgroundColorRaw[1], backgroundColorRaw[2]);
+
+    
 
     Matrix eyePointTransMatrix = transformations::eyePointTrans(eye);
     applyTransformationAll(figures, eyePointTransMatrix);
