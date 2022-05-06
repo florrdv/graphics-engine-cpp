@@ -131,7 +131,7 @@ img::EasyImage wireFrame(const ini::Configuration& c, bool zBuffer) {
             input_stream >> l_system;
             input_stream.close();
 
-            figure.color = color;
+            figure.ambientReflection = color;
 
             draw3DLSystem(l_system, figure, color);
             currentFigures.push_back(figure);

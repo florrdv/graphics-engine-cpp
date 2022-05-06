@@ -8,6 +8,7 @@
 
 #include "../util/Figure.h"
 #include "../util/Line2D.h"
+#include "../util/Light.h"
 #include "../easy_image.h"
 
 using Lines2D = std::list<Line2D>;
@@ -46,7 +47,8 @@ ImageDetails getImageDetails(const Lines2D &lines, const double size);
 void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, 
                     Vector3D const& A, Vector3D const& B, Vector3D const& C, 
                     double d, double dx, double dy, 
-                    Color color);
+                    Color ambientReflection, Color diffuseReflection, Color specularReflection, double reflectionCoeff,
+                    Lights3D& lights);
 
 #endif // __PROJECTS_GRAPHICS_ENGINE_CPP_HANDLERS_UNIVERSAL_CC_
 

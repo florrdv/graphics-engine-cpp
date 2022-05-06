@@ -10,13 +10,15 @@
 void drawFigure(img::EasyImage &img, ZBuffer &z, Figure &f, double size, double d, double dX, double dY, Color &background) {
     f.triangulate();
 
+    Lights3D lights;
+
     for (Face face : f.faces) {
         draw_zbuf_triag(z, img, 
                         f.points[face.pointIndexes[0]], f.points[face.pointIndexes[1]], f.points[face.pointIndexes[2]],
-                        d,
-                        dX,
-                        dY,
-                        f.color);
+                        d, dX, dY,
+                        f.ambientReflection, f.diffuseReflection, f.specularReflection, f.reflectionCoefficient,
+                        lights
+        );
     }
 }
 

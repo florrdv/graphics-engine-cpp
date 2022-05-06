@@ -7,7 +7,6 @@
 
 #include "../util/Line2D.h"
 #include "../util/Figure.h"
-#include "../util/Light.h"
 
 void applyTransformation(Figure& fig, const Matrix& m) {
     for (auto& p : fig.points) p *= m;
@@ -65,9 +64,7 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img,
                     Color ambientReflection, Color diffuseReflection, Color specularReflection, double reflectionCoeff,
                     Lights3D& lights) {
     // Backwards compatibility
-    if (lights.empty()) {
-        lights.push_back(Light())
-    }
+    if (lights.empty()) lights.push_back(Light(Color(1, 1, 1), Color(0, 0, 0), Color(0, 0, 0)));
     
     // Previous coordinates
     double xA = A.x;
@@ -125,6 +122,8 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img,
     // Handle ambient light
     Color ambientResult = Color(0, 0, 0);
     for (Light& light : lights) ambientResult += light.ambientLight * ambientReflection;
+
+    Color color = ambientResult;
 
     for (int yI = yMin; yI <= yMax; yI++) {
         // Determining xMin(xL) and XMax(xR)
@@ -241,7 +240,7 @@ Lines2D projectFig(const Figure& fig) {
             Vector3D p2;
             if (i + 1 >= face.pointIndexes.size()) p2 = fig.points[face.pointIndexes[0]];
             else p2 = fig.points[face.pointIndexes[i + 1]];
-            Line2D line = Line2D(projectPoint(p1, 1.0), projectPoint(p2, 1.0), p1.z, p2.z, fig.color);
+            Line2D line = Line2D(projectPoint(p1, 1.0), projectPoint(p2, 1.0), p1.z, p2.z, fig.ambientReflection);
 
             lines.push_back(line);
         }
