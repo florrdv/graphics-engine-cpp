@@ -10,6 +10,7 @@
 #include "../util/Line2D.h"
 #include "../util/Light.h"
 #include "../easy_image.h"
+#include "../ini_configuration.h"
 
 using Lines2D = std::list<Line2D>;
 using Figures3D = std::list<Figure>;
@@ -26,6 +27,12 @@ struct ImageDetails {
 
     double yMin;
     double yMax;
+};
+
+struct Details {
+    int size;
+    Vector3D eye;
+    Color backgroundColor;
 };
 
 void applyTransformation(Figure& fig, const Matrix& m);
@@ -49,6 +56,9 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img,
                     double d, double dx, double dy, 
                     Color ambientReflection, Color diffuseReflection, Color specularReflection, double reflectionCoeff,
                     Lights3D& lights);
+
+Figures3D parseFigures(const ini::Configuration& c);
+Details parseGeneralDetails(const ini::Configuration& c);
 
 #endif // __PROJECTS_GRAPHICS_ENGINE_CPP_HANDLERS_UNIVERSAL_CC_
 
