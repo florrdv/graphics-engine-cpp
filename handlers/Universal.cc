@@ -268,7 +268,16 @@ Lines2D projectAll(const Figures3D& figs) {
 }
 
 Figures3D parseLights(const ini::Configuration& c) {
-    Lights3D;
+    Lights3D lights;
+
+    int nrLights;
+    if (!c["General"]["nrLights"].as_int_if_exists(nrLights)) std::cout << "⛔️| Failed to fetch # lights" << std::endl;
+
+    for (int f = 0; f < nrLights; f++) {
+        auto base = c["Light" + std::to_string(f)];
+
+        
+    }
 }
 
 Figures3D parseFigures(const ini::Configuration& c) {
