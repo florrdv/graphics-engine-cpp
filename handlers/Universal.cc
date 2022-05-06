@@ -117,6 +117,18 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img,
     double dzdx = w1 / (-d*k);
     double dzdy = w2 / (-d*k);
 
+    // Handle ambient light
+    Color ambientResult = Color(0, 0, 0);
+    for (Light& light : lights) {
+        Color c = Color(
+            ambientReflection.red * light.ambientLight.red,
+            ambientReflection.green * light.ambientLight.green,
+            ambientReflection.blue * light.ambientLight.blue
+        );
+        
+        ambientResult = Color(ambientResult);
+    }
+
     for (int yI = yMin; yI <= yMax; yI++) {
         // Determining xMin(xL) and XMax(xR)
         double xMinAB = std::numeric_limits<double>::infinity();
