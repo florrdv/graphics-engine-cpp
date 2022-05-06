@@ -1,3 +1,4 @@
+#include <list>
 #include "Color.h"
 #include "../lib/vector3d/vector3d.h"
 
@@ -18,3 +19,5 @@ public:
     Vector3D location;
     double spotAngle;
 };
+
+typedef std::list<Light> Lights3D;
