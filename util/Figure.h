@@ -12,10 +12,13 @@ class Figure {
 public:
     std::vector<Vector3D> points;
     std::vector<Face> faces;
-    Color color;
+    Color ambientReflection;
+    Color diffuseReflection = Color(0, 0, 0);
+    Color specularReflection = Color(0, 0, 0);
+    double reflectionCoefficient = 0;
 
-    Figure(std::vector<Vector3D> p, std::vector<Face> f, Color c) : points(p), faces(f), color(c) {};
-    Figure(): color(Color(0.0, 0.0, 0.0)) {};
+    Figure(std::vector<Vector3D> p, std::vector<Face> f, Color c) : points(p), faces(f), ambientReflection(c) {};
+    Figure(): ambientReflection(Color(0.0, 0.0, 0.0)) {};
     void triangulate();
 };
 

@@ -42,6 +42,9 @@ set(engine_sources
     util/ZBuffer.h
     util/ZBuffer.cc
 
+    util/Light.h
+    util/Light.cc
+
     util/generators/Transformations.h
     util/generators/Transformations.cc
     util/generators/PlatonicSolids.h
