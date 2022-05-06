@@ -64,6 +64,11 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img,
                     double d, double dx, double dy, 
                     Color ambientReflection, Color diffuseReflection, Color specularReflection, double reflectionCoeff,
                     Lights3D& lights) {
+    // Backwards compatibility
+    if (lights.empty()) {
+        lights.push_back(Light())
+    }
+    
     // Previous coordinates
     double xA = A.x;
     double yA = A.y;

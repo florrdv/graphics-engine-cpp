@@ -7,6 +7,8 @@ public:
     Color ambientLight;
     Color diffuseLight;
     Color specularLight;
+
+    Light(Color a, Color d, Color s): ambientLight(a), diffuseLight(d), specularLight(s) {};
 };
 
 class InfLight : public Light {
