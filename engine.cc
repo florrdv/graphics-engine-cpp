@@ -38,6 +38,7 @@ img::EasyImage generate_image(const ini::Configuration& configuration) {
     return result;
 }
 
+// Provided by University of Antwerp
 int main(int argc, char const* argv[]) {
     int retVal = 0;
     try {

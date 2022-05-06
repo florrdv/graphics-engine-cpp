@@ -301,7 +301,9 @@ Figures3D parseFigures(const ini::Configuration& c) {
 
 
         std::vector<double> colorRaw;
-        if (!base["color"].as_double_tuple_if_exists(colorRaw)) std::cout << "⛔️| Failed to fetch color" << std::endl;
+        if (!base["color"].as_double_tuple_if_exists(colorRaw)) {
+            if (!base["ambientReflection"].as_double_tuple_if_exists(colorRaw)) std::cout << "⛔️| Failed to fetch color" << std::endl;
+        }
         Color color = Color(colorRaw[0], colorRaw[1], colorRaw[2]);
 
         std::string type;
