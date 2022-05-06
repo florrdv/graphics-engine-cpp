@@ -7,6 +7,7 @@
 
 #include "../util/Line2D.h"
 #include "../util/Figure.h"
+#include "../util/Light.h"
 
 void applyTransformation(Figure& fig, const Matrix& m) {
     for (auto& p : fig.points) p *= m;
@@ -61,7 +62,8 @@ ImageDetails getImageDetails(const Lines2D &lines, const double size) {
 void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, 
                     Vector3D const& A, Vector3D const& B, Vector3D const& C, 
                     double d, double dx, double dy, 
-                    Color color) {
+                    Color ambientReflection, Color diffuseReflection, Color specularReflection, double reflectionCoeff,
+                    Lights3D& lights) {
     // Previous coordinates
     double xA = A.x;
     double yA = A.y;
