@@ -267,7 +267,7 @@ Lines2D projectAll(const Figures3D& figs) {
     return lines;
 }
 
-Figures3D parseLights(const ini::Configuration& c) {
+Lights3D parseLights(const ini::Configuration& c) {
     Lights3D lights;
 
     int nrLights;
