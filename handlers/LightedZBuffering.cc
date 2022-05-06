@@ -14,8 +14,7 @@ img::EasyImage lightedZBuffering(const ini::Configuration& c) {
     Matrix eyePointTransMatrix = transformations::eyePointTrans(details.eye);
     applyTransformationAll(figures, eyePointTransMatrix);
 
-    Lines2D lines = projectAll(figures);
-    return draw2DLines(lines, details.size, details.backgroundColor, true);
+    return drawFigures(figures, details.size, details.backgroundColor, lights);
 }
 
 #endif // __PROJECTS_GRAPHICS_ENGINE_CPP_HANDLERS_LIGHTEDZBUFFERING_CC_

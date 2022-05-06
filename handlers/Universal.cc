@@ -522,10 +522,8 @@ Details parseGeneralDetails(const ini::Configuration& c) {
     return Details { size, eye, backgroundColor };
 }
 
-void drawFigure(img::EasyImage &img, ZBuffer &z, Figure &f, double size, double d, double dX, double dY, Color &background) {
+void drawFigure(img::EasyImage &img, ZBuffer &z, Figure &f, double size, double d, double dX, double dY, Color &background, Lights3D &lights) {
     f.triangulate();
-
-    Lights3D lights;
 
     for (Face face : f.faces) {
         draw_zbuf_triag(z, img, 
@@ -537,7 +535,7 @@ void drawFigure(img::EasyImage &img, ZBuffer &z, Figure &f, double size, double 
     }
 }
 
-img::EasyImage drawFigures(Figures3D &figures, double size, Color &background) {
+img::EasyImage drawFigures(Figures3D &figures, double size, Color &background, Lights3D &lights) {
     Lines2D lines = projectAll(figures);
     ImageDetails details = getImageDetails(lines, size);
 
@@ -551,7 +549,7 @@ img::EasyImage drawFigures(Figures3D &figures, double size, Color &background) {
     double dY = details.imageY / 2 - dcY;
 
     for (Figure figure : figures) {
-        drawFigure(img, z, figure, size, d, dX, dY, background);
+        drawFigure(img, z, figure, size, d, dX, dY, background, lights);
     }
 
     return img;
