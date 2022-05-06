@@ -11,7 +11,6 @@
 #include "../lib/l_parser/l_parser.h"
 #include "../util/Line2D.h"
 #include "../util/Figure.h"
-#include "../util/Light.h"
 #include "../util/generators/Transformations.h"
 #include "../util/generators/PlatonicSolids.h"
 

@@ -59,6 +59,7 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img,
 
 Figures3D parseFigures(const ini::Configuration& c);
 Details parseGeneralDetails(const ini::Configuration& c);
+Lights3D parseLights(const ini::Configuration& c);
 
 #endif // __PROJECTS_GRAPHICS_ENGINE_CPP_HANDLERS_UNIVERSAL_CC_
 
