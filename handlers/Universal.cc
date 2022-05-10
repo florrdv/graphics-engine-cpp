@@ -196,30 +196,30 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eye,
             if (zIndex < previousValue) {
                 // We have to draw the pixel, let's calculate the color
                 // in case any point lights are parent
-                // Color baseColor = color;
+                Color baseColor = color;
 
-                // for (Light* light : lights) {
-                    // if (PointLight* infLight = dynamic_cast<PointLight*>(light)) {
-                    //     // We have to connect the point (x, y, z) to point p
-                    //     // Let's start by determening the coordinates of the point (x, y, z)
-                    //     double zE = 1/zIndex;
-                    //     double xE = xI * (-zE) / d;
-                    //     double yE = yI * (-zE) / d;
+                for (Light* light : lights) {
+                    if (PointLight* infLight = dynamic_cast<PointLight*>(light)) {
+                        // We have to connect the point (x, y, z) to point p
+                        // Let's start by determening the coordinates of the point (x, y, z)
+                        double zE = 1/zIndex;
+                        double xE = xI * (-zE) / d;
+                        double yE = yI * (-zE) / d;
 
-                    //     Vector3D xyz = Vector3D::point(xE, yE, zE);
-                    //     Vector3D p = infLight->location * eye;
-                    //     Vector3D l = Vector3D::normalise(p - xyz);
+                        Vector3D xyz = Vector3D::point(xE, yE, zE);
+                        Vector3D p = infLight->location * eye;
+                        Vector3D l = Vector3D::normalise(p - xyz);
                         
                         
-                    //     Vector3D ld = Vector3D::cross(l, n);
+                        Vector3D ld = Vector3D::cross(l, n);
 
-                    //     double alpha = n.x * ld.x + n.y * ld.y + n.z * ld.z;
-                    //     baseColor += light->diffuseLight * alpha;
-                    // }
-                // }
+                        double alpha = n.x * ld.x + n.y * ld.y + n.z * ld.z;
+                        baseColor += light->diffuseLight * alpha;
+                    }
+                }
 
                 z[xI][yI] = zIndex;
-                img(xI, yI) = color.toNative();
+                img(xI, yI) = baseColor.toNative();
             }
         }
     }
