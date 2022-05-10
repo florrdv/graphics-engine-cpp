@@ -5,9 +5,9 @@
 #include <cmath>
 
 void generateFractal(Figure& fig, Figures3D& fractal, const int nr_iterations, const double scale) {
+    if (fractal.empty()) fractal.push_back(fig);
     if (nr_iterations == 0) return;
 
-    fractal.push_back(fig);
     Matrix scaleMatrix = transformations::scaleFigure(1 / scale);
 
     // Go through all iterations

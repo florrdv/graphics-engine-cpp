@@ -473,7 +473,7 @@ Figures3D parseFigures(const ini::Configuration& c) {
             double fractalScale;
             if (!base["fractalScale"].as_double_if_exists(fractalScale)) std::cout << "⛔️| Failed to fetch scale" << std::endl;
 
-            Figure baseFig = PlatonicSolids::createCube(ambientColor, diffuseColor);;
+            Figure baseFig = PlatonicSolids::createCube(ambientColor, diffuseColor);
             generateFractal(baseFig, currentFigures, nrIterations, fractalScale);
         }
         else if (type == "FractalTetrahedron") {
@@ -483,7 +483,7 @@ Figures3D parseFigures(const ini::Configuration& c) {
             double fractalScale;
             if (!base["fractalScale"].as_double_if_exists(fractalScale)) std::cout << "⛔️| Failed to fetch scale" << std::endl;
 
-            Figure baseFig = PlatonicSolids::createTetrahedron(ambientColor, diffuseColor);;
+            Figure baseFig = PlatonicSolids::createTetrahedron(ambientColor, diffuseColor);
             generateFractal(baseFig, currentFigures, nrIterations, fractalScale);
         }
         else if (type == "FractalIcosahedron") {
@@ -493,17 +493,7 @@ Figures3D parseFigures(const ini::Configuration& c) {
             double fractalScale;
             if (!base["fractalScale"].as_double_if_exists(fractalScale)) std::cout << "⛔️| Failed to fetch scale" << std::endl;
 
-            Figure baseFig = PlatonicSolids::createIcosahedron(ambientColor, diffuseColor);;
-            generateFractal(baseFig, currentFigures, nrIterations, fractalScale);
-        }
-        else if (type == "FractalIcosahedron") {
-            int nrIterations;
-            if (!base["nrIterations"].as_int_if_exists(nrIterations)) std::cout << "⛔️| Failed to fetch # iterations" << std::endl;
-
-            double fractalScale;
-            if (!base["fractalScale"].as_double_if_exists(fractalScale)) std::cout << "⛔️| Failed to fetch scale" << std::endl;
-
-            Figure baseFig = PlatonicSolids::createIcosahedron(ambientColor, diffuseColor);;
+            Figure baseFig = PlatonicSolids::createIcosahedron(ambientColor, diffuseColor);
             generateFractal(baseFig, currentFigures, nrIterations, fractalScale);
         }
         else if (type == "FractalOctahedron") {
