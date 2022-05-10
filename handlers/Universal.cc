@@ -319,7 +319,19 @@ Lights3D parseLights(const ini::Configuration& c) {
         std::vector<double> specularLightRaw = base["specularLight"].as_double_tuple_or_default({0, 0, 0});
         Color specularLight = Color(specularLightRaw[0], specularLightRaw[1], specularLightRaw[2]);
 
-        lights.push_back(new Light(ambientLight, diffuseLight, specularLight));
+        std::string infinity;
+        if (base["infinity"].as_string_if_exists(infinity)) {
+            if (infinity == "TRUE") {
+                 std::vector<double> direction;
+            if (!base["direction"].as_double_tuple_if_exists(direction)) std::cout << "⛔️| Failed to fetch direction" << std::endl;
+            } else {
+                 std::vector<double> location;
+                if (!base["location"].as_double_tuple_if_exists(location)) std::cout << "⛔️| Failed to fetch location" << std::endl;
+            }
+        } else {
+            lights.push_back(new Light(ambientLight, diffuseLight, specularLight));
+        }
+
     }
 
     return lights;
