@@ -388,27 +388,25 @@ namespace PlatonicSolids {
 
     Figure createTorus(Color a, Color d, const double r, const double R, const int n, const int m) {
         std::vector<Vector3D> points;
+        std::vector<Face> faces;
 
         for (int i = 0; i < n; i++) {
+            double u = 2 * i * M_PI / n;
             for (int j = 0; j < m; j++) {
-                double u = 2 * i * M_PI / n;
                 double v = 2 * j * M_PI / m;
 
+                // Generate point
                 double x = (R + r * std::cos(v)) * std::cos(u);
                 double y = (R + r * std::cos(v)) * std::sin(u);
                 double z = r * std::sin(v);
 
                 points.push_back(Vector3D::point(x, y, z));
-            }
-        }
 
-        std::vector<Face> faces;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                Face f = Face({ i           + j             * m,
-                                (i+1) % n   + j             * m,
-                                (i+1) % n   + (j + 1) % m   * m,
-                                i           + (j + 1) % m   * m
+                // Generate face
+                Face f = Face({ i           * m             + j,
+                                (i+1) % n   * m             + j,
+                                (i+1) % n   * m             + (j + 1) % m,
+                                i           * m             + (j + 1) % m
                             });
 
                 faces.push_back(f);
