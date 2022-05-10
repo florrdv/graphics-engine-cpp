@@ -203,18 +203,17 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM,
                         // We have to connect the point (x, y, z) to point p
                         // Let's start by determening the coordinates of the point (x, y, z)
                         double zE = 1/zIndex;
-                        double xE = xI * (-zE) / d;
-                        double yE = yI * (-zE) / d;
+                        double xE = -zE * (xI - dx) / d;
+                        double yE = -zE * (yI - dy) / d;
 
                         Vector3D xyz = Vector3D::point(xE, yE, zE);
                         Vector3D p = infLight->location * eyeM;
                         Vector3D l = Vector3D::normalise(p - xyz);
                         
                         
-                        Vector3D ld = Vector3D::cross(l, n);
-
-                        // double alpha = n.x * ld.x + n.y * ld.y + n.z * ld.z;
-                        // baseColor += light->diffuseLight * alpha;
+                        double alpha = n.dot(l);
+                        Color c = light->diffuseLight * diffuseReflection;
+                        baseColor += c * alpha;
                     }
                 }
 
