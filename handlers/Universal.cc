@@ -70,7 +70,7 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img,
                     Color ambientReflection, Color diffuseReflection, Color specularReflection, double reflectionCoeff,
                     Lights3D& lights) {
     // Backwards compatibility
-    if (lights.empty()) lights.push_back(Light(Color(1, 1, 1), Color(0, 0, 0), Color(0, 0, 0)));
+    if (lights.empty()) lights.push_back(new Light(Color(1, 1, 1), Color(0, 0, 0), Color(0, 0, 0)));
     
     // Previous coordinates
     double xA = A.x;
@@ -132,14 +132,17 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img,
 
     // Diffuse light
     Vector3D n = Vector3D::normalise(w);
-    for (Light*& light : lights) {
+    for (Light* light : lights) {
         // Light @ infinity
-        if (dynamic_cast<InfLight*>(light) != nullptr) {
-            InfLight* light = light;
-            Vector3D ld = Vector3D::cross(light->ldVector, n);
+        if (InfLight* infLight = dynamic_cast<InfLight*>(light)) {
+            Vector3D ld = Vector3D::cross(infLight->ldVector, n);
 
             double alpha = n.x * ld.x + n.y * ld.y + n.z * ld.z;
             color += light->diffuseLight * alpha;
+        }
+
+        if (PointLight* infLight = dynamic_cast<PointLight*>(light)) {
+           
         }
     }
 
