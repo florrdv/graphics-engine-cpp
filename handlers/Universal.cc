@@ -64,7 +64,7 @@ ImageDetails getImageDetails(const Lines2D &lines, const double size) {
     };
 }
 
-void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, 
+void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eye,  
                     Vector3D const& A, Vector3D const& B, Vector3D const& C, 
                     double d, double dx, double dy, 
                     Color ambientReflection, Color diffuseReflection, Color specularReflection, double reflectionCoeff,
@@ -140,10 +140,6 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img,
             double alpha = n.x * ld.x + n.y * ld.y + n.z * ld.z;
             color += light->diffuseLight * alpha;
         }
-
-        if (PointLight* infLight = dynamic_cast<PointLight*>(light)) {
-           
-        }
     }
 
     for (int yI = yMin; yI <= yMax; yI++) {
@@ -195,6 +191,30 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img,
             double zIndex = 1.0001 * zG + (xI-xG) * dzdx + (yI-yG) * dzdy;
             double previousValue = z[xI][yI];
             if (zIndex < previousValue) {
+                // We have to draw the pixel, let's calculate the color
+                // in case any point lights are parent
+                Color baseColor = color;
+
+                for (Light* light : lights) {
+                    if (PointLight* infLight = dynamic_cast<PointLight*>(light)) {
+                        // We have to connect the point (x, y, z) to point p
+                        // Let's start by determening the coordinates of the point (x, y, z)
+                        double zE = 1/zIndex;
+                        double xE = xI * (-zE) / d;
+                        double yE = yI * (-zE) / d;
+
+                        Vector3D xyz = Vector3D::point(xE, yE, zE);
+                        Vector3D p = infLight->location * eye;
+                        Vector3D l = Vector3D::normalise(p - xyz);
+                        
+                        
+                        Vector3D ld = Vector3D::cross(l, n);
+
+                        double alpha = n.x * ld.x + n.y * ld.y + n.z * ld.z;
+                        baseColor += light->diffuseLight * alpha;
+                    }
+                }
+
                 z[xI][yI] = zIndex;
                 img(xI, yI) = color.toNative();
             }
@@ -539,11 +559,11 @@ Details parseGeneralDetails(const ini::Configuration& c) {
     return Details { size, eye, backgroundColor };
 }
 
-void drawFigure(img::EasyImage &img, ZBuffer &z, Figure &f, double size, double d, double dX, double dY, Color &background, Lights3D &lights) {
+void drawFigure(img::EasyImage &img, Matrix &eye, ZBuffer &z, Figure &f, double size, double d, double dX, double dY, Color &background, Lights3D &lights) {
     f.triangulate();
 
     for (Face face : f.faces) {
-        draw_zbuf_triag(z, img, 
+        draw_zbuf_triag(z, img, eye,
                         f.points[face.pointIndexes[0]], f.points[face.pointIndexes[1]], f.points[face.pointIndexes[2]],
                         d, dX, dY,
                         f.ambientReflection, f.diffuseReflection, f.specularReflection, f.reflectionCoefficient,
@@ -552,7 +572,7 @@ void drawFigure(img::EasyImage &img, ZBuffer &z, Figure &f, double size, double 
     }
 }
 
-img::EasyImage drawFigures(Figures3D &figures, double size, Color &background, Lights3D &lights) {
+img::EasyImage drawFigures(Figures3D &figures, Matrix &eye, double size, Color &background, Lights3D &lights) {
     Lines2D lines = projectAll(figures);
     ImageDetails details = getImageDetails(lines, size);
 
@@ -566,7 +586,7 @@ img::EasyImage drawFigures(Figures3D &figures, double size, Color &background, L
     double dY = details.imageY / 2 - dcY;
 
     for (Figure figure : figures) {
-        drawFigure(img, z, figure, size, d, dX, dY, background, lights);
+        drawFigure(img, eye, z, figure, size, d, dX, dY, background, lights);
     }
 
     return img;
