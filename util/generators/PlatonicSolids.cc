@@ -8,7 +8,7 @@
 #include <math.h>
 
 namespace PlatonicSolids {
-    Figure createTetrahedron(Color c) {
+    Figure createTetrahedron(Color a, Color d) {
         Vector3D p0 = Vector3D::point(1, -1, -1);
         Vector3D p1 = Vector3D::point(-1, 1, -1);
         Vector3D p2 = Vector3D::point(1, 1, 1);
@@ -19,10 +19,10 @@ namespace PlatonicSolids {
         Face f2 = Face({ 0, 3, 1 });
         Face f3 = Face({ 0, 2, 3 });
 
-        return Figure({ p0, p1, p2, p3 }, { f0, f1, f2, f3 }, c);
+        return Figure({ p0, p1, p2, p3 }, { f0, f1, f2, f3 }, a, d);
     }
 
-    Figure createCube(Color c) {
+    Figure createCube(Color a, Color d) {
         Vector3D p0 = Vector3D::point(1, -1, -1);
         Vector3D p1 = Vector3D::point(-1, 1, -1);
         Vector3D p2 = Vector3D::point(1, 1, 1);
@@ -40,10 +40,10 @@ namespace PlatonicSolids {
         Face f4 = Face({ 6, 2, 7, 3 });
         Face f5 = Face({ 0, 5, 1, 4 });
 
-        return Figure({ p0, p1, p2, p3, p4, p5, p6, p7 }, { f0, f1, f2, f3, f4, f5 }, c);
+        return Figure({ p0, p1, p2, p3, p4, p5, p6, p7 }, { f0, f1, f2, f3, f4, f5 }, a, d);
     }
 
-    Figure createOctahedron(Color c) {
+    Figure createOctahedron(Color a, Color d) {
         Vector3D p0 = Vector3D::point(1, 0, 0);
         Vector3D p1 = Vector3D::point(0, 1, 0);
         Vector3D p2 = Vector3D::point(-1, 0, 0);
@@ -62,10 +62,10 @@ namespace PlatonicSolids {
         Face f6 = Face({ 3, 2, 4 });
         Face f7 = Face({ 0, 3, 4 });
 
-        return Figure({ p0, p1, p2, p3, p4, p5 }, { f0, f1, f2, f3, f4, f5, f6, f7 }, c);
+        return Figure({ p0, p1, p2, p3, p4, p5 }, { f0, f1, f2, f3, f4, f5, f6, f7 }, a, d);
     }
 
-    Figure createIcosahedron(Color c) {
+    Figure createIcosahedron(Color a, Color d) {
         Vector3D p0  = Vector3D::point(0, 0, sqrt(5)/2);
 
         Vector3D p1  = Vector3D::point(std::cos((2 - 2)*2*M_PI/5), std::sin((2 - 2)*2*M_PI/5), 0.5);
@@ -107,11 +107,11 @@ namespace PlatonicSolids {
         Face f18 = Face({ 11, 10, 9 });
         Face f19 = Face({ 11, 6, 10 });
 
-        return Figure({ p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11 }, { f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19}, c);
+        return Figure({ p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11 }, { f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19}, a, d);
     }
 
-    Figure createDodecahedron(Color c) {
-        Figure ico = createIcosahedron(c);
+    Figure createDodecahedron(Color a, Color d) {
+        Figure ico = createIcosahedron(a, d);
 
         std::vector<Vector3D> p;
         for (auto face : ico.faces) { 
@@ -139,7 +139,7 @@ namespace PlatonicSolids {
         Face f10 = Face({ 16, 8, 7, 6, 15 });
         Face f11 = Face({ 15, 6, 5, 14, 19 });
 
-        return Figure(p, { f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11 }, c);
+        return Figure(p, { f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11 }, a, d);
     }
 
     Vector3D calculateTriangleCentroid(Figure &ico, Face &face) {
@@ -154,7 +154,7 @@ namespace PlatonicSolids {
     }
 
     // Inspired by: https://github.com/kovacsv/JSModeler
-    Figure createTruncatedIcosahedron(Color color) {
+    Figure createTruncatedIcosahedron(Color ambient, Color diffuse) {
         // Cartesian coordinates for the vertices of a truncated icosahedron centered at the origin are all even permutations of:
         // (0, ±1, ±3φ)
         // (±1, ±(2 + φ), ±2φ)
@@ -277,11 +277,11 @@ namespace PlatonicSolids {
             Face({19, 51, 27, 59, 35, 43})
         };
 
-        Figure figure = Figure(points, faces, color);
+        Figure figure = Figure(points, faces, ambient, diffuse);
         return figure;
     }
 
-    Figure createCone(Color c, const int n, const double h) {
+    Figure createCone(Color a, Color d, const int n, const double h) {
         // Points
         std::vector<Vector3D> points;
         for (int i = 0; i < n; i++) {
@@ -300,12 +300,12 @@ namespace PlatonicSolids {
 
         // faces.push_back(Face({ n - 1, n-2, 0 }));
 
-        return Figure(points, faces, c);
+        return Figure(points, faces, a, d);
     }
 
 
-    Figure createSphere(Color c, const double radius, const int n) {
-        Figure intermediate = createIcosahedron(c);
+    Figure createSphere(Color a, Color d, const double radius, const int n) {
+        Figure intermediate = createIcosahedron(a, d);
 
         for (int i = 0; i < n; i++) {
             std::vector<Face> newFaces;
@@ -351,7 +351,7 @@ namespace PlatonicSolids {
     }
 
 
-    Figure createCylinder(Color c, const int n, const double h) {
+    Figure createCylinder(Color a, Color d, const int n, const double h) {
         // Points
         std::vector<Vector3D> points;
         for (int i = 0; i < n; i++) {
@@ -383,10 +383,10 @@ namespace PlatonicSolids {
         faces.push_back(Face(topPoints));
         faces.push_back(Face(bottomPoints));
 
-        return Figure(points, faces, c);
+        return Figure(points, faces, a, d);
     }
 
-    Figure createTorus(Color c, const double r, const double R, const int n, const int m) {
+    Figure createTorus(Color a, Color d, const double r, const double R, const int n, const int m) {
         std::vector<Vector3D> points;
 
         for (int i = 0; i < n; i++) {
@@ -415,6 +415,6 @@ namespace PlatonicSolids {
             }
         }
 
-        return Figure(points, faces, c);
+        return Figure(points, faces, a, d);
     }
 }

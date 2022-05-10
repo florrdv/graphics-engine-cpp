@@ -1,6 +1,7 @@
 #ifndef __PROJECTS_GRAPHICS_ENGINE_CPP_MISC_UTIL_COLOR_CC_
 #define __PROJECTS_GRAPHICS_ENGINE_CPP_MISC_UTIL_COLOR_CC_
 
+#include <algorithm>
 #include "../easy_image.h"
 
 class Color {

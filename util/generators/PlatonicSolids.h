@@ -5,25 +5,25 @@
 #include "../Face.h"
 
 namespace PlatonicSolids {
-    Figure createDodecahedron(Color c);
+    Figure createDodecahedron(Color a, Color d);
     
-    Figure createTetrahedron(Color c);
+    Figure createTetrahedron(Color a, Color d);
 
-    Figure createCube(Color c) ;
+    Figure createCube(Color a, Color d) ;
 
-    Figure createOctahedron(Color c);
+    Figure createOctahedron(Color a, Color d);
 
-    Figure createIcosahedron(Color c);
+    Figure createIcosahedron(Color a, Color d);
 
-    Figure createTruncatedIcosahedron(Color c);
+    Figure createTruncatedIcosahedron(Color a, Color d);
 
-    Figure createCone(Color c, const int n, const double h);
+    Figure createCone(Color a, Color d, const int n, const double h);
 
-    Figure createSphere(Color c, const double radius, const int n);
+    Figure createSphere(Color a, Color d, const double radius, const int n);
 
-    Figure createCylinder(Color c, const int n, const double h);
+    Figure createCylinder(Color a, Color d, const int n, const double h);
 
-    Figure createTorus(Color c, const double r, const double R, const int n, const int m);
+    Figure createTorus(Color a, Color d, const double r, const double R, const int n, const int m);
 }
 
 #endif // __PROJECTS_GRAPHICS_ENGINE_CPP_UTIL_GENERATORS_PLATONICSOLIDS_H_
