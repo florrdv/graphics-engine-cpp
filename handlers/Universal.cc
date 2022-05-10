@@ -120,16 +120,28 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img,
     double w1 = u2*v3-u3*v2;
     double w2 = u3*v1-u1*v3;
     double w3 = u1*v2-u2*v1;
+    Vector3D w = Vector3D::point(w1, w2, w3);
 
     double k = w1*xA + w2*yA + w3*zA;
     double dzdx = w1 / (-d*k);
     double dzdy = w2 / (-d*k);
 
     // Handle ambient light
-    Color ambientResult = Color(0, 0, 0);
-    for (Light& light : lights) ambientResult += light.ambientLight * ambientReflection;
+    Color color = Color(0, 0, 0);
+    for (Light*& light : lights) color += light->ambientLight * ambientReflection;
 
-    Color color = ambientResult;
+    // Diffuse light
+    Vector3D n = Vector3D::normalise(w);
+    for (Light*& light : lights) {
+        // Light @ infinity
+        if (dynamic_cast<InfLight*>(light) != nullptr) {
+            InfLight* light = light;
+            Vector3D ld = Vector3D::cross(light->ldVector, n);
+
+            double alpha = n.x * ld.x + n.y * ld.y + n.z * ld.z;
+            color += light->diffuseLight * alpha;
+        }
+    }
 
     for (int yI = yMin; yI <= yMax; yI++) {
         // Determining xMin(xL) and XMax(xR)
@@ -284,7 +296,7 @@ Lights3D parseLights(const ini::Configuration& c) {
         std::vector<double> specularLightRaw = base["specularLight"].as_double_tuple_or_default({0, 0, 0});
         Color specularLight = Color(specularLightRaw[0], specularLightRaw[1], specularLightRaw[2]);
 
-        lights.push_back(Light(ambientLight, diffuseLight, specularLight));
+        lights.push_back(new Light(ambientLight, diffuseLight, specularLight));
     }
 
     return lights;

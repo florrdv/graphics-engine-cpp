@@ -28,6 +28,10 @@ public:
         return *this;
     }
 
+    friend Color operator*(Color& lhs, const double& alpha) {
+        return Color(lhs.red * alpha, lhs.green * alpha, lhs.blue * alpha);
+    }
+
     friend Color operator+(Color& lhs, const Color& rhs){
         return Color(lhs.red + rhs.red, lhs.green + rhs.green, lhs.blue + rhs.blue);
     }

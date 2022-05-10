@@ -9,6 +9,7 @@ public:
     Color specularLight;
 
     Light(Color a, Color d, Color s): ambientLight(a), diffuseLight(d), specularLight(s) {};
+    virtual ~Light() = default;
 };
 
 class InfLight : public Light {
@@ -22,4 +23,4 @@ public:
     double spotAngle;
 };
 
-typedef std::list<Light> Lights3D;
+typedef std::list<Light*> Lights3D;
