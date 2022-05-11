@@ -195,7 +195,7 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM,
             double previousValue = z[xI][yI];
             if (zIndex < previousValue) {
                 // We have to draw the pixel, let's calculate the color
-                // in case any point lights are parent
+                // in case any point lights are present
                 Color baseColor = color;
 
                 for (Light* light : lights) {
@@ -212,8 +212,11 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM,
                         
                         
                         double alpha = n.dot(l);
-                        Color c = light->diffuseLight * diffuseReflection;
-                        baseColor += c * alpha;
+
+                        if (alpha > 0) {
+                            Color c = light->diffuseLight * diffuseReflection;
+                            baseColor += c * alpha;
+                        }
                     }
                 }
 
