@@ -73,87 +73,6 @@ Point2D projectPoint(const Vector3D &p, const double d, const double dx, const d
     return nP;
 }
 
-void fillZBuf(ZBuffer &z, 
-                const Vector3D &A, const Vector3D &B, const Vector3D &C, 
-                const double d, const double dx, const double dy ) {
-
-    // New points
-    Point2D nA = projectPoint(A, d, dx, dy);
-    Point2D nB = projectPoint(B, d, dx, dy);
-    Point2D nC = projectPoint(C, d, dx, dy);
-
-    int yMin = std::round(std::min({nA.y, nB.y, nC.y}) + 0.5);
-    int yMax = std::round(std::max({nA.y, nB.y, nC.y}) - 0.5);
-
-    // Calculate 1/zG
-    double xG = (nA.x+nB.x+nC.x)/3;
-    double yG = (nA.y+nB.y+nC.y)/3;
-
-    double zG = 1/(3*A.z) + 1/(3*B.z) + 1/(3*C.z);
-
-    Vector3D u = B - A;
-    Vector3D v = C - A;
-    Vector3D w = Vector3D::cross(u, v);
-
-    double k = w.x*A.x + w.y*A.y + w.z*A.z;
-    double dzdx = w.x / (-d*k);
-    double dzdy = w.y / (-d*k);
-
-    for (int yI = yMin; yI <= yMax; yI++) {
-        // Determining xMin(xL) and XMax(xR)
-        double xMinAB = std::numeric_limits<double>::infinity();
-        double xMinAC = std::numeric_limits<double>::infinity();
-        double xMinBC = std::numeric_limits<double>::infinity();
-
-        double xMaxAB = -std::numeric_limits<double>::infinity();
-        double xMaxAC = -std::numeric_limits<double>::infinity();
-        double xMaxBC = -std::numeric_limits<double>::infinity();
-
-        Point2D p;
-        Point2D q;
-
-        // AB
-        p = nA;
-        q = nB;
-        if ((yI - p.y)*(yI - q.y) <= 0 && p.y != q.y) {
-            double xI = q.x + (p.x - q.x)*(yI-q.y)/(p.y-q.y);
-            xMinAB = xI; 
-            xMaxAB = xI; 
-        }
-
-        // AC
-        p = nA;
-        q = nC;
-        if ((yI - p.y)*(yI - q.y) <= 0 && p.y != q.y) {
-            double xI = q.x + (p.x - q.x)*(yI-q.y)/(p.y-q.y);
-            xMinAC = xI; 
-            xMaxAC = xI; 
-        }
-
-        // BC
-        p = nB;
-        q = nC;
-        if ((yI - p.y)*(yI - q.y) <= 0 && p.y != q.y) {
-            double xI = q.x + (p.x - q.x)*(yI-q.y)/(p.y-q.y);
-            xMinBC = xI; 
-            xMaxBC = xI; 
-        }
-
-        int xL = std::lround(std::min({xMinAB, xMinAC, xMinBC}) + 0.5);
-        int xR = std::lround(std::max({xMaxAB, xMaxAC, xMaxBC}) - 0.5);
-
-        // zIndex preparation
-        for (int xI = xL; xI <= xR; xI++) {
-            // Calculate actual zIndex
-            double zIndex = zG + (xI-xG) * dzdx + (yI-yG) * dzdy;
-            double previousValue = z[xI][yI];
-            if (zIndex < previousValue) {
-                z[xI][yI] = zIndex;
-            }
-        }
-    }
-}
-
 void fillXi(double yI, Point2D p, Point2D q, double &xMin, double &xMax) {
     if ((yI - p.y)*(yI - q.y) <= 0 && p.y != q.y) {
             double xI = q.x + (p.x - q.x)*(yI-q.y)/(p.y-q.y);
@@ -177,6 +96,49 @@ void calculateBounds(Point2D &nA, Point2D &nB, Point2D &nC, double yI, int &xL, 
 
     xL = std::lround(std::min({xMinAB, xMinAC, xMinBC}) + 0.5);
     xR = std::lround(std::max({xMaxAB, xMaxAC, xMaxBC}) - 0.5);
+}
+
+void fillZBuf(ZBuffer &z, 
+                const Vector3D &A, const Vector3D &B, const Vector3D &C, 
+                const double d, const double dx, const double dy ) {
+
+    // New points
+    Point2D nA = projectPoint(A, d, dx, dy);
+    Point2D nB = projectPoint(B, d, dx, dy);
+    Point2D nC = projectPoint(C, d, dx, dy);
+
+    int yMin = std::round(std::min({nA.y, nB.y, nC.y}) + 0.5);
+    int yMax = std::round(std::max({nA.y, nB.y, nC.y}) - 0.5);
+
+    // Calculate 1/zG
+    double xG = (nA.x+nB.x+nC.x)/3;
+    double yG = (nA.y+nB.y+nC.y)/3;
+
+    double zG = 1/(3*A.z) + 1/(3*B.z) + 1/(3*C.z);
+
+    Vector3D u = B - A;
+    Vector3D v = C - A;
+    Vector3D w = Vector3D::cross(u, v);
+
+    double k = w.dot(A);
+    double dzdx = w.x / (-d*k);
+    double dzdy = w.y / (-d*k);
+
+    for (int yI = yMin; yI <= yMax; yI++) {
+        // Determining xMin(xL) and XMax(xR)
+        int xL, xR;
+        calculateBounds(nA, nB, nC, yI, xL, xR);
+
+        // zIndex preparation
+        for (int xI = xL; xI <= xR; xI++) {
+            // Calculate actual zIndex
+            double zIndex = zG + (xI-xG) * dzdx + (yI-yG) * dzdy;
+            double previousValue = z[xI][yI];
+            if (zIndex < previousValue) {
+                z[xI][yI] = zIndex;
+            }
+        }
+    }
 }
 
 void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM, 
