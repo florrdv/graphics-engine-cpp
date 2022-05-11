@@ -24,7 +24,15 @@ public:
     Vector3D location;
     double spotAngle;
 
-    PointLight(Color a, Color d, Color s, Vector3D l, double sa): Light(a, d, s), location(l), spotAngle(sa) {};
+    // Shadows
+    ZBuffer shadowMask = ZBuffer(0, 0);
+    Matrix eye = Matrix();
+    double d, dx, dy = 0;
+
+    PointLight(Color a, Color d, Color s, Vector3D l, double sa): 
+        Light(a, d, s), 
+        location(l), 
+        spotAngle(sa) {};
 };
 
 typedef std::list<Light*> Lights3D;

@@ -64,11 +64,56 @@ ImageDetails getImageDetails(const Lines2D &lines, const double size) {
     };
 }
 
+void fillZBuf(ZBuffer &zbuf, 
+                const Vector3D &A, const Vector3D &B, const Vector3D &C, 
+                const double d, const double dx, const double dy ) {
+    // Previous coordinates
+    double xA = A.x;
+    double yA = A.y;
+    double zA = A.z;
+
+    double xB = B.x;
+    double yB = B.y;
+    double zB = B.z;
+
+    double xC = C.x;
+    double yC = C.y;
+    double zC = C.z;
+
+    // New points
+    double nxA = d*xA/-zA + dx;
+    double nyA = d*yA/-zA + dy;
+    Point2D nA = Point2D(nxA, nyA);
+
+    double nxB = d*xB/-zB + dx;
+    double nyB = d*yB/-zB + dy;
+    Point2D nB = Point2D(nxB, nyB);
+
+    double nxC = d*xC/-zC + dx;
+    double nyC = d*yC/-zC + dy;
+    Point2D nC = Point2D(nxC, nyC);
+
+    int yMin = std::round(std::min({nA.y, nB.y, nC.y}) + 0.5);
+    int yMax = std::round(std::max({nA.y, nB.y, nC.y}) - 0.5);
+
+
+}
+
+Point2D projectPoint(const Vector3D &p, const double d, const double dx, const double dy) {
+    // New point
+    double nxP = d*p.x/-p.z + dx;
+    double nyP = d*p.y/-p.z + dy;
+    Point2D nP = Point2D(nxP, nyP);
+
+    return nP;
+}
+
 void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM, 
                     Vector3D const& A, Vector3D const& B, Vector3D const& C, 
                     double d, double dx, double dy, 
                     Color ambientReflection, Color diffuseReflection, Color specularReflection, double reflectionCoeff,
-                    Lights3D& lights) {
+                    Lights3D& lights, 
+                    bool shadows) {
     // Backwards compatibility
     if (lights.empty()) lights.push_back(new Light(Color(1, 1, 1), Color(0, 0, 0), Color(0, 0, 0)));
     
@@ -200,13 +245,21 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM,
 
                 for (Light* light : lights) {
                     if (PointLight* pointLight = dynamic_cast<PointLight*>(light)) {
-                        // We have to connect the point (x, y, z) to point p
                         // Let's start by determening the coordinates of the point (x, y, z)
                         double zE = 1/zIndex;
                         double xE = -zE * (xI - dx) / d;
                         double yE = -zE * (yI - dy) / d;
 
                         Vector3D xyz = Vector3D::point(xE, yE, zE);
+
+                        // Handle shadows
+                        if (shadows) {
+                            
+                        }
+
+                        // Handle lighting
+                        // We have to connect the point (x, y, z) to point p
+                       
                         Vector3D p = pointLight->location * eyeM;
                         Vector3D l = Vector3D::normalise(p - xyz);
                         
@@ -596,7 +649,7 @@ Details parseGeneralDetails(const ini::Configuration& c) {
     return Details { size, eye, backgroundColor };
 }
 
-void drawFigure(img::EasyImage &img, Matrix &eyeM, ZBuffer &z, Figure &f, double size, double d, double dX, double dY, Color &background, Lights3D &lights) {
+void drawFigure(img::EasyImage &img, Matrix &eyeM, ZBuffer &z, Figure &f, double size, double d, double dX, double dY, Color &background, Lights3D &lights, bool shadows) {
     f.triangulate();
 
     for (Face face : f.faces) {
@@ -604,12 +657,13 @@ void drawFigure(img::EasyImage &img, Matrix &eyeM, ZBuffer &z, Figure &f, double
                         f.points[face.pointIndexes[0]], f.points[face.pointIndexes[1]], f.points[face.pointIndexes[2]],
                         d, dX, dY,
                         f.ambientReflection, f.diffuseReflection, f.specularReflection, f.reflectionCoefficient,
-                        lights
+                        lights,
+                        shadows
         );
     }
 }
 
-img::EasyImage drawFigures(Figures3D &figures, Matrix &eyeM, double size, Color &background, Lights3D &lights) {
+img::EasyImage drawFigures(Figures3D &figures, Matrix &eyeM, double size, Color &background, Lights3D &lights, bool shadows) {
     Lines2D lines = projectAll(figures);
     ImageDetails details = getImageDetails(lines, size);
 
@@ -622,8 +676,18 @@ img::EasyImage drawFigures(Figures3D &figures, Matrix &eyeM, double size, Color 
     double dX = details.imageX / 2 - dcX;
     double dY = details.imageY / 2 - dcY;
 
+    // Handle shadows
+    if (shadows) {
+        for (Light* light : lights) {
+            Figures3D figuresCopy = figures;
+            if (PointLight* pointLight = dynamic_cast<PointLight*>(light)) {
+                // 
+            }
+        }
+    }
+
     for (Figure figure : figures) {
-        drawFigure(img, eyeM, z, figure, size, d, dX, dY, background, lights);
+        drawFigure(img, eyeM, z, figure, size, d, dX, dY, background, lights, shadows);
     }
 
     return img;

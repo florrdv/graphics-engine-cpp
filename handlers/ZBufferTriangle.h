@@ -6,6 +6,6 @@
 #include "Universal.h"
 
 img::EasyImage zBufferTriangle(const ini::Configuration& c);
-img::EasyImage drawFigures(Figures3D &figures, double size, Color &background);
+img::EasyImage drawFigures(Figures3D &figures, double size, Color &background, bool shadows);
 
 #endif // __PROJECTS_GRAPHICS_ENGINE_CPP_HANDLERS_ZBUFFERINGTRIANGLES_H_
