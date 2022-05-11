@@ -27,6 +27,10 @@ struct ImageDetails {
 
     double yMin;
     double yMax;
+
+    double d;
+    double dx;
+    double dy;
 };
 
 struct Details {
@@ -54,7 +58,7 @@ Lines2D projectFig(const Figure& fig);
 
 ImageDetails getImageDetails(const Lines2D &lines, const double size);
 
-void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM,
+void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM, Matrix &eyeMI,
                     Vector3D const& A, Vector3D const& B, Vector3D const& C, 
                     double d, double dx, double dy, 
                     Color ambientReflection, Color diffuseReflection, Color specularReflection, double reflectionCoeff,
@@ -64,7 +68,7 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM,
 Figures3D parseFigures(const ini::Configuration& c);
 Details parseGeneralDetails(const ini::Configuration& c);
 Lights3D parseLights(const ini::Configuration& c, Details &details);
-void drawFigure(img::EasyImage &img, Vector3D& eye, ZBuffer &z, Figure &f, double size, double d, double dX, double dY, Color &background, Lights3D &lights, bool shadows);
+void drawFigure(img::EasyImage &img, Matrix &eyeM, Matrix &eyeMI, ZBuffer &z, Figure &f, double size, double d, double dX, double dY, Color &background, Lights3D &lights, bool shadows);
 img::EasyImage drawFigures(Figures3D &figures, Vector3D &eye, double size, Color &background, Lights3D &lights, bool shadows);
 
 #endif // __PROJECTS_GRAPHICS_ENGINE_CPP_HANDLERS_UNIVERSAL_CC_

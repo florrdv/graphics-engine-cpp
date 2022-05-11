@@ -52,6 +52,12 @@ ImageDetails getImageDetails(const Lines2D &lines, const double size) {
     double imageX = size * xRange / std::max(xRange, yRange);
     double imageY = size * yRange / std::max(xRange, yRange);
 
+    double d = 0.95 * imageX / xRange;
+    double dcX = d * (xMin + xMax) / 2;
+    double dcY = d * (yMin + yMax) / 2;
+    double dx = imageX / 2 - dcX;
+    double dy = imageY / 2 - dcY;
+
     return ImageDetails{ 
         .imageX = imageX, 
         .imageY = imageY, 
@@ -61,6 +67,9 @@ ImageDetails getImageDetails(const Lines2D &lines, const double size) {
         .xMax = xMax, 
         .yMin = yMin, 
         .yMax = yMax,
+        .d = d,
+        .dx = dx,
+        .dy = dy
     };
 }
 
@@ -141,7 +150,7 @@ void fillZBuf(ZBuffer &z,
     }
 }
 
-void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM, 
+void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM, Matrix &eyeMI, 
                     Vector3D const& A, Vector3D const& B, Vector3D const& C, 
                     double d, double dx, double dy, 
                     Color ambientReflection, Color diffuseReflection, Color specularReflection, double reflectionCoeff,
@@ -206,18 +215,25 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM,
                 // in case any point lights are present
                 Color baseColor = color;
 
+                 // Let's start by determening the coordinates of the point (x, y, z)
+                double zE = 1/zIndex;
+                double xE = -zE * (xI - dx) / d;
+                double yE = -zE * (yI - dy) / d;
+
+                Vector3D xyz = Vector3D::point(xE, yE, zE);
+
                 for (Light* light : lights) {
                     if (PointLight* pointLight = dynamic_cast<PointLight*>(light)) {
-                        // Let's start by determening the coordinates of the point (x, y, z)
-                        double zE = 1/zIndex;
-                        double xE = -zE * (xI - dx) / d;
-                        double yE = -zE * (yI - dy) / d;
-
-                        Vector3D xyz = Vector3D::point(xE, yE, zE);
-
                         // Handle shadows
                         if (shadows) {
-                             
+                            Vector3D xyzCart = xyz * eyeMI;
+                            Vector3D xyzShadow = xyzCart * pointLight->transformation;
+                            Point2D xyzShadow2D = projectPoint(xyzShadow, pointLight->d, pointLight->dx, pointLight->dy);
+
+                            double zIndexStored = pointLight->shadowMask[std::floor(xyzShadow2D.x)][std::floor(xyzShadow2D.x)];
+                            double zIndex = xyzShadow.z;
+
+                            if (std::abs(zIndexStored - zIndex) > __DBL_EPSILON__) continue;
                         }
 
                         // Handle lighting
@@ -623,11 +639,11 @@ Details parseGeneralDetails(const ini::Configuration& c) {
     return Details { size, eye, backgroundColor, shadowEnabled, maskSize };
 }
 
-void drawFigure(img::EasyImage &img, Matrix &eyeM, ZBuffer &z, Figure &f, double size, double d, double dX, double dY, Color &background, Lights3D &lights, bool shadows) {
+void drawFigure(img::EasyImage &img, Matrix &eyeM, Matrix &eyeMI, ZBuffer &z, Figure &f, double size, double d, double dX, double dY, Color &background, Lights3D &lights, bool shadows) {
     f.triangulate();
 
     for (Face face : f.faces) {
-        draw_zbuf_triag(z, img, eyeM,
+        draw_zbuf_triag(z, img, eyeM, eyeMI,
                         f.points[face.pointIndexes[0]], f.points[face.pointIndexes[1]], f.points[face.pointIndexes[2]],
                         d, dX, dY,
                         f.ambientReflection, f.diffuseReflection, f.specularReflection, f.reflectionCoefficient,
@@ -638,9 +654,6 @@ void drawFigure(img::EasyImage &img, Matrix &eyeM, ZBuffer &z, Figure &f, double
 }
 
 img::EasyImage drawFigures(Figures3D &figures, Vector3D &eye, double size, Color &background, Lights3D &lights, bool shadows) {
-    Matrix eyePointTransMatrix = transformations::eyePointTrans(eye);
-    Matrix inverseEyePointTransMatrix = Matrix::inv(eyePointTransMatrix);
-
     // Handle shadows
     if (shadows) {
         for (Light* light : lights) {
@@ -654,15 +667,9 @@ img::EasyImage drawFigures(Figures3D &figures, Vector3D &eye, double size, Color
                 ZBuffer z = ZBuffer(std::lround(details.imageX), std::lround(details.imageY));
                 img::EasyImage img(std::lround(details.imageX), std::lround(details.imageY), background.toNative());
 
-                double d = 0.95 * details.imageX / details.xRange;
-                double dcX = d * (details.xMin + details.xMax) / 2;
-                double dcY = d * (details.yMin + details.yMax) / 2;
-                double dx = details.imageX / 2 - dcX;
-                double dy = details.imageY / 2 - dcY;
-
-                pointLight->d = d;
-                pointLight->dx = dx;
-                pointLight->dy = dy;
+                pointLight->d = details.d;
+                pointLight->dx = details.dx;
+                pointLight->dy = details.dy;
 
                 for (Figure& figure: figuresLocal) {
                     for (Face &face: figure.faces) {
@@ -681,6 +688,8 @@ img::EasyImage drawFigures(Figures3D &figures, Vector3D &eye, double size, Color
     }
 
     // Draw figures
+    Matrix eyePointTransMatrix = transformations::eyePointTrans(eye);
+    Matrix inverseEyePointTransMatrix = Matrix::inv(eyePointTransMatrix);
     applyTransformationAll(figures, eyePointTransMatrix);
 
     Lines2D lines = projectAll(figures);
@@ -689,14 +698,8 @@ img::EasyImage drawFigures(Figures3D &figures, Vector3D &eye, double size, Color
     ZBuffer z = ZBuffer(std::lround(details.imageX), std::lround(details.imageY));
     img::EasyImage img(std::lround(details.imageX), std::lround(details.imageY), background.toNative());
 
-    double d = 0.95 * details.imageX / details.xRange;
-    double dcX = d * (details.xMin + details.xMax) / 2;
-    double dcY = d * (details.yMin + details.yMax) / 2;
-    double dX = details.imageX / 2 - dcX;
-    double dY = details.imageY / 2 - dcY;
-
     for (Figure figure : figures) {
-        drawFigure(img, eyePointTransMatrix, z, figure, size, d, dX, dY, background, lights, shadows);
+        drawFigure(img, eyePointTransMatrix, inverseEyePointTransMatrix, z, figure, size, details.d, details.dx, details.dy, background, lights, shadows);
     }
 
     return img;
