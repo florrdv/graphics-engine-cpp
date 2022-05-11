@@ -208,7 +208,10 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM, Matrix &eyeM
         // zIndex preparation
         for (int xI = xL; xI <= xR; xI++) {
             // Calculate actual zIndex
-            double zIndex = 1.0001 * zG + (xI-xG) * dzdx + (yI-yG) * dzdy;
+            double zIndex;
+            if (shadows) zIndex = zG + (xI-xG) * dzdx + (yI-yG) * dzdy;
+            else zIndex = 1.0001 * zG + (xI-xG) * dzdx + (yI-yG) * dzdy;
+
             double previousValue = z[xI][yI];
             if (zIndex < previousValue) {
                 // We have to draw the pixel, let's calculate the color
@@ -230,10 +233,27 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM, Matrix &eyeM
                             Vector3D xyzShadow = xyzCart * pointLight->transformation;
                             Point2D xyzShadow2D = projectPoint(xyzShadow, pointLight->d, pointLight->dx, pointLight->dy);
 
-                            double zIndexStored = pointLight->shadowMask[std::floor(xyzShadow2D.x)][std::floor(xyzShadow2D.x)];
-                            double zIndex = xyzShadow.z;
+                            // double zIndexStored = pointLight->shadowMask[std::round(xyzShadow2D.x)][std::round(xyzShadow2D.y)];
+                            double aX = xyzShadow2D.x - std::floor(xyzShadow2D.x);
+                            double aY = xyzShadow2D.y - std::floor(xyzShadow2D.y);
 
-                            if (std::abs(zIndexStored - zIndex) > __DBL_EPSILON__) continue;
+                            // Top left
+                            double zA = pointLight->shadowMask[std::floor(xyzShadow2D.x)][std::ceil(xyzShadow2D.y)];
+                            // Top right
+                            double zB = pointLight->shadowMask[std::ceil(xyzShadow2D.x)][std::ceil(xyzShadow2D.y)];
+                            // Bottom left
+                            double zC = pointLight->shadowMask[std::floor(xyzShadow2D.x)][std::floor(xyzShadow2D.y)];
+                            // Bottom right
+                            double zD = pointLight->shadowMask[std::ceil(xyzShadow2D.x)][std::floor(xyzShadow2D.y)];
+
+                            // Interpolate
+                            double zIndexE = (1 - aX) / zA + aX / zB;
+                            double zIndexF = (1 - aX) / zC + aX / zD;
+                            double zIndexStored = aY / zIndexE + (1 - aY) / zIndexF;
+
+                            // 10^-4 as a generic epsilon, we can't use the epsilon from the limits
+                            // library here as that margin would be too tight 
+                            if (std::abs(zIndexStored - 1 / xyzShadow.z) > std::pow(10, -4)) continue;
                         }
 
                         // Handle lighting
@@ -381,6 +401,7 @@ Lights3D parseLights(const ini::Configuration& c, Details &details) {
                 PointLight* pointLight = new PointLight(ambientLight, diffuseLight, specularLight, Vector3D::point(location[0], location[1], location[2]), spotAngle);
 
                 if (details.shadowEnabled) {
+                    pointLight->shadowMaskSize = details.maskSize;
                     pointLight->shadowMask = ZBuffer(details.maskSize, details.maskSize);
                     pointLight->transformation = transformations::eyePointTrans(pointLight->location);
                 }
@@ -640,8 +661,6 @@ Details parseGeneralDetails(const ini::Configuration& c) {
 }
 
 void drawFigure(img::EasyImage &img, Matrix &eyeM, Matrix &eyeMI, ZBuffer &z, Figure &f, double size, double d, double dX, double dY, Color &background, Lights3D &lights, bool shadows) {
-    f.triangulate();
-
     for (Face face : f.faces) {
         draw_zbuf_triag(z, img, eyeM, eyeMI,
                         f.points[face.pointIndexes[0]], f.points[face.pointIndexes[1]], f.points[face.pointIndexes[2]],
@@ -654,6 +673,8 @@ void drawFigure(img::EasyImage &img, Matrix &eyeM, Matrix &eyeMI, ZBuffer &z, Fi
 }
 
 img::EasyImage drawFigures(Figures3D &figures, Vector3D &eye, double size, Color &background, Lights3D &lights, bool shadows) {
+    for (Figure &f : figures) f.triangulate();
+
     // Handle shadows
     if (shadows) {
         for (Light* light : lights) {
@@ -661,11 +682,8 @@ img::EasyImage drawFigures(Figures3D &figures, Vector3D &eye, double size, Color
                 Figures3D figuresLocal = figures;
                 applyTransformationAll(figuresLocal, pointLight->transformation);
 
-                Lines2D lines = projectAll(figures);
-                ImageDetails details = getImageDetails(lines, size);
-
-                ZBuffer z = ZBuffer(std::lround(details.imageX), std::lround(details.imageY));
-                img::EasyImage img(std::lround(details.imageX), std::lround(details.imageY), background.toNative());
+                Lines2D lines = projectAll(figuresLocal);
+                ImageDetails details = getImageDetails(lines, pointLight->shadowMaskSize);
 
                 pointLight->d = details.d;
                 pointLight->dx = details.dx;

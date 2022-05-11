@@ -11,7 +11,7 @@ img::EasyImage lightedZBuffering(const ini::Configuration& c) {
     Details details = parseGeneralDetails(c);
     Lights3D lights = parseLights(c, details);
 
-    return drawFigures(figures, details.eye, details.size, details.backgroundColor, lights, false);
+    return drawFigures(figures, details.eye, details.size, details.backgroundColor, lights, details.shadowEnabled);
 }
 
 #endif // __PROJECTS_GRAPHICS_ENGINE_CPP_HANDLERS_LIGHTEDZBUFFERING_CC_

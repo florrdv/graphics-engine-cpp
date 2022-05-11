@@ -25,6 +25,7 @@ public:
     double spotAngle;
 
     // Shadows
+    int shadowMaskSize = 0;
     ZBuffer shadowMask = ZBuffer(0, 0);
     Matrix transformation = Matrix();
     double d, dx, dy = 0;
