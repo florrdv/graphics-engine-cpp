@@ -217,7 +217,7 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM,
 
                         // Handle shadows
                         if (shadows) {
-                            
+                             
                         }
 
                         // Handle lighting
@@ -657,18 +657,22 @@ img::EasyImage drawFigures(Figures3D &figures, Vector3D &eye, double size, Color
                 double d = 0.95 * details.imageX / details.xRange;
                 double dcX = d * (details.xMin + details.xMax) / 2;
                 double dcY = d * (details.yMin + details.yMax) / 2;
-                double dX = details.imageX / 2 - dcX;
-                double dY = details.imageY / 2 - dcY;
-                
+                double dx = details.imageX / 2 - dcX;
+                double dy = details.imageY / 2 - dcY;
+
+                pointLight->d = d;
+                pointLight->dx = dx;
+                pointLight->dy = dy;
+
                 for (Figure& figure: figuresLocal) {
                     for (Face &face: figure.faces) {
                         fillZBuf(pointLight->shadowMask, 
                                 figure.points[face.pointIndexes[0]], 
                                 figure.points[face.pointIndexes[1]], 
                                 figure.points[face.pointIndexes[2]],
-                                d,
-                                dX,
-                                dY
+                                pointLight->d,
+                                pointLight->dx,
+                                pointLight->dy
                         );
                     }
                 }
