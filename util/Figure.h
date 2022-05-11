@@ -17,7 +17,7 @@ public:
     Color specularReflection = Color(0, 0, 0);
     double reflectionCoefficient = 0;
 
-    Figure(std::vector<Vector3D> p, std::vector<Face> f, Color a, Color d) : points(p), faces(f), ambientReflection(a), diffuseReflection(d) {};
+    Figure(std::vector<Vector3D> p, std::vector<Face> f, Color a) : points(p), faces(f), ambientReflection(a) {};
     Figure() {};
     void triangulate();
 };

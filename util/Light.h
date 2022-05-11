@@ -23,7 +23,7 @@ class PointLight : public Light {
 public:
     Vector3D location;
 
-    PointLight(Color a, Color d, Color s, Vector3D l): Light(a, d, s), location(l), spotAngle(0) {};
+    PointLight(Color a, Color d, Color s, Vector3D l): Light(a, d, s), location(l) {};
 };
 
 typedef std::list<Light*> Lights3D;

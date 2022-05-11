@@ -64,7 +64,7 @@ ImageDetails getImageDetails(const Lines2D &lines, const double size) {
     };
 }
 
-void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM,  
+void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM, Vector3D &eye, 
                     Vector3D const& A, Vector3D const& B, Vector3D const& C, 
                     double d, double dx, double dy, 
                     Color ambientReflection, Color diffuseReflection, Color specularReflection, double reflectionCoeff,
@@ -199,7 +199,7 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM,
                 Color baseColor = color;
 
                 for (Light* light : lights) {
-                    if (PointLight* infLight = dynamic_cast<PointLight*>(light)) {
+                    if (PointLight* pointLight = dynamic_cast<PointLight*>(light)) {
                         // We have to connect the point (x, y, z) to point p
                         // Let's start by determening the coordinates of the point (x, y, z)
                         double zE = 1/zIndex;
@@ -207,7 +207,7 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM,
                         double yE = -zE * (yI - dy) / d;
 
                         Vector3D xyz = Vector3D::point(xE, yE, zE);
-                        Vector3D p = infLight->location * eyeM;
+                        Vector3D p = pointLight->location * eyeM;
                         Vector3D l = Vector3D::normalise(p - xyz);
                         
                         
@@ -216,6 +216,14 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM,
                         if (alpha > 0) {
                             Color c = light->diffuseLight * diffuseReflection;
                             baseColor += c * alpha;
+                        }
+
+                        // Specular light
+                        Vector3D r = 2 * alpha * n - l;
+                        double beta = r.dot(-Vector3D::normalise(xyz));
+                        if (beta > 0) {
+                            Color c = light->specularLight * specularReflection;
+                            baseColor += c * std::pow(beta, reflectionCoeff);
                         }
                     }
                 }
@@ -366,6 +374,11 @@ Figures3D parseFigures(const ini::Configuration& c) {
         std::vector<double> diffuseColorRaw = base["diffuseReflection"].as_double_tuple_or_default({0, 0, 0});
         Color diffuseColor = Color(diffuseColorRaw[0], diffuseColorRaw[1], diffuseColorRaw[2]);
 
+        std::vector<double> specularColorRaw = base["specularReflection"].as_double_tuple_or_default({0, 0, 0});
+        Color specularColor = Color(specularColorRaw[0], specularColorRaw[1], specularColorRaw[2]);
+
+        double reflectionCoefficient = base["reflectionCoefficient"].as_double_or_default(0);
+
         std::string type;
         if (!base["type"].as_string_if_exists(type)) std::cout << "⛔️| Failed to fetch type" << std::endl;
 
@@ -408,15 +421,15 @@ Figures3D parseFigures(const ini::Configuration& c) {
                 Face face = Face(l);
                 faces.push_back(face);
 
-                currentFigures.push_back(Figure(vectors, faces, ambientColor, diffuseColor));
+                currentFigures.push_back(Figure(vectors, faces, ambientColor));
 
             }
         }
-        else if (type == "Cube") currentFigures.push_back(PlatonicSolids::createCube(ambientColor, diffuseColor));
-        else if (type == "Tetrahedron") currentFigures.push_back(PlatonicSolids::createTetrahedron(ambientColor, diffuseColor));
-        else if (type == "Octahedron") currentFigures.push_back(PlatonicSolids::createOctahedron(ambientColor, diffuseColor));
-        else if (type == "Icosahedron") currentFigures.push_back(PlatonicSolids::createIcosahedron(ambientColor, diffuseColor));
-        else if (type == "Dodecahedron") currentFigures.push_back(PlatonicSolids::createDodecahedron(ambientColor, diffuseColor));
+        else if (type == "Cube") currentFigures.push_back(PlatonicSolids::createCube(ambientColor));
+        else if (type == "Tetrahedron") currentFigures.push_back(PlatonicSolids::createTetrahedron(ambientColor));
+        else if (type == "Octahedron") currentFigures.push_back(PlatonicSolids::createOctahedron(ambientColor));
+        else if (type == "Icosahedron") currentFigures.push_back(PlatonicSolids::createIcosahedron(ambientColor));
+        else if (type == "Dodecahedron") currentFigures.push_back(PlatonicSolids::createDodecahedron(ambientColor));
         else if (type == "Torus") {
             double r;
             double R;
@@ -428,12 +441,12 @@ Figures3D parseFigures(const ini::Configuration& c) {
             if (!base["n"].as_int_if_exists(n)) std::cout << "⛔️| Failed to fetch n" << std::endl;
             if (!base["m"].as_int_if_exists(m)) std::cout << "⛔️| Failed to fetch m" << std::endl;
 
-            currentFigures.push_back(PlatonicSolids::createTorus(ambientColor, diffuseColor, r, R, n, m));
+            currentFigures.push_back(PlatonicSolids::createTorus(ambientColor, r, R, n, m));
         } else if (type == "Sphere") {
             int n;
 
             if (!base["n"].as_int_if_exists(n)) std::cout << "⛔️| Failed to fetch n" << std::endl;
-            currentFigures.push_back(PlatonicSolids::createSphere(ambientColor, diffuseColor, 1, n));
+            currentFigures.push_back(PlatonicSolids::createSphere(ambientColor, 1, n));
         } else if (type == "Cylinder") {
             int n;
             double h;
@@ -441,7 +454,7 @@ Figures3D parseFigures(const ini::Configuration& c) {
             if (!base["n"].as_int_if_exists(n)) std::cout << "⛔️| Failed to fetch n" << std::endl;
             if (!base["height"].as_double_if_exists(h)) std::cout << "⛔️| Failed to fetch h" << std::endl;
 
-            currentFigures.push_back(PlatonicSolids::createCylinder(ambientColor, diffuseColor, n, h));
+            currentFigures.push_back(PlatonicSolids::createCylinder(ambientColor, n, h));
         }
         else if (type == "Cone") {
             int n;
@@ -450,7 +463,7 @@ Figures3D parseFigures(const ini::Configuration& c) {
             if (!base["n"].as_int_if_exists(n)) std::cout << "⛔️| Failed to fetch n" << std::endl;
             if (!base["height"].as_double_if_exists(h)) std::cout << "⛔️| Failed to fetch h" << std::endl;
 
-            currentFigures.push_back(PlatonicSolids::createCone(ambientColor, diffuseColor, n, h));
+            currentFigures.push_back(PlatonicSolids::createCone(ambientColor, n, h));
         }
         else if (type == "3DLSystem") {
             Figure figure;
@@ -475,7 +488,7 @@ Figures3D parseFigures(const ini::Configuration& c) {
             double fractalScale;
             if (!base["fractalScale"].as_double_if_exists(fractalScale)) std::cout << "⛔️| Failed to fetch scale" << std::endl;
 
-            Figure baseFig = PlatonicSolids::createCube(ambientColor, diffuseColor);
+            Figure baseFig = PlatonicSolids::createCube(ambientColor);
             generateFractal(baseFig, currentFigures, nrIterations, fractalScale);
         }
         else if (type == "FractalTetrahedron") {
@@ -485,7 +498,7 @@ Figures3D parseFigures(const ini::Configuration& c) {
             double fractalScale;
             if (!base["fractalScale"].as_double_if_exists(fractalScale)) std::cout << "⛔️| Failed to fetch scale" << std::endl;
 
-            Figure baseFig = PlatonicSolids::createTetrahedron(ambientColor, diffuseColor);
+            Figure baseFig = PlatonicSolids::createTetrahedron(ambientColor);
             generateFractal(baseFig, currentFigures, nrIterations, fractalScale);
         }
         else if (type == "FractalIcosahedron") {
@@ -495,7 +508,7 @@ Figures3D parseFigures(const ini::Configuration& c) {
             double fractalScale;
             if (!base["fractalScale"].as_double_if_exists(fractalScale)) std::cout << "⛔️| Failed to fetch scale" << std::endl;
 
-            Figure baseFig = PlatonicSolids::createIcosahedron(ambientColor, diffuseColor);
+            Figure baseFig = PlatonicSolids::createIcosahedron(ambientColor);
             generateFractal(baseFig, currentFigures, nrIterations, fractalScale);
         }
         else if (type == "FractalOctahedron") {
@@ -505,7 +518,7 @@ Figures3D parseFigures(const ini::Configuration& c) {
             double fractalScale;
             if (!base["fractalScale"].as_double_if_exists(fractalScale)) std::cout << "⛔️| Failed to fetch scale" << std::endl;
 
-            Figure baseFig = PlatonicSolids::createOctahedron(ambientColor, diffuseColor);;
+            Figure baseFig = PlatonicSolids::createOctahedron(ambientColor);;
             generateFractal(baseFig, currentFigures, nrIterations, fractalScale);
         }
         else if (type == "FractalDodecahedron") {
@@ -515,7 +528,7 @@ Figures3D parseFigures(const ini::Configuration& c) {
             double fractalScale;
             if (!base["fractalScale"].as_double_if_exists(fractalScale)) std::cout << "⛔️| Failed to fetch scale" << std::endl;
 
-            Figure baseFig = PlatonicSolids::createDodecahedron(ambientColor, diffuseColor);;
+            Figure baseFig = PlatonicSolids::createDodecahedron(ambientColor);;
             generateFractal(baseFig, currentFigures, nrIterations, fractalScale);
         }
         else if (type == "FractalBuckyBall") {
@@ -525,17 +538,23 @@ Figures3D parseFigures(const ini::Configuration& c) {
             double fractalScale;
             if (!base["fractalScale"].as_double_if_exists(fractalScale)) std::cout << "⛔️| Failed to fetch scale" << std::endl;
 
-            Figure baseFig = PlatonicSolids::createTruncatedIcosahedron(ambientColor, diffuseColor);;
+            Figure baseFig = PlatonicSolids::createTruncatedIcosahedron(ambientColor);;
             generateFractal(baseFig, currentFigures, nrIterations, fractalScale);
         }
-        else if (type == "BuckyBall") currentFigures.push_back(PlatonicSolids::createTruncatedIcosahedron(ambientColor, diffuseColor));
+        else if (type == "BuckyBall") currentFigures.push_back(PlatonicSolids::createTruncatedIcosahedron(ambientColor));
         else if (type == "MengerSponge") {
             int nrIterations;
             if (!base["nrIterations"].as_int_if_exists(nrIterations)) std::cout << "⛔️| Failed to fetch # iterations" << std::endl;
 
-            Figure baseFig = PlatonicSolids::createCube(ambientColor, diffuseColor);
+            Figure baseFig = PlatonicSolids::createCube(ambientColor);
             currentFigures.push_back(baseFig);
             generateMengerSponge(currentFigures, 0, nrIterations);
+        }
+
+        for (Figure &figure: currentFigures) {
+            figure.diffuseReflection = diffuseColor;
+            figure.specularReflection = specularColor;
+            figure.reflectionCoefficient = reflectionCoefficient;
         }
 
         Matrix rotateMatrixX = transformations::rotateX(rotateX * M_PI / 180);
@@ -575,11 +594,11 @@ Details parseGeneralDetails(const ini::Configuration& c) {
     return Details { size, eye, backgroundColor };
 }
 
-void drawFigure(img::EasyImage &img, Matrix &eyeM, ZBuffer &z, Figure &f, double size, double d, double dX, double dY, Color &background, Lights3D &lights) {
+void drawFigure(img::EasyImage &img, Matrix &eyeM, Vector3D &eye, ZBuffer &z, Figure &f, double size, double d, double dX, double dY, Color &background, Lights3D &lights) {
     f.triangulate();
 
     for (Face face : f.faces) {
-        draw_zbuf_triag(z, img, eyeM,
+        draw_zbuf_triag(z, img, eyeM, eye,
                         f.points[face.pointIndexes[0]], f.points[face.pointIndexes[1]], f.points[face.pointIndexes[2]],
                         d, dX, dY,
                         f.ambientReflection, f.diffuseReflection, f.specularReflection, f.reflectionCoefficient,
@@ -588,7 +607,7 @@ void drawFigure(img::EasyImage &img, Matrix &eyeM, ZBuffer &z, Figure &f, double
     }
 }
 
-img::EasyImage drawFigures(Figures3D &figures, Matrix &eyeM, double size, Color &background, Lights3D &lights) {
+img::EasyImage drawFigures(Figures3D &figures, Matrix &eyeM, Vector3D &eye, double size, Color &background, Lights3D &lights) {
     Lines2D lines = projectAll(figures);
     ImageDetails details = getImageDetails(lines, size);
 
@@ -602,7 +621,7 @@ img::EasyImage drawFigures(Figures3D &figures, Matrix &eyeM, double size, Color 
     double dY = details.imageY / 2 - dcY;
 
     for (Figure figure : figures) {
-        drawFigure(img, eyeM, z, figure, size, d, dX, dY, background, lights);
+        drawFigure(img, eyeM, eye, z, figure, size, d, dX, dY, background, lights);
     }
 
     return img;
