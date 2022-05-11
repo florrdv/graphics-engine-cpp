@@ -64,7 +64,7 @@ ImageDetails getImageDetails(const Lines2D &lines, const double size) {
     };
 }
 
-void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM, Vector3D &eye, 
+void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM, 
                     Vector3D const& A, Vector3D const& B, Vector3D const& C, 
                     double d, double dx, double dy, 
                     Color ambientReflection, Color diffuseReflection, Color specularReflection, double reflectionCoeff,
@@ -596,11 +596,11 @@ Details parseGeneralDetails(const ini::Configuration& c) {
     return Details { size, eye, backgroundColor };
 }
 
-void drawFigure(img::EasyImage &img, Matrix &eyeM, Vector3D &eye, ZBuffer &z, Figure &f, double size, double d, double dX, double dY, Color &background, Lights3D &lights) {
+void drawFigure(img::EasyImage &img, Matrix &eyeM, ZBuffer &z, Figure &f, double size, double d, double dX, double dY, Color &background, Lights3D &lights) {
     f.triangulate();
 
     for (Face face : f.faces) {
-        draw_zbuf_triag(z, img, eyeM, eye,
+        draw_zbuf_triag(z, img, eyeM,
                         f.points[face.pointIndexes[0]], f.points[face.pointIndexes[1]], f.points[face.pointIndexes[2]],
                         d, dX, dY,
                         f.ambientReflection, f.diffuseReflection, f.specularReflection, f.reflectionCoefficient,
@@ -609,7 +609,7 @@ void drawFigure(img::EasyImage &img, Matrix &eyeM, Vector3D &eye, ZBuffer &z, Fi
     }
 }
 
-img::EasyImage drawFigures(Figures3D &figures, Matrix &eyeM, Vector3D &eye, double size, Color &background, Lights3D &lights) {
+img::EasyImage drawFigures(Figures3D &figures, Matrix &eyeM, double size, Color &background, Lights3D &lights) {
     Lines2D lines = projectAll(figures);
     ImageDetails details = getImageDetails(lines, size);
 
@@ -623,7 +623,7 @@ img::EasyImage drawFigures(Figures3D &figures, Matrix &eyeM, Vector3D &eye, doub
     double dY = details.imageY / 2 - dcY;
 
     for (Figure figure : figures) {
-        drawFigure(img, eyeM, eye, z, figure, size, d, dX, dY, background, lights);
+        drawFigure(img, eyeM, z, figure, size, d, dX, dY, background, lights);
     }
 
     return img;
