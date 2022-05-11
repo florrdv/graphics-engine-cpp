@@ -162,6 +162,23 @@ void fillXi(double yI, Point2D p, Point2D q, double &xMin, double &xMax) {
     }
 }
 
+void calculateBounds(Point2D &nA, Point2D &nB, Point2D &nC, double yI, int &xL, int &xR) {
+    double xMinAB = std::numeric_limits<double>::infinity();
+    double xMinAC = std::numeric_limits<double>::infinity();
+    double xMinBC = std::numeric_limits<double>::infinity();
+
+    double xMaxAB = -std::numeric_limits<double>::infinity();
+    double xMaxAC = -std::numeric_limits<double>::infinity();
+    double xMaxBC = -std::numeric_limits<double>::infinity();
+
+    fillXi(yI, nA, nB, xMinAB, xMaxAB);
+    fillXi(yI, nA, nC, xMinAC, xMaxAC);
+    fillXi(yI, nB, nC, xMinBC, xMaxBC);
+
+    xL = std::lround(std::min({xMinAB, xMinAC, xMinBC}) + 0.5);
+    xR = std::lround(std::max({xMaxAB, xMaxAC, xMaxBC}) - 0.5);
+}
+
 void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM, 
                     Vector3D const& A, Vector3D const& B, Vector3D const& C, 
                     double d, double dx, double dy, 
@@ -214,20 +231,8 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM,
 
     for (int yI = yMin; yI <= yMax; yI++) {
         // Determining xMin(xL) and XMax(xR)
-        double xMinAB = std::numeric_limits<double>::infinity();
-        double xMinAC = std::numeric_limits<double>::infinity();
-        double xMinBC = std::numeric_limits<double>::infinity();
-
-        double xMaxAB = -std::numeric_limits<double>::infinity();
-        double xMaxAC = -std::numeric_limits<double>::infinity();
-        double xMaxBC = -std::numeric_limits<double>::infinity();
-
-        fillXi(yI, nA, nB, xMinAB, xMaxAB);
-        fillXi(yI, nA, nC, xMinAC, xMaxAC);
-        fillXi(yI, nB, nC, xMinBC, xMaxBC);
-
-        int xL = std::lround(std::min({xMinAB, xMinAC, xMinBC}) + 0.5);
-        int xR = std::lround(std::max({xMaxAB, xMaxAC, xMaxBC}) - 0.5);
+        int xL, xR;
+        calculateBounds(nA, nB, nC, yI, xL, xR);
 
         // zIndex preparation
         for (int xI = xL; xI <= xR; xI++) {
