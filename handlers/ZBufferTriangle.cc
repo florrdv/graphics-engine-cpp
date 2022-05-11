@@ -14,8 +14,5 @@ img::EasyImage zBufferTriangle(const ini::Configuration& c) {
     Details details = parseGeneralDetails(c);
     Lights3D lights;
 
-    Matrix eyePointTransMatrix = transformations::eyePointTrans(details.eye);
-    applyTransformationAll(figures, eyePointTransMatrix);
-
-    return drawFigures(figures, eyePointTransMatrix, details.size, details.backgroundColor, lights, false);
+    return drawFigures(figures, details.eye, details.size, details.backgroundColor, lights, false);
 }

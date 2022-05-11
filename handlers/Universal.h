@@ -27,6 +27,9 @@ struct ImageDetails {
 
     double yMin;
     double yMax;
+
+    bool shadowEnabled;
+    int maskSize;
 };
 
 struct Details {
@@ -62,7 +65,7 @@ Figures3D parseFigures(const ini::Configuration& c);
 Details parseGeneralDetails(const ini::Configuration& c);
 Lights3D parseLights(const ini::Configuration& c);
 void drawFigure(img::EasyImage &img, Vector3D& eye, ZBuffer &z, Figure &f, double size, double d, double dX, double dY, Color &background, Lights3D &lights, bool shadows);
-img::EasyImage drawFigures(Figures3D &figures, Matrix &eyeM, double size, Color &background, Lights3D &lights, bool shadows);
+img::EasyImage drawFigures(Figures3D &figures, Vector3D &eye, double size, Color &background, Lights3D &lights, bool shadows);
 
 #endif // __PROJECTS_GRAPHICS_ENGINE_CPP_HANDLERS_UNIVERSAL_CC_
 

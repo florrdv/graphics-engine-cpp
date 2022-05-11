@@ -609,7 +609,10 @@ Details parseGeneralDetails(const ini::Configuration& c) {
     if (!c["General"]["backgroundcolor"].as_double_tuple_if_exists(backgroundColorRaw)) std::cout << "⛔️| Failed to fetch background color" << std::endl;
     Color backgroundColor = Color(backgroundColorRaw[0], backgroundColorRaw[1], backgroundColorRaw[2]);
 
-    return Details { size, eye, backgroundColor };
+    bool shadowEnabled = c["General"]["shadowEnabled"].as_bool_or_default(false);
+    int maskSize = c["General"]["shadowMask"].as_int_or_default(size);
+    
+    return Details { size, eye, backgroundColor, shadowEnabled, maskSize };
 }
 
 void drawFigure(img::EasyImage &img, Matrix &eyeM, ZBuffer &z, Figure &f, double size, double d, double dX, double dY, Color &background, Lights3D &lights, bool shadows) {
@@ -626,7 +629,36 @@ void drawFigure(img::EasyImage &img, Matrix &eyeM, ZBuffer &z, Figure &f, double
     }
 }
 
-img::EasyImage drawFigures(Figures3D &figures, Matrix &eyeM, double size, Color &background, Lights3D &lights, bool shadows) {
+img::EasyImage drawFigures(Figures3D &figures, Vector3D &eye, double size, Color &background, Lights3D &lights, bool shadows) {
+    Matrix eyePointTransMatrix = transformations::eyePointTrans(eye);
+    Matrix inverseEyePointTransMatrix = Matrix::inv(eyePointTransMatrix);
+
+    // Handle shadows
+    if (shadows) {
+        for (Light* light : lights) {
+            if (PointLight* pointLight = dynamic_cast<PointLight*>(light)) {
+                Figures3D figuresLocal = figures;
+                Matrix trans = transformations::eyePointTrans(pointLight->location);
+                for (Figure& figure: figuresLocal) {
+                    applyTransformation(figure, trans);
+                    for (Face &face: figure.faces) {
+                        fillZBuf(pointLight->shadowMask, 
+                                figure.points[face.pointIndexes[0]], 
+                                figure.points[face.pointIndexes[1]], 
+                                figure.points[face.pointIndexes[2]],
+                                pointLight->d,
+                                pointLight->dx,
+                                pointLight->dy
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+    // Draw figures
+    applyTransformationAll(figures, eyePointTransMatrix);
+
     Lines2D lines = projectAll(figures);
     ImageDetails details = getImageDetails(lines, size);
 
@@ -639,18 +671,8 @@ img::EasyImage drawFigures(Figures3D &figures, Matrix &eyeM, double size, Color 
     double dX = details.imageX / 2 - dcX;
     double dY = details.imageY / 2 - dcY;
 
-    // Handle shadows
-    if (shadows) {
-        for (Light* light : lights) {
-            Figures3D figuresCopy = figures;
-            if (PointLight* pointLight = dynamic_cast<PointLight*>(light)) {
-                // 
-            }
-        }
-    }
-
     for (Figure figure : figures) {
-        drawFigure(img, eyeM, z, figure, size, d, dX, dY, background, lights, shadows);
+        drawFigure(img, eyePointTransMatrix, z, figure, size, d, dX, dY, background, lights, shadows);
     }
 
     return img;
