@@ -22,7 +22,6 @@ public:
 class PointLight : public Light {
 public:
     Vector3D location;
-    double spotAngle;
 
     PointLight(Color a, Color d, Color s, Vector3D l): Light(a, d, s), location(l), spotAngle(0) {};
 };
