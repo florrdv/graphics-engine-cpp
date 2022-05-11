@@ -1,7 +1,9 @@
-# Graphics-engine-cpp
-### A *(soon to be)* 3D graphics engine written from the ground up in C++
+<h1 align="center">graphics-engine.cpp</h1>
 
-# Implement features
+<p style="text-align: center;"><em>A 3D graphics engine written from the ground up in C++</em></p>
+
+___
+## Implement features
 - Basic shapes
   - Diamond
   - Quarter circle
@@ -16,3 +18,12 @@
 - 3D L-Systemen
 - Z-Buffering met lijnen
 - Z-Buffering met driehoeken
+- Fractals
+  - Generic fractals
+  - Buckyball (based on [this article](https://en.wikipedia.org/wiki/Truncated_icosahedron), not an icosahedron directky)
+  - Menger sponge
+- Lighting
+  - Ambient lighting
+  - Diffuse lighting (including spots)
+  - Specular lighting
+- Shadows
