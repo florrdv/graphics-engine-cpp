@@ -64,41 +64,6 @@ ImageDetails getImageDetails(const Lines2D &lines, const double size) {
     };
 }
 
-void fillZBuf(ZBuffer &zbuf, 
-                const Vector3D &A, const Vector3D &B, const Vector3D &C, 
-                const double d, const double dx, const double dy ) {
-    // Previous coordinates
-    double xA = A.x;
-    double yA = A.y;
-    double zA = A.z;
-
-    double xB = B.x;
-    double yB = B.y;
-    double zB = B.z;
-
-    double xC = C.x;
-    double yC = C.y;
-    double zC = C.z;
-
-    // New points
-    double nxA = d*xA/-zA + dx;
-    double nyA = d*yA/-zA + dy;
-    Point2D nA = Point2D(nxA, nyA);
-
-    double nxB = d*xB/-zB + dx;
-    double nyB = d*yB/-zB + dy;
-    Point2D nB = Point2D(nxB, nyB);
-
-    double nxC = d*xC/-zC + dx;
-    double nyC = d*yC/-zC + dy;
-    Point2D nC = Point2D(nxC, nyC);
-
-    int yMin = std::round(std::min({nA.y, nB.y, nC.y}) + 0.5);
-    int yMax = std::round(std::max({nA.y, nB.y, nC.y}) - 0.5);
-
-
-}
-
 Point2D projectPoint(const Vector3D &p, const double d, const double dx, const double dy) {
     // New point
     double nxP = d*p.x/-p.z + dx;
@@ -106,6 +71,87 @@ Point2D projectPoint(const Vector3D &p, const double d, const double dx, const d
     Point2D nP = Point2D(nxP, nyP);
 
     return nP;
+}
+
+void fillZBuf(ZBuffer &z, 
+                const Vector3D &A, const Vector3D &B, const Vector3D &C, 
+                const double d, const double dx, const double dy ) {
+
+    // New points
+    Point2D nA = projectPoint(A, d, dx, dy);
+    Point2D nB = projectPoint(B, d, dx, dy);
+    Point2D nC = projectPoint(C, d, dx, dy);
+
+    int yMin = std::round(std::min({nA.y, nB.y, nC.y}) + 0.5);
+    int yMax = std::round(std::max({nA.y, nB.y, nC.y}) - 0.5);
+
+    // Calculate 1/zG
+    double xG = (nA.x+nB.x+nC.x)/3;
+    double yG = (nA.y+nB.y+nC.y)/3;
+
+    double zG = 1/(3*A.z) + 1/(3*B.z) + 1/(3*C.z);
+
+    Vector3D u = B - A;
+    Vector3D v = C - A;
+    Vector3D w = Vector3D::cross(u, v);
+
+    double k = w.x*A.x + w.y*A.y + w.z*A.z;
+    double dzdx = w.x / (-d*k);
+    double dzdy = w.y / (-d*k);
+
+    for (int yI = yMin; yI <= yMax; yI++) {
+        // Determining xMin(xL) and XMax(xR)
+        double xMinAB = std::numeric_limits<double>::infinity();
+        double xMinAC = std::numeric_limits<double>::infinity();
+        double xMinBC = std::numeric_limits<double>::infinity();
+
+        double xMaxAB = -std::numeric_limits<double>::infinity();
+        double xMaxAC = -std::numeric_limits<double>::infinity();
+        double xMaxBC = -std::numeric_limits<double>::infinity();
+
+        Point2D p;
+        Point2D q;
+
+        // AB
+        p = nA;
+        q = nB;
+        if ((yI - p.y)*(yI - q.y) <= 0 && p.y != q.y) {
+            double xI = q.x + (p.x - q.x)*(yI-q.y)/(p.y-q.y);
+            xMinAB = xI; 
+            xMaxAB = xI; 
+        }
+
+        // AC
+        p = nA;
+        q = nC;
+        if ((yI - p.y)*(yI - q.y) <= 0 && p.y != q.y) {
+            double xI = q.x + (p.x - q.x)*(yI-q.y)/(p.y-q.y);
+            xMinAC = xI; 
+            xMaxAC = xI; 
+        }
+
+        // BC
+        p = nB;
+        q = nC;
+        if ((yI - p.y)*(yI - q.y) <= 0 && p.y != q.y) {
+            double xI = q.x + (p.x - q.x)*(yI-q.y)/(p.y-q.y);
+            xMinBC = xI; 
+            xMaxBC = xI; 
+        }
+
+        int xL = std::lround(std::min({xMinAB, xMinAC, xMinBC}) + 0.5);
+        int xR = std::lround(std::max({xMaxAB, xMaxAC, xMaxBC}) - 0.5);
+
+        // zIndex preparation
+        for (int xI = xL; xI <= xR; xI++) {
+            // Calculate actual zIndex
+            double zIndex = zG + (xI-xG) * dzdx + (yI-yG) * dzdy;
+            double previousValue = z[xI][yI];
+            if (zIndex < previousValue) {
+                z[xI][yI] = zIndex;
+            }
+        }
+    }
 }
 
 void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM, 
@@ -116,32 +162,13 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM,
                     bool shadows) {
     // Backwards compatibility
     if (lights.empty()) lights.push_back(new Light(Color(1, 1, 1), Color(0, 0, 0), Color(0, 0, 0)));
-    
-    // Previous coordinates
-    double xA = A.x;
-    double yA = A.y;
-    double zA = A.z;
-
-    double xB = B.x;
-    double yB = B.y;
-    double zB = B.z;
-
-    double xC = C.x;
-    double yC = C.y;
-    double zC = C.z;
 
     // New points
-    double nxA = d*xA/-zA + dx;
-    double nyA = d*yA/-zA + dy;
-    Point2D nA = Point2D(nxA, nyA);
+    Point2D nA = projectPoint(A, d, dx, dy);
 
-    double nxB = d*xB/-zB + dx;
-    double nyB = d*yB/-zB + dy;
-    Point2D nB = Point2D(nxB, nyB);
+    Point2D nB = projectPoint(B, d, dx, dy);
 
-    double nxC = d*xC/-zC + dx;
-    double nyC = d*yC/-zC + dy;
-    Point2D nC = Point2D(nxC, nyC);
+    Point2D nC = projectPoint(C, d, dx, dy);
 
     int yMin = std::round(std::min({nA.y, nB.y, nC.y}) + 0.5);
     int yMax = std::round(std::max({nA.y, nB.y, nC.y}) - 0.5);
@@ -150,26 +177,15 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM,
     double xG = (nA.x+nB.x+nC.x)/3;
     double yG = (nA.y+nB.y+nC.y)/3;
     
-    double zG = 1/(3*zA) + 1/(3*zB) + 1/(3*zC);
+    double zG = 1/(3*A.z) + 1/(3*B.z) + 1/(3*C.z);
 
     Vector3D u = B - A;
-    double u1 = u.x;
-    double u2 = u.y;
-    double u3 = u.z;
-
     Vector3D v = C - A;
-    double v1 = v.x;
-    double v2 = v.y;
-    double v3 = v.z;
+    Vector3D w = Vector3D::cross(u, v);
 
-    double w1 = u2*v3-u3*v2;
-    double w2 = u3*v1-u1*v3;
-    double w3 = u1*v2-u2*v1;
-    Vector3D w = Vector3D::point(w1, w2, w3);
-
-    double k = w1*xA + w2*yA + w3*zA;
-    double dzdx = w1 / (-d*k);
-    double dzdy = w2 / (-d*k);
+    double k = w.x*A.x + w.y*A.y + w.z*A.z;
+    double dzdx = w.x / (-d*k);
+    double dzdy = w.y / (-d*k);
 
     // Handle ambient light
     Color color = Color(0, 0, 0);
