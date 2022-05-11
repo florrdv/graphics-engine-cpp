@@ -331,7 +331,7 @@ Lines2D projectAll(const Figures3D& figs) {
     return lines;
 }
 
-Lights3D parseLights(const ini::Configuration& c) {
+Lights3D parseLights(const ini::Configuration& c, Details &details) {
     Lights3D lights;
 
     int nrLights;
@@ -361,7 +361,15 @@ Lights3D parseLights(const ini::Configuration& c) {
                 std::vector<double> location;
                 if (!base["location"].as_double_tuple_if_exists(location)) std::cout << "⛔️| Failed to fetch location" << std::endl;
                 double spotAngle = base["spotAngle"].as_double_or_default(90) * M_PI / 180;
-                light = new PointLight(ambientLight, diffuseLight, specularLight, Vector3D::point(location[0], location[1], location[2]), spotAngle);
+
+                PointLight* pointLight = new PointLight(ambientLight, diffuseLight, specularLight, Vector3D::point(location[0], location[1], location[2]), spotAngle);
+
+                if (details.shadowEnabled) {
+                    pointLight->shadowMask = ZBuffer(details.maskSize, details.maskSize);
+                    pointLight->transformation = transformations::eyePointTrans(pointLight->location);
+                }
+
+                light = pointLight;
             }
         } else {
             light = new Light(ambientLight, diffuseLight, specularLight);
@@ -638,17 +646,29 @@ img::EasyImage drawFigures(Figures3D &figures, Vector3D &eye, double size, Color
         for (Light* light : lights) {
             if (PointLight* pointLight = dynamic_cast<PointLight*>(light)) {
                 Figures3D figuresLocal = figures;
-                Matrix trans = transformations::eyePointTrans(pointLight->location);
+                applyTransformationAll(figuresLocal, pointLight->transformation);
+
+                Lines2D lines = projectAll(figures);
+                ImageDetails details = getImageDetails(lines, size);
+
+                ZBuffer z = ZBuffer(std::lround(details.imageX), std::lround(details.imageY));
+                img::EasyImage img(std::lround(details.imageX), std::lround(details.imageY), background.toNative());
+
+                double d = 0.95 * details.imageX / details.xRange;
+                double dcX = d * (details.xMin + details.xMax) / 2;
+                double dcY = d * (details.yMin + details.yMax) / 2;
+                double dX = details.imageX / 2 - dcX;
+                double dY = details.imageY / 2 - dcY;
+                
                 for (Figure& figure: figuresLocal) {
-                    applyTransformation(figure, trans);
                     for (Face &face: figure.faces) {
                         fillZBuf(pointLight->shadowMask, 
                                 figure.points[face.pointIndexes[0]], 
                                 figure.points[face.pointIndexes[1]], 
                                 figure.points[face.pointIndexes[2]],
-                                pointLight->d,
-                                pointLight->dx,
-                                pointLight->dy
+                                d,
+                                dX,
+                                dY
                         );
                     }
                 }

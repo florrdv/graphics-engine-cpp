@@ -26,8 +26,7 @@ public:
 
     // Shadows
     ZBuffer shadowMask = ZBuffer(0, 0);
-    Matrix eye = Matrix();
-    double d, dx, dy = 0;
+    Matrix transformation = Matrix();
 
     PointLight(Color a, Color d, Color s, Vector3D l, double sa): 
         Light(a, d, s), 

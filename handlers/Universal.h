@@ -27,15 +27,15 @@ struct ImageDetails {
 
     double yMin;
     double yMax;
-
-    bool shadowEnabled;
-    int maskSize;
 };
 
 struct Details {
     int size;
     Vector3D eye;
     Color backgroundColor;
+
+    bool shadowEnabled;
+    int maskSize;
 };
 
 void applyTransformation(Figure& fig, const Matrix& m);
@@ -63,7 +63,7 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM,
 
 Figures3D parseFigures(const ini::Configuration& c);
 Details parseGeneralDetails(const ini::Configuration& c);
-Lights3D parseLights(const ini::Configuration& c);
+Lights3D parseLights(const ini::Configuration& c, Details &details);
 void drawFigure(img::EasyImage &img, Vector3D& eye, ZBuffer &z, Figure &f, double size, double d, double dX, double dY, Color &background, Lights3D &lights, bool shadows);
 img::EasyImage drawFigures(Figures3D &figures, Vector3D &eye, double size, Color &background, Lights3D &lights, bool shadows);
 

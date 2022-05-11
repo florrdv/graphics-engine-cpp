@@ -9,7 +9,7 @@
 img::EasyImage lightedZBuffering(const ini::Configuration& c) {
     Figures3D figures = parseFigures(c);
     Details details = parseGeneralDetails(c);
-    Lights3D lights = parseLights(c);
+    Lights3D lights = parseLights(c, details);
 
     return drawFigures(figures, details.eye, details.size, details.backgroundColor, lights, false);
 }
