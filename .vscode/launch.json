@@ -8,7 +8,7 @@
             "request": "launch",
             // Resolved by CMake Tools:
             "program": "${command:cmake.buildDirectory}/engine",
-            "args": ["misc/specular/specular_light024.ini"],
+            "args": ["misc/diffuse/diffuse_light802.ini"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [

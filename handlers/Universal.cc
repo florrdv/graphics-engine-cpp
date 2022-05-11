@@ -212,10 +212,11 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM, Vector3D &ey
                         
                         
                         double alpha = n.dot(l);
+                        double cosSpotAngle = std::cos(pointLight->spotAngle);
 
-                        if (alpha > 0) {
+                        if (alpha > 0 && alpha > cosSpotAngle) {
                             Color c = light->diffuseLight * diffuseReflection;
-                            baseColor += c * alpha;
+                            baseColor += c * (1-((1-alpha)/(1-cosSpotAngle)));
                         }
 
                         // Specular light
@@ -343,7 +344,8 @@ Lights3D parseLights(const ini::Configuration& c) {
             } else {
                 std::vector<double> location;
                 if (!base["location"].as_double_tuple_if_exists(location)) std::cout << "⛔️| Failed to fetch location" << std::endl;
-                light = new PointLight(ambientLight, diffuseLight, specularLight, Vector3D::point(location[0], location[1], location[2]));
+                double spotAngle = base["spotAngle"].as_double_or_default(90) * M_PI / 180;
+                light = new PointLight(ambientLight, diffuseLight, specularLight, Vector3D::point(location[0], location[1], location[2]), spotAngle);
             }
         } else {
             light = new Light(ambientLight, diffuseLight, specularLight);
