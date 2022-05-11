@@ -3,6 +3,7 @@
 <p style="text-align: center;"><em>A 3D graphics engine written from the ground up in C++</em></p>
 
 ___
+
 ## Implement features
 - Basic shapes
   - Diamond
