@@ -135,7 +135,7 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM, Vector3D &ey
     for (Light* light : lights) {
         // Light @ infinity
         if (InfLight* infLight = dynamic_cast<InfLight*>(light)) {
-            Vector3D l = -Vector3D::normalise(infLight->ldVector * eyeM);
+            Vector3D l = Vector3D::point(0, 0, 0) - Vector3D::normalise(infLight->ldVector * eyeM);
 
             double alpha = n.dot(l);
             if (alpha > 0) {
@@ -220,7 +220,7 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM, Vector3D &ey
 
                         // Specular light
                         Vector3D r = 2 * alpha * n - l;
-                        double beta = r.dot(-Vector3D::normalise(xyz));
+                        double beta = r.dot(Vector3D::point(0, 0, 0) - Vector3D::normalise(xyz));
                         if (beta > 0) {
                             Color c = light->specularLight * specularReflection;
                             baseColor += c * std::pow(beta, reflectionCoeff);
