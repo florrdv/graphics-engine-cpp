@@ -107,7 +107,7 @@ void calculateBounds(Point2D &nA, Point2D &nB, Point2D &nC, double yI, int &xL, 
     xR = std::lround(std::max({xMaxAB, xMaxAC, xMaxBC}) - 0.5);
 }
 
-void fillZBuf(ZBuffer &z, 
+void fillShadowMask(ZBuffer &z, 
                 const Vector3D &A, const Vector3D &B, const Vector3D &C, 
                 const double d, const double dx, const double dy ) {
 
@@ -387,7 +387,7 @@ Lights3D parseLights(const ini::Configuration& c, Details &details) {
 
         Light* light;
 
-        bool infinity;
+        bool infinity = false;
         if (base["infinity"].as_bool_if_exists(infinity)) {
             if (infinity) {
                 std::vector<double> direction;
@@ -691,7 +691,7 @@ img::EasyImage drawFigures(Figures3D &figures, Vector3D &eye, double size, Color
 
                 for (Figure& figure: figuresLocal) {
                     for (Face &face: figure.faces) {
-                        fillZBuf(pointLight->shadowMask, 
+                        fillShadowMask(pointLight->shadowMask, 
                                 figure.points[face.pointIndexes[0]], 
                                 figure.points[face.pointIndexes[1]], 
                                 figure.points[face.pointIndexes[2]],
