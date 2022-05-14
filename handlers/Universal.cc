@@ -238,22 +238,24 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM, Matrix &eyeM
                             double aY = xyzShadow2D.y - std::floor(xyzShadow2D.y);
 
                             // Top left
-                            double zA = pointLight->shadowMask[std::floor(xyzShadow2D.x)][std::ceil(xyzShadow2D.y)];
+                            double zA = 1 / pointLight->shadowMask[std::floor(xyzShadow2D.x)][std::ceil(xyzShadow2D.y)];
                             // Top right
-                            double zB = pointLight->shadowMask[std::ceil(xyzShadow2D.x)][std::ceil(xyzShadow2D.y)];
+                            double zB = 1 / pointLight->shadowMask[std::ceil(xyzShadow2D.x)][std::ceil(xyzShadow2D.y)];
                             // Bottom left
-                            double zC = pointLight->shadowMask[std::floor(xyzShadow2D.x)][std::floor(xyzShadow2D.y)];
+                            double zC = 1 / pointLight->shadowMask[std::floor(xyzShadow2D.x)][std::floor(xyzShadow2D.y)];
                             // Bottom right
-                            double zD = pointLight->shadowMask[std::ceil(xyzShadow2D.x)][std::floor(xyzShadow2D.y)];
+                            double zD = 1 / pointLight->shadowMask[std::ceil(xyzShadow2D.x)][std::floor(xyzShadow2D.y)];
 
                             // Interpolate
-                            double zIndexE = (1 - aX) / zA + aX / zB;
-                            double zIndexF = (1 - aX) / zC + aX / zD;
-                            double zIndexStored = aY / zIndexE + (1 - aY) / zIndexF;
+                            double zE = 1 / ((1 - aX) / zA + aX / zB);
+                            double zF = 1 / ((1 - aX) / zC + aX / zD);
+                            double zIndexStored = aY / zE + (1 - aY) / zF;
+
+                            // std::cout << std::abs(zIndexStored - 1 / xyzShadow.z) << "\n";
 
                             // 10^-4 as a generic epsilon, we can't use the epsilon from the limits
                             // library here as that margin would be too tight 
-                            if (std::abs(zIndexStored - 1 / xyzShadow.z) > std::pow(10, -4)) continue;
+                            if (std::abs(zIndexStored - 1 / xyzShadow.z) > std::pow(10, -10)) continue;
                         }
 
                         // Handle lighting
