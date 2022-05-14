@@ -255,7 +255,7 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM, Matrix &eyeM
 
                             // 10^-4 as a generic epsilon, we can't use the epsilon from the limits
                             // library here as that margin would be too tight 
-                            if (std::abs(zIndexStored - 1 / xyzShadow.z) > std::pow(10, -10)) continue;
+                            if (std::abs(zIndexStored - 1 / xyzShadow.z) > std::pow(10, -4)) continue;
                         }
 
                         // Handle lighting
