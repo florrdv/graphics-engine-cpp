@@ -232,6 +232,7 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM, Matrix &eyeM
                             Vector3D xyzCart = xyz * eyeMI;
                             Vector3D xyzShadow = xyzCart * pointLight->transformation;
                             Point2D xyzShadow2D = projectPoint(xyzShadow, pointLight->d, pointLight->dx, pointLight->dy);
+                            double zIndexPoint = 1 / xyzShadow.z;
 
                             // double zIndexStored = pointLight->shadowMask[std::round(xyzShadow2D.x)][std::round(xyzShadow2D.y)];
                             double aX = xyzShadow2D.x - std::floor(xyzShadow2D.x);
@@ -249,13 +250,14 @@ void draw_zbuf_triag(ZBuffer &z, img::EasyImage &img, Matrix &eyeM, Matrix &eyeM
                             // Interpolate
                             double zE = 1 / ((1 - aX) / zA + aX / zB);
                             double zF = 1 / ((1 - aX) / zC + aX / zD);
-                            double zIndexStored = aY / zE + (1 - aY) / zF;
+                            double zIndexInterpolated = aY / zE + (1 - aY) / zF;
 
                             // std::cout << std::abs(zIndexStored - 1 / xyzShadow.z) << "\n";
 
                             // 10^-4 as a generic epsilon, we can't use the epsilon from the limits
                             // library here as that margin would be too tight 
-                            if (std::abs(zIndexStored - 1 / xyzShadow.z) > std::pow(10, -4)) continue;
+                            bool lighted = zIndexPoint <= zIndexInterpolated || (zIndexPoint > zIndexInterpolated && (std::abs(zIndexPoint - zIndexInterpolated) < std::pow(10, -4)));
+                            if (!lighted) continue;
                         }
 
                         // Handle lighting
