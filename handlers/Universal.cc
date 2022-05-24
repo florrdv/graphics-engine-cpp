@@ -23,7 +23,6 @@ void applyTransformationAll(Figures3D& figs, const Matrix& m) {
 }
 
 ImageDetails getImageDetails(const Lines2D &lines, const double size) {
-    // TODO: handle edge case
     Line2D first = lines.front();
 
     double xMin = first.p1.x;
