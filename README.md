@@ -19,11 +19,11 @@ The goal of this project was to develop a graphics engine from the ground up in 
   - Basic L-systems
   - L-systems with brackets
   - Stochastic L-systems [stochastic-example.L2D](stochastic-example.L2D)
-- 3D Lijntekeningen
-- 3D Lichamen
-- 3D L-Systemen
-- Z-Buffering met lijnen
-- Z-Buffering met driehoeken
+- 3D Line drawings
+- 3D Bodies
+- 3D L-Systems
+- Z-Buffering with lines
+- Z-Buffering with triangles
 - Fractals
   - Generic fractals
   - Buckyball (based on [this article](https://en.wikipedia.org/wiki/Truncated_icosahedron), not an icosahedron directly)
