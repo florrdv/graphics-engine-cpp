@@ -1,8 +1,13 @@
-<h1 align="center">graphics-engine.cpp</h1>
+<h1 align="center">graphics-engine-cpp</h1>
 
-<p style="text-align: center;"><em>A 3D graphics engine written from the ground up in C++</em></p>
+<p style="text-align: center;"><em>A project by Flor Ronsmans De Vry for the Computer Graphics course at the University of Antwerp.</em></p>
+
+<div align="center"><img src="demo/thumbnail.png"></img></div>
 
 ___
+
+## Project goals
+The goal of this project was to develop a graphics engine from the ground up in C++.
 
 ## Implement features
 - Basic shapes
@@ -21,7 +26,7 @@ ___
 - Z-Buffering met driehoeken
 - Fractals
   - Generic fractals
-  - Buckyball (based on [this article](https://en.wikipedia.org/wiki/Truncated_icosahedron), not an icosahedron directky)
+  - Buckyball (based on [this article](https://en.wikipedia.org/wiki/Truncated_icosahedron), not an icosahedron directly)
   - Menger sponge
 - Lighting
   - Ambient lighting

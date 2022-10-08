@@ -8,7 +8,7 @@
             "request": "launch",
             // Resolved by CMake Tools:
             "program": "${command:cmake.buildDirectory}/engine",
-            "args": ["misc/specular/specular_light193.ini"],
+            "args": ["misc/l_systems/l_systems001.ini"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [
