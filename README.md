@@ -2,7 +2,7 @@
 
 <p style="text-align: center;"><em>A project by Flor Ronsmans De Vry for the Computer Graphics course at the University of Antwerp.</em></p>
 
-<div align="center"><img src="demo/thumbnail.png"></img></div>
+<div align="center"><img src="demo/thumbnail.png" width="250"></img></div>
 
 ___
 
